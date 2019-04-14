@@ -59,11 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enumerations\OrientationTypes.cs" />
     <Compile Include="Enumerations\PositionCornerTypes.cs" />
     <Compile Include="Enumerations\PositionMiddleTypes.cs" />
     <Compile Include="Enumerations\PositionSideTypes.cs" />
-    <Compile Include="Enumerations\RotationTypes.cs" />
     <Compile Include="Interfaces\IGetStickers.cs" />
     <Compile Include="Interfaces\IStickerWest.cs" />
     <Compile Include="Interfaces\IStickerEast.cs" />
