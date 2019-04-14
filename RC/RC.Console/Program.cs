@@ -175,13 +175,13 @@ namespace RC
                 case StickerColorTypes.Green:
                     return ConsoleColor.Green;
                 case StickerColorTypes.Orange:
-                    return ConsoleColor.Magenta;
-                case StickerColorTypes.Red:
                     return ConsoleColor.Red;
+                case StickerColorTypes.Red:
+                    return ConsoleColor.DarkRed;
                 case StickerColorTypes.White:
                     return ConsoleColor.White;
                 case StickerColorTypes.Yellow:
-                    return ConsoleColor.Yellow;
+                    return ConsoleColor.DarkYellow;
             }
 
             return ConsoleColor.Gray;

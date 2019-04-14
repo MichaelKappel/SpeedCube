@@ -109,12 +109,22 @@ namespace RC.Logic
             {
                 this.TurnUpClockwise(cube);
             }
+            else if (move == "E")
+            {
+                this.TurnUpClockwise(cube);
+                this.TurnDownCounterclockwise(cube);
+            }
             else if (move == "D")
             {
                 this.TurnDownClockwise(cube);
             }
             else if (move == "R")
             {
+                this.TurnRightClockwise(cube);
+            }
+            else if (move == "M")
+            {
+                this.TurnLeftCounterclockwise(cube);
                 this.TurnRightClockwise(cube);
             }
             else if (move == "L")
@@ -125,13 +135,77 @@ namespace RC.Logic
             {
                 this.TurnFrontClockwise(cube);
             }
+            else if (move == "S")
+            {
+                this.TurnFrontCounterclockwise(cube);
+                this.TurnBackClockwise(cube);
+            }
             else if (move == "B")
             {
+                this.TurnBackClockwise(cube);
+            }
+            else if (move == "U2")
+            {
+                this.TurnUpClockwise(cube);
+                this.TurnUpClockwise(cube);
+            }
+            else if (move == "E2")
+            {
+                this.TurnUpClockwise(cube);
+                this.TurnDownCounterclockwise(cube);
+
+                this.TurnUpClockwise(cube);
+                this.TurnDownCounterclockwise(cube);
+            }
+            else if (move == "D2")
+            {
+                this.TurnDownClockwise(cube);
+                this.TurnDownClockwise(cube);
+            }
+            else if (move == "R2")
+            {
+                this.TurnRightClockwise(cube);
+                this.TurnRightClockwise(cube);
+            }
+            else if (move == "M2")
+            {
+                this.TurnLeftCounterclockwise(cube);
+                this.TurnRightClockwise(cube);
+
+                this.TurnLeftCounterclockwise(cube);
+                this.TurnRightClockwise(cube);
+            }
+            else if (move == "L2")
+            {
+                this.TurnLeftClockwise(cube);
+                this.TurnLeftClockwise(cube);
+            }
+            else if (move == "F2")
+            {
+                this.TurnFrontClockwise(cube);
+                this.TurnFrontClockwise(cube);
+            }
+            else if (move == "S2")
+            {
+                this.TurnFrontCounterclockwise(cube);
+                this.TurnBackClockwise(cube);
+
+                this.TurnFrontCounterclockwise(cube);
+                this.TurnBackClockwise(cube);
+            }
+            else if (move == "B2")
+            {
+                this.TurnBackClockwise(cube);
                 this.TurnBackClockwise(cube);
             }
             else if (move == "U'")
             {
                 this.TurnUpCounterclockwise(cube);
+            }
+            else if (move == "E'")
+            {
+                this.TurnUpCounterclockwise(cube);
+                this.TurnDownClockwise(cube);
             }
             else if (move == "D'")
             {
@@ -141,6 +215,11 @@ namespace RC.Logic
             {
                 this.TurnRightCounterclockwise(cube);
             }
+            else if (move == "M'")
+            {
+                this.TurnLeftClockwise(cube);
+                this.TurnRightCounterclockwise(cube);
+            }
             else if (move == "L'")
             {
                 this.TurnLeftCounterclockwise(cube);
@@ -148,6 +227,11 @@ namespace RC.Logic
             else if (move == "F'")
             {
                 this.TurnFrontCounterclockwise(cube);
+            }
+            else if (move == "S'")
+            {
+                this.TurnFrontClockwise(cube);
+                this.TurnBackCounterclockwise(cube);
             }
             else if (move == "B'")
             {
