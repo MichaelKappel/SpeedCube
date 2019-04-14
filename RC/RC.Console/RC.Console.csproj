@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1FE79E8F-C485-4DE3-93FF-E40697C1EB63}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RC</RootNamespace>
+    <AssemblyName>RC</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Enumerations\OrientationTypes.cs" />
+    <Compile Include="Enumerations\PositionCornerTypes.cs" />
+    <Compile Include="Enumerations\PositionMiddleTypes.cs" />
+    <Compile Include="Enumerations\PositionSideTypes.cs" />
+    <Compile Include="Enumerations\RotationTypes.cs" />
+    <Compile Include="Interfaces\IGetStickers.cs" />
+    <Compile Include="Interfaces\IStickerWest.cs" />
+    <Compile Include="Interfaces\IStickerEast.cs" />
+    <Compile Include="Interfaces\IStickerSouth.cs" />
+    <Compile Include="Interfaces\IStickerNorth.cs" />
+    <Compile Include="Interfaces\IStickerFront.cs" />
+    <Compile Include="Interfaces\IStickerBack.cs" />
+    <Compile Include="Model\Base\StickerModelBase.cs" />
+    <Compile Include="Enumerations\StickerColorTypes.cs" />
+    <Compile Include="Logic\CubeLogic.cs" />
+    <Compile Include="Model\Base\PieceModelBase.cs" />
+    <Compile Include="Model\Base\SlotModelBase.cs" />
+    <Compile Include="Model\Base\PieceSideModelBase.cs" />
+    <Compile Include="Model\Base\SlotModelBase_T.cs" />
+    <Compile Include="Model\Base\SlotSideModelBase.cs" />
+    <Compile Include="Model\CubeModel.cs" />
+    <Compile Include="Model\Base\SlotCornerModelBase.cs" />
+    <Compile Include="Model\Base\PieceCornerModelBase.cs" />
+    <Compile Include="Model\Base\PieceMiddleModelBase.cs" />
+    <Compile Include="Model\Pieces\PieceNorthWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceSouthWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceSouthEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceNorthEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceNorthModel.cs" />
+    <Compile Include="Model\Pieces\PieceSouthModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackModel.cs" />
+    <Compile Include="Model\Pieces\PieceWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontNorthEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontNorthModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontNothWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontSouthEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontSouthModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackSouthModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontSouthWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceFrontWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackNothWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackSouthWestModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackSouthEastModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackNorthModel.cs" />
+    <Compile Include="Model\Pieces\PieceBackNorthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotBackEastModel.cs" />
+    <Compile Include="Model\Sots\SlotBackNorthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotBackNorthModel.cs" />
+    <Compile Include="Model\Sots\SlotBackNothWestModel.cs" />
+    <Compile Include="Model\Sots\SlotBackSouthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotBackSouthModel.cs" />
+    <Compile Include="Model\Sots\SlotBackSouthWestModel.cs" />
+    <Compile Include="Model\Sots\SlotNorthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotSouthWestModel.cs" />
+    <Compile Include="Model\Sots\SlotSouthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotNorthWestModel.cs" />
+    <Compile Include="Model\Sots\SlotBackWestModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontEastModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontNorthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontNorthModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontNothWestModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontSouthEastModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontSouthModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontSouthWestModel.cs" />
+    <Compile Include="Model\Sots\SlotFrontWestModel.cs" />
+    <Compile Include="Model\Base\StickerOrangeModelBase.cs" />
+    <Compile Include="Model\Base\StickerRedModelBase.cs" />
+    <Compile Include="Model\Base\StickerYellowModelBase.cs" />
+    <Compile Include="Model\Base\StickerWhiteModelBase.cs" />
+    <Compile Include="Model\Base\StickerGreenModelBase.cs" />
+    <Compile Include="Model\Base\StickerBlueModelBase.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthEastYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthWestWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackEastGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthEastWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthEastGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackNorthWestGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthEastGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthWestYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackSouthWestGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackWestGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontEastBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthEastWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthEastBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthWestWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontNorthWestBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthEastBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthEastYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthWestBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontSouthWestYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontWestBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerBackGreenModel.cs" />
+    <Compile Include="Model\Stickers\StickerEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontBlueModel.cs" />
+    <Compile Include="Model\Stickers\StickerFrontWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerNorthWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerSouthYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerNorthEastWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerNorthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerNorthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerNorthWestWhiteModel.cs" />
+    <Compile Include="Model\Stickers\StickerSouthEastYellowModel.cs" />
+    <Compile Include="Model\Stickers\StickerSouthEastOrangeModel.cs" />
+    <Compile Include="Model\Stickers\StickerSouthWestRedModel.cs" />
+    <Compile Include="Model\Stickers\StickerSouthWestYellowModel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

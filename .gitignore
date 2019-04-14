@@ -3,3 +3,5 @@
 ################################################################################
 
 /RC/.vs/RC/v16/Server/sqlite3
+/RC/RC.Console/bin/Debug
+/RC/RC.Console/obj/Debug
