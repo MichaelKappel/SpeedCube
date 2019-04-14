@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RC.Enumerations;
 using RC.Model;
 using RC.Model.Pieces;
+using RC.Model.Slots;
 
 namespace RC.Logic
 {
@@ -83,24 +84,363 @@ namespace RC.Logic
 
         public String GetCubeState(CubeModel cube)
         {
+            //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
+            //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
+            //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
+            //  BNW, BN, BNE, BW, B, BE, BSW, BS, BSE
+            //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
+            //  FNE, NE, BNE, FE, E, BE, FSE, SE, BSW
+
             String north = $"BNW:{cube.BackNorthWest.StickerNorth}|BN:{cube.BackNorth.StickerNorth}|BNE:{cube.BackNorthEast.StickerNorth}|NW:{cube.NorthWest.StickerNorth}|N:{cube.North.StickerNorth}|NE:{cube.NorthEast.StickerNorth}|FNW:{cube.FrontNorthWest.StickerNorth}|FN:{cube.FrontNorth.StickerNorth}|FNE:{cube.FrontNorthEast.StickerNorth}";
 
-            String south = $"FSW:{cube.FrontSouthWest.StickerSouth}|FS:{cube.FrontSouth.StickerSouth}|FSE:{cube.FrontSouthEast.StickerSouth}|SW:{cube.FrontSouthEast.StickerSouth}|S:{cube.South.StickerSouth}|SE:{cube.SouthEast.StickerSouth}|BSW:{cube.BackSouthWest.StickerSouth}|BS:{cube.BackSouth.StickerSouth}|BSE:{cube.BackSouthEast.StickerSouth}";
+            String south = $"FSW:{cube.FrontSouthWest.StickerSouth}|FS:{cube.FrontSouth.StickerSouth}|FSE:{cube.FrontSouthEast.StickerSouth}|SW:{cube.SouthWest.StickerSouth}|S:{cube.South.StickerSouth}|SE:{cube.SouthEast.StickerSouth}|BSW:{cube.BackSouthWest.StickerSouth}|BS:{cube.BackSouth.StickerSouth}|BSE:{cube.BackSouthEast.StickerSouth}";
 
-            String front = $"FNW:{cube.FrontNorthWest.StickerFront}|FN:{cube.FrontNorth.StickerFront}|FNE:{cube.FrontNorth.StickerFront}|FW:{cube.FrontWest.StickerFront}|F:{cube.Front.StickerFront}|FE:{cube.FrontEast.StickerFront}|FSW:{cube.FrontNorthWest.StickerFront}|FS:{cube.FrontNorth.StickerFront}|FSE:{cube.FrontNorth.StickerFront}";
+            String front = $"FNW:{cube.FrontNorthWest.StickerFront}|FN:{cube.FrontNorth.StickerFront}|FNE:{cube.FrontNorthEast.StickerFront}|FW:{cube.FrontWest.StickerFront}|F:{cube.Front.StickerFront}|FE:{cube.FrontEast.StickerFront}|FSW:{cube.FrontSouthWest.StickerFront}|FS:{cube.FrontSouth.StickerFront}|FSE:{cube.FrontSouthEast.StickerFront}";
         
-            String back = $"BNW:{cube.BackNorthWest.StickerBack}|BN:{cube.BackNorth.StickerBack}|BNE:{cube.BackNorth.StickerBack}|BW:{cube.BackWest.StickerBack}|B:{cube.Back.StickerBack}|BE:{cube.BackEast.StickerBack}|BSW:{cube.BackNorthWest.StickerBack}|BS:{cube.BackNorth.StickerBack}|BSE:{cube.BackNorth.StickerBack}";
+            String back = $"BNW:{cube.BackNorthWest.StickerBack}|BN:{cube.BackNorth.StickerBack}|BNE:{cube.BackNorthEast.StickerBack}|BW:{cube.BackWest.StickerBack}|B:{cube.Back.StickerBack}|BE:{cube.BackEast.StickerBack}|BSW:{cube.BackSouthWest.StickerBack}|BS:{cube.BackSouth.StickerBack}|BSE:{cube.BackSouthEast.StickerBack}";
         
             String west = $"BNW:{cube.BackNorthWest.StickerWest}|NW:{cube.NorthWest.StickerWest}|FNW:{cube.FrontNorthWest.StickerWest}|BW:{cube.BackWest.StickerWest}|W:{cube.West.StickerWest}|FW:{cube.FrontWest.StickerWest}|BSW:{cube.BackSouthWest.StickerWest}|SW:{cube.SouthWest.StickerWest}|FSW:{cube.FrontSouthWest.StickerWest}";
 
-            String east = $"FNE:{cube.FrontNorthEast.StickerEast}|NE:{cube.NorthEast.StickerEast}|BNE:{cube.BackNorthEast.StickerEast}|FE:{cube.FrontEast.StickerEast}|E:{cube.East.StickerEast}|BE:{cube.BackEast.StickerEast}|FSE:{cube.FrontSouthEast.StickerEast}|SE:{cube.SouthEast.StickerEast}|BSW:{cube.BackSouthEast.StickerEast}";
+            String east = $"FNE:{cube.FrontNorthEast.StickerEast}|NE:{cube.NorthEast.StickerEast}|BNE:{cube.BackNorthEast.StickerEast}|FE:{cube.FrontEast.StickerEast}|E:{cube.East.StickerEast}|BE:{cube.BackEast.StickerEast}|FSE:{cube.FrontSouthEast.StickerEast}|SE:{cube.SouthEast.StickerEast}|BSE:{cube.BackSouthEast.StickerEast}";
 
             return $"{north},{south},{front},{back},{west},{east}";
         }
 
-        public void SetCubeState(CubeModel cube)
+        public (String, StickerColorTypes) ParseSticker( String rawSticker)
         {
+            String[] rawStickerArr = rawSticker.Split(':');
+            String key = rawStickerArr[0];
+            StickerColorTypes value = (StickerColorTypes)Enum.Parse(typeof(StickerColorTypes), rawStickerArr[1]);
 
+            return (key, value);
+        }
+
+        public Dictionary<String, StickerColorTypes> ParseStickers(String rawCubeState)
+        {
+            var results = new Dictionary<String, StickerColorTypes>();
+            String[] prefixs = new string[6] { "N", "S", "F", "B", "W", "E" };
+            String[] cubeSides = rawCubeState.Split(',');
+            for (var i = 0; i < 6; i++ )
+            {
+                String prefix = prefixs[i];
+                String[] stickers = cubeSides[i].Split('|');
+                foreach (String sticker in stickers)
+                {
+                    String key;
+                    StickerColorTypes value;
+                    (key, value) = this.ParseSticker(sticker);
+                    results.Add(prefix + key, value);
+                }
+            }
+            return results;
+        }
+
+        public IList<PieceSideModelBase> GetAllSides(CubeModel cube)
+        {
+            var sides = new List<PieceSideModelBase>(12);
+
+            sides.Add(cube.FrontNorth.Piece);
+            sides.Add(cube.FrontEast.Piece); 
+            sides.Add(cube.FrontSouth.Piece);
+            sides.Add(cube.FrontWest.Piece); 
+
+            sides.Add(cube.NorthEast.Piece); 
+            sides.Add(cube.SouthEast.Piece); 
+            sides.Add(cube.SouthWest.Piece); 
+            sides.Add(cube.NorthWest.Piece); 
+
+            sides.Add(cube.BackNorth.Piece); 
+            sides.Add(cube.BackEast.Piece); 
+            sides.Add(cube.BackSouth.Piece); 
+            sides.Add(cube.BackWest.Piece);
+
+            return sides;
+        }
+
+        public IList<PieceCornerModelBase> GetAllCorners(CubeModel cube)
+        {
+            var corners = new List<PieceCornerModelBase>(8);
+
+            corners.Add(cube.FrontNorthEast.Piece);
+            corners.Add(cube.FrontSouthEast.Piece);
+            corners.Add(cube.FrontSouthWest.Piece);
+            corners.Add(cube.FrontNorthWest.Piece);
+
+            corners.Add(cube.BackNorthEast.Piece);
+            corners.Add(cube.BackSouthEast.Piece);
+            corners.Add(cube.BackSouthWest.Piece);
+            corners.Add(cube.BackNorthWest.Piece);
+
+            return corners;
+        }
+
+        public void SetFrontNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes>  stickerDictionary, SlotFrontNorthWestModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFNW"];
+            StickerColorTypes north = stickerDictionary["NFNW"];
+            StickerColorTypes west = stickerDictionary["WFNW"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north || x2.StickerColorType == west) == 3);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+        public void SetFrontNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontNorthEastModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFNE"];
+            StickerColorTypes north = stickerDictionary["NFNE"];
+            StickerColorTypes east = stickerDictionary["EFNE"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north || x2.StickerColorType == east) == 3);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+        public void SetFrontSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthEastModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFSE"];
+            StickerColorTypes south = stickerDictionary["SFSE"];
+            StickerColorTypes east = stickerDictionary["EFSE"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south || x2.StickerColorType == east) == 3);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+        public void SetFrontSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthWestModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFSW"];
+            StickerColorTypes south = stickerDictionary["SFSW"];
+            StickerColorTypes west = stickerDictionary["WFSW"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south || x2.StickerColorType == west) == 3);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+        public void SetBackNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthWestModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBNW"];
+            StickerColorTypes north = stickerDictionary["NBNW"];
+            StickerColorTypes west = stickerDictionary["WBNW"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north || x2.StickerColorType == west) == 3);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+        public void SetBackNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthEastModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBNE"];
+            StickerColorTypes north = stickerDictionary["NBNE"];
+            StickerColorTypes east = stickerDictionary["EBNE"];
+
+            slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north || x2.StickerColorType == east) == 3);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+        public void SetBackSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthEastModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBSE"];
+            StickerColorTypes south = stickerDictionary["SBSE"];
+            StickerColorTypes east = stickerDictionary["EBSE"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south || x2.StickerColorType == east) == 3);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+        public void SetBackSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthWestModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBSW"];
+            StickerColorTypes south = stickerDictionary["SBSW"];
+            StickerColorTypes west = stickerDictionary["WBSW"];
+
+            slot.Piece =  corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south || x2.StickerColorType == west) == 3);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+
+        public void SetFrontNorthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontNorthModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFN"];
+            StickerColorTypes north = stickerDictionary["NFN"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north) == 2);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+        }
+
+        public void SetFrontEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontEastModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFE"];
+            StickerColorTypes east = stickerDictionary["EFE"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == east) == 2);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+
+        public void SetFrontSouthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFS"];
+            StickerColorTypes south = stickerDictionary["SFS"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south) == 2);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+        }
+
+        public void SetFrontWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontWestModel slot)
+        {
+            StickerColorTypes front = stickerDictionary["FFW"];
+            StickerColorTypes west = stickerDictionary["WFW"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == west) == 2);
+
+            slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+        public void SetBackNorthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBN"];
+            StickerColorTypes north = stickerDictionary["NBN"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north) == 2);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+        }
+
+        public void SetBackEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackEastModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBE"];
+            StickerColorTypes east = stickerDictionary["EBE"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == east) == 2);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+
+        public void SetBackSouthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBS"];
+            StickerColorTypes south = stickerDictionary["SBS"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south) == 2);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+        }
+
+        public void SetBackWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackWestModel slot)
+        {
+            StickerColorTypes back = stickerDictionary["BBW"];
+            StickerColorTypes west = stickerDictionary["WBW"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == west) == 2);
+
+            slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+        public void SetNorthEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotNorthEastModel slot)
+        {
+            StickerColorTypes north = stickerDictionary["NNE"];
+            StickerColorTypes east = stickerDictionary["ENE"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == north || x2.StickerColorType == east) == 2);
+
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+
+        public void SetSouthEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotSouthEastModel slot)
+        {
+            StickerColorTypes south = stickerDictionary["SSE"];
+            StickerColorTypes east = stickerDictionary["ESE"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == south || x2.StickerColorType == east) == 2);
+
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
+        }
+
+        public void SetSouthWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotSouthWestModel slot)
+        {
+            StickerColorTypes south = stickerDictionary["SSW"];
+            StickerColorTypes west = stickerDictionary["WSW"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == south || x2.StickerColorType == west) == 2);
+
+            slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+        public void SetNorthWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotNorthWestModel slot)
+        {
+            StickerColorTypes north = stickerDictionary["NNW"];
+            StickerColorTypes west = stickerDictionary["WNW"];
+
+            slot.Piece =  sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == north || x2.StickerColorType == west) == 2);
+
+            slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
+            slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
+        }
+
+        public void SetCubeState(CubeModel cube, String rawCubeState)
+        {
+            Dictionary<String, StickerColorTypes> stickerDictionary = this.ParseStickers(rawCubeState);
+
+            IList<PieceCornerModelBase> corners = this.GetAllCorners(cube);
+
+            this.SetFrontNorthWestSlot(corners, stickerDictionary, cube.FrontNorthWest);
+            this.SetFrontNorthEastSlot(corners, stickerDictionary, cube.FrontNorthEast);
+            this.SetFrontSouthEastSlot(corners, stickerDictionary, cube.FrontSouthEast);
+            this.SetFrontSouthWestSlot(corners, stickerDictionary, cube.FrontSouthWest);
+
+
+            this.SetBackNorthWestSlot(corners, stickerDictionary, cube.BackNorthWest);
+            this.SetBackNorthEastSlot(corners, stickerDictionary, cube.BackNorthEast);
+            this.SetBackSouthEastSlot(corners, stickerDictionary, cube.BackSouthEast);
+            this.SetBackSouthWestSlot(corners, stickerDictionary, cube.BackSouthWest);
+
+
+            IList<PieceSideModelBase> sides = this.GetAllSides(cube);
+
+            this.SetFrontNorthSlot(sides, stickerDictionary, cube.FrontNorth);
+            this.SetFrontEastSlot(sides, stickerDictionary, cube.FrontEast);
+            this.SetFrontSouthSlot(sides, stickerDictionary, cube.FrontSouth);
+            this.SetFrontWestSlot(sides, stickerDictionary, cube.FrontWest);
+
+            this.SetBackNorthSlot(sides, stickerDictionary, cube.BackNorth);
+            this.SetBackEastSlot(sides, stickerDictionary, cube.BackEast);
+            this.SetBackSouthSlot(sides, stickerDictionary, cube.BackSouth);
+            this.SetBackWestSlot(sides, stickerDictionary, cube.BackWest);
+
+            this.SetNorthEastSlot(sides, stickerDictionary, cube.NorthEast);
+            this.SetSouthEastSlot(sides, stickerDictionary, cube.SouthEast);
+            this.SetSouthWestSlot(sides, stickerDictionary, cube.SouthWest);
+            this.SetNorthWestSlot(sides, stickerDictionary, cube.NorthWest);
+
+            this.VerifyAllPieces(cube);
         }
 
         public void RunMove(CubeModel cube, String move)
@@ -253,15 +593,6 @@ namespace RC.Logic
                 this.RunMove(cube, moves);
             }
         }
-
-        //public void GetStickerCode(StickerModelBase sticker)
-        //{
-        //    switch (sticker.StickerColorType)
-        //    {
-        //        case StickerColorTypes.Blue:
-        //            return "B"
-        //    }
-        //}
 
         public CubeModel Create()
         {

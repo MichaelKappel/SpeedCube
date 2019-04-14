@@ -24,10 +24,14 @@ namespace RC
 
             var command = Console.ReadLine().ToUpper();
 
-            
             if (command == "PRINT")
             {
                 Console.WriteLine(Logic.GetCubeState(Cube));
+            }
+            else if (command == "LOAD")
+            {
+
+                Logic.SetCubeState(Cube, "BNW:Blue|BN:White|BNE:White|NW:Blue|N:White|NE:Blue|FNW:Blue|FN:Yellow|FNE:White,FSW:Yellow|FS:Orange|FSE:Green|SW:Green|S:Yellow|SE:Green|BSW:Yellow|BS:Red|BSE:Green,FNW:Red|FN:Orange|FNE:Orange|FW:Yellow|F:Blue|FE:White|FSW:Orange|FS:Green|FSE:Red,BNW:Red|BN:Orange|BNE:Orange|BW:Red|B:Green|BE:Orange|BSW:Orange|BS:Green|BSE:Red,BNW:Yellow|NW:Yellow|FNW:White|BW:Blue|W:Red|FW:Red|BSW:Green|SW:Yellow|FSW:Blue,FNE:Green|NE:White|BNE:Blue|FE:Red|E:Orange|BE:Blue|FSE:Yellow|SE:White|BSE:White");
             }
             else
             {
