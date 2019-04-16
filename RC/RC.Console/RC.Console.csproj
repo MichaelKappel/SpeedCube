@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enumerations\PaternStickerTypes.cs" />
     <Compile Include="Enumerations\PositionCornerTypes.cs" />
     <Compile Include="Enumerations\PositionMiddleTypes.cs" />
     <Compile Include="Enumerations\PositionSideTypes.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Interfaces\IStickerNorth.cs" />
     <Compile Include="Interfaces\IStickerFront.cs" />
     <Compile Include="Interfaces\IStickerBack.cs" />
+    <Compile Include="Logic\CubePatternLogic.cs" />
     <Compile Include="Model\Base\StickerModelBase.cs" />
     <Compile Include="Enumerations\StickerColorTypes.cs" />
     <Compile Include="Logic\CubeLogic.cs" />
@@ -77,10 +79,13 @@
     <Compile Include="Model\Base\PieceSideModelBase.cs" />
     <Compile Include="Model\Base\SlotModelBase_T.cs" />
     <Compile Include="Model\Base\SlotSideModelBase.cs" />
+    <Compile Include="Model\CubePatternModel.cs" />
     <Compile Include="Model\CubeModel.cs" />
     <Compile Include="Model\Base\SlotCornerModelBase.cs" />
     <Compile Include="Model\Base\PieceCornerModelBase.cs" />
     <Compile Include="Model\Base\PieceMiddleModelBase.cs" />
+    <Compile Include="Model\Patterns\PatternModel.cs" />
+    <Compile Include="Model\Patterns\PatternResultModel.cs" />
     <Compile Include="Model\Pieces\PieceNorthWestModel.cs" />
     <Compile Include="Model\Pieces\PieceSouthWestModel.cs" />
     <Compile Include="Model\Pieces\PieceSouthEastModel.cs" />

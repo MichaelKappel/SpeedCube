@@ -11,6 +11,6 @@ namespace RC.Model
            
         }
 
-        public abstract HashSet<StickerModelBase> GetStickers();
+        public abstract StickerModelBase[] GetStickers();
     }
 }

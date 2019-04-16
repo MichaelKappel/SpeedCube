@@ -5,6 +5,8 @@ using RC.Enumerations;
 using RC.Logic;
 using RC.Model;
 using RC.Model.Slots;
+using System.Threading;
+using System.IO;
 
 namespace RC
 {
@@ -12,13 +14,22 @@ namespace RC
     {
         public static CubeModel Cube;
         public static CubeLogic Logic = new CubeLogic();
+        public static CubePatternLogic PatternLogic = new CubePatternLogic();
+        public static List<String> Combinations;
+        public static List<String> Patterns;
 
         static void Main(string[] args)
         {
             if (Cube == default(CubeModel))
             {
                 Cube = Logic.Create();
+                if (Load())
+                {
+                    Logic.SetCubeState(Cube, Combinations.Last());
+                }
             }
+
+            PatternLogic.GetSideCompleteness(Cube);
 
             OutputCube();
 
@@ -30,8 +41,19 @@ namespace RC
             }
             else if (command == "LOAD")
             {
-
                 Logic.SetCubeState(Cube, "BNW:Blue|BN:White|BNE:White|NW:Blue|N:White|NE:Blue|FNW:Blue|FN:Yellow|FNE:White,FSW:Yellow|FS:Orange|FSE:Green|SW:Green|S:Yellow|SE:Green|BSW:Yellow|BS:Red|BSE:Green,FNW:Red|FN:Orange|FNE:Orange|FW:Yellow|F:Blue|FE:White|FSW:Orange|FS:Green|FSE:Red,BNW:Red|BN:Orange|BNE:Orange|BW:Red|B:Green|BE:Orange|BSW:Orange|BS:Green|BSE:Red,BNW:Yellow|NW:Yellow|FNW:White|BW:Blue|W:Red|FW:Red|BSW:Green|SW:Yellow|FSW:Blue,FNE:Green|NE:White|BNE:Blue|FE:Red|E:Orange|BE:Blue|FSE:Yellow|SE:White|BSE:White");
+            }
+            else if (command == "SCRAMBLE")
+            {
+                Logic.Scramble(Cube, 500);
+            }
+            else if (command == "SAVEALL")
+            {
+                RunTest();
+            }
+            else if (command == "SAVEPATTERN")
+            {
+                RunTest();
             }
             else
             {
@@ -39,6 +61,75 @@ namespace RC
             }
 
             Main(null);
+        }
+        
+        public static Boolean Load()
+        {
+            try
+            {
+                Combinations = new List<String>(File.ReadAllLines("Combination.txt"));
+                Combinations.Capacity = Int32.MaxValue / 2;
+                return true;
+            }
+            catch
+            {
+                Combinations = new List<String>(Int32.MaxValue / 2);
+                return false;
+            }
+        }
+
+        public static void RunTest()
+        {
+
+            Logic.Scramble(Cube, 1);
+            String combination = Logic.GetCubeState(Cube);
+            if (!Combinations.Contains(combination))
+            {
+                Combinations.Add(combination);
+                if (Combinations.Count % 1000 == 0) {
+                    File.AppendAllLines("Combination.txt", Combinations.Skip(Combinations.Count - 1000).Take(1000));
+                    Console.WriteLine(Combinations.Count);
+                    Thread.Sleep(100);
+                }
+            }
+
+            try
+            {
+                RunTest();
+            }
+            catch 
+            {
+                Console.WriteLine("ERROR");
+                RunTest();
+            }
+        }
+
+
+        public static void FindPatterns()
+        {
+
+            //Logic.Scramble(Cube, 1);
+            //String pattern = PatternLogic.GetPattern(Cube);
+            //if (!Combinations.Contains(combination))
+            //{
+            //    Combinations.Add(combination);
+            //    if (Combinations.Count % 1000 == 0)
+            //    {
+            //        File.AppendAllLines("Combination.txt", Combinations.Skip(Combinations.Count - 1000).Take(1000));
+            //        Console.WriteLine(Combinations.Count);
+            //        Thread.Sleep(100);
+            //    }
+            //}
+
+            //try
+            //{
+            //    RunTest();
+            //}
+            //catch
+            //{
+            //    Console.WriteLine("ERROR");
+            //    RunTest();
+            //}
         }
 
         public static void OutputCube()

@@ -18,9 +18,9 @@ namespace RC.Model.Slots
         public StickerModelBase StickerBack { get; set; }
         public StickerModelBase StickerWest { get; set; }
 
-        public override HashSet<StickerModelBase> GetStickers()
+        public override StickerModelBase[] GetStickers()
         {
-            return new HashSet<StickerModelBase>() { this.StickerBack, this.StickerWest };
+            return new [] { this.StickerBack, this.StickerWest };
         }
     }
 

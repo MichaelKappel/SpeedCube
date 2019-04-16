@@ -18,7 +18,7 @@ namespace RC.Model
 
         public override string ToString()
         {
-            return StickerColorType.ToString();
+            return this.StickerColorType.ToString();
         }
     }
 }
