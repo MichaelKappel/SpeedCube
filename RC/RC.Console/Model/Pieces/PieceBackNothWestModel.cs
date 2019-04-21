@@ -1,24 +1,34 @@
 ﻿using RC.Enumerations;
 using RC.Model.Stickers;
+using System;
 
 namespace RC.Model.Pieces
 {
 
-    public class PieceBackNorthWestModel : PieceCornerModelBase
+    public class PieceBackNorthWestModel : PieceCornerModelBase       //<PieceBackNorthWestModel>
     {
-        public PieceBackNorthWestModel() : base()
+        public PieceBackNorthWestModel(XyzCubeTypes patternCubeType) : base()
         {
-            this.Stickers.Add(this.StickerBackNorthWestGreen);
+            this.StickerBack = new StickerBackModel(this.GetBackStickerColorType(patternCubeType));
+            this.StickerNorth = new StickerNorthModel(this.GetNorthStickerColorType(patternCubeType));
+            this.StickerWest = new StickerWestModel(this.GetWestStickerColorType(patternCubeType));
 
-            this.Stickers.Add(this.StickerBackNorthWestWhite);
-
-            this.Stickers.Add(this.StickerBackNorthWestRed);
+            this.Stickers.Add(this.StickerBack);
+            this.Stickers.Add(this.StickerNorth);
+            this.Stickers.Add(this.StickerWest);
         }
 
         public override PositionCornerTypes InitialCornerType { get; protected set; } = PositionCornerTypes.BackNorthWest;
 
-        public StickerBackNorthWestGreenModel StickerBackNorthWestGreen { get; private set; } = new StickerBackNorthWestGreenModel();
-        public StickerBackNorthWestWhiteModel StickerBackNorthWestWhite { get; private set; } = new StickerBackNorthWestWhiteModel();
-        public StickerBackNorthWestRedModel StickerBackNorthWestRed { get; private set; } = new StickerBackNorthWestRedModel();
+        public StickerBackModel StickerBack { get; private set; }
+        public StickerNorthModel StickerNorth { get; private set; }
+        public StickerWestModel StickerWest { get; private set; }
+
+        public override PieceCornerModelBase CopyPiece(XyzCubeTypes patternCubeType)
+        {
+            var copy = new PieceBackNorthWestModel(patternCubeType);
+
+            return copy;
+        }
     }
 }

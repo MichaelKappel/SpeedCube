@@ -1,6 +1,6 @@
 ﻿using RC.Enumerations;
 using RC.Model.Pieces;
-using RC.Model.Slots;
+using RC.Model.Slots; using RC.Model.Stickers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +36,11 @@ namespace RC.Model
             )
         {
 
-
             this.North52 = north52;
             this.North60 = north60;
-            this.North7 = north7;
+            this.North07 = north7;
             this.North15 = north15;
-            this.North0 = north0;
+            this.North00 = north0;
             this.North22 = north22;
             this.North30 = north30;
             this.North37 = north37;
@@ -49,9 +48,9 @@ namespace RC.Model
 
             this.South52 = south52;
             this.South60 = south60;
-            this.South7 = south7;
+            this.South07 = south7;
             this.South15 = south15;
-            this.South0 = south0;
+            this.South00 = south0;
             this.South22 = south22;
             this.South30 = south30;
             this.South37 = south37;
@@ -59,9 +58,9 @@ namespace RC.Model
 
             this.East52 = east52;
             this.East60 = east60;
-            this.East7 = east7;
+            this.East07 = east7;
             this.East15 = east15;
-            this.East0 = east0;
+            this.East00 = east0;
             this.East22 = east22;
             this.East30 = east30;
             this.East37 = east37;
@@ -69,9 +68,9 @@ namespace RC.Model
 
             this.West52 = west52;
             this.West60 = west60;
-            this.West7 = west7;
+            this.West07 = west7;
             this.West15 = west15;
-            this.West0 = west0;
+            this.West00 = west0;
             this.West22 = west22;
             this.West30 = west30;
             this.West37 = west37;
@@ -79,31 +78,31 @@ namespace RC.Model
 
             this.Front52 = front52;
             this.Front60 = front60;
-            this.Front7 = front7;
+            this.Front07 = front7;
             this.Front15 = front15;
-            this.Front0 = front0;
+            this.Front00 = front0;
             this.Front22 = front22;
             this.Front30 = front30;
             this.Front37 = front37;
             this.Front45 = front45;
 
-            this.Back52 = back52;
-            this.Back60 = back60;
-            this.Back7 = back7;
-            this.Back15 = back15;
-            this.Back0 = back0;
-            this.Back22 = back22;
-            this.Back30 = back30;
-            this.Back37 = back37;
-            this.Back45 = back45;
+            this.East52 = back52;
+            this.East60 = back60;
+            this.East07 = back7;
+            this.East15 = back15;
+            this.East00 = back0;
+            this.East22 = back22;
+            this.East30 = back30;
+            this.East37 = back37;
+            this.East45 = back45;
 
         }
 
         public PaternStickerTypes North52 { get; protected set; }
         public PaternStickerTypes North60 { get; protected set; }
-        public PaternStickerTypes North7 { get; protected set; }
+        public PaternStickerTypes North07 { get; protected set; }
         public PaternStickerTypes North15 { get; protected set; }
-        public PaternStickerTypes North0 { get; protected set; }
+        public PaternStickerTypes North00 { get; protected set; }
         public PaternStickerTypes North22 { get; protected set; }
         public PaternStickerTypes North30 { get; protected set; }
         public PaternStickerTypes North37 { get; protected set; }
@@ -111,9 +110,9 @@ namespace RC.Model
 
         public PaternStickerTypes South52 { get; protected set; }
         public PaternStickerTypes South60 { get; protected set; }
-        public PaternStickerTypes South7 { get; protected set; }
+        public PaternStickerTypes South07 { get; protected set; }
         public PaternStickerTypes South15 { get; protected set; }
-        public PaternStickerTypes South0 { get; protected set; }
+        public PaternStickerTypes South00 { get; protected set; }
         public PaternStickerTypes South22 { get; protected set; }
         public PaternStickerTypes South30 { get; protected set; }
         public PaternStickerTypes South37 { get; protected set; }
@@ -121,9 +120,9 @@ namespace RC.Model
 
         public PaternStickerTypes East52 { get; protected set; }
         public PaternStickerTypes East60 { get; protected set; }
-        public PaternStickerTypes East7 { get; protected set; }
+        public PaternStickerTypes East07 { get; protected set; }
         public PaternStickerTypes East15 { get; protected set; }
-        public PaternStickerTypes East0 { get; protected set; }
+        public PaternStickerTypes East00 { get; protected set; }
         public PaternStickerTypes East22 { get; protected set; }
         public PaternStickerTypes East30 { get; protected set; }
         public PaternStickerTypes East37 { get; protected set; }
@@ -131,9 +130,9 @@ namespace RC.Model
 
         public PaternStickerTypes West52 { get; protected set; }
         public PaternStickerTypes West60 { get; protected set; }
-        public PaternStickerTypes West7 { get; protected set; }
+        public PaternStickerTypes West07 { get; protected set; }
         public PaternStickerTypes West15 { get; protected set; }
-        public PaternStickerTypes West0 { get; protected set; }
+        public PaternStickerTypes West00 { get; protected set; }
         public PaternStickerTypes West22 { get; protected set; }
         public PaternStickerTypes West30 { get; protected set; }
         public PaternStickerTypes West37 { get; protected set; }
@@ -141,9 +140,9 @@ namespace RC.Model
 
         public PaternStickerTypes Front52 { get; protected set; }
         public PaternStickerTypes Front60 { get; protected set; }
-        public PaternStickerTypes Front7 { get; protected set; }
+        public PaternStickerTypes Front07 { get; protected set; }
         public PaternStickerTypes Front15 { get; protected set; }
-        public PaternStickerTypes Front0 { get; protected set; }
+        public PaternStickerTypes Front00 { get; protected set; }
         public PaternStickerTypes Front22 { get; protected set; }
         public PaternStickerTypes Front30 { get; protected set; }
         public PaternStickerTypes Front37 { get; protected set; }
@@ -151,9 +150,9 @@ namespace RC.Model
 
         public PaternStickerTypes Back52 { get; protected set; }
         public PaternStickerTypes Back60 { get; protected set; }
-        public PaternStickerTypes Back7 { get; protected set; }
+        public PaternStickerTypes Back07 { get; protected set; }
         public PaternStickerTypes Back15 { get; protected set; }
-        public PaternStickerTypes Back0 { get; protected set; }
+        public PaternStickerTypes Back00 { get; protected set; }
         public PaternStickerTypes Back22 { get; protected set; }
         public PaternStickerTypes Back30 { get; protected set; }
         public PaternStickerTypes Back37 { get; protected set; }

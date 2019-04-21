@@ -1,4 +1,5 @@
 ﻿using RC.Enumerations;
+using System.Collections.Generic;
 
 namespace RC.Model
 {
@@ -14,6 +15,9 @@ namespace RC.Model
             get;
             protected set;
         }
+
+        public HashSet<SlotCornerModelBase> AdjacentCornerSlots { get; } = new HashSet<SlotCornerModelBase>(2);
+        public HashSet<SlotMiddleModelBase> AdjacentMiddlePieces { get; } = new HashSet<SlotMiddleModelBase>(2);
 
         public override string ToString()
         {

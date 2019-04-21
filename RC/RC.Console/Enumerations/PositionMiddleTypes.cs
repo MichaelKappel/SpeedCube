@@ -2,10 +2,10 @@
 {
     public enum PositionMiddleTypes
     {
-        Front,
-        Back,
         North,
         South,
+        Front,
+        Back,
         East,
         West
     }

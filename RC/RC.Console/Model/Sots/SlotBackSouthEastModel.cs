@@ -9,16 +9,16 @@ namespace RC.Model.Slots
 
     public class SlotBackSouthEastModel : SlotCornerModelBase, IGetStickers, IStickerSouth, IStickerBack, IStickerEast
     {
-        public SlotBackSouthEastModel()
+        public SlotBackSouthEastModel() : base()
         {
 
         }
 
         public override PositionCornerTypes PositionCornerType { get; protected set; } = PositionCornerTypes.BackSouthEast;
 
-        public StickerModelBase StickerBack { get; set; }
-        public StickerModelBase StickerSouth { get; set; }
         public StickerModelBase StickerEast { get; set; }
+        public StickerModelBase StickerSouth { get; set; }
+        public StickerModelBase StickerBack { get; set; }
 
         public override StickerModelBase[] GetStickers()
         {

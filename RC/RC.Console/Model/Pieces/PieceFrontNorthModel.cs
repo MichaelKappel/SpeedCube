@@ -1,22 +1,33 @@
 ﻿using RC.Enumerations;
 using RC.Model.Stickers;
+using System;
 
 namespace RC.Model.Pieces
 {
 
-    public class PieceFrontNorthModel : PieceSideModelBase
+    public class PieceFrontNorthModel : PieceSideModelBase       //<PieceFrontNorthModel>
     {
-        public PieceFrontNorthModel() : base()
+        public PieceFrontNorthModel(XyzCubeTypes patternCubeType) : base()
         {
-            this.Stickers.Add(this.StickerFrontNorthBlue);
-            this.Stickers.Add(this.StickerFrontNorthWhite);
+            this.StickerFront = new StickerFrontModel(this.GetFrontStickerColorType(patternCubeType));
+            this.StickerNorth = new StickerNorthModel(this.GetNorthStickerColorType(patternCubeType));
+
+            this.Stickers.Add(this.StickerFront);
+            this.Stickers.Add(this.StickerNorth);
         }
 
         public override PositionSideTypes InitialSideType { get; protected set; } = PositionSideTypes.FrontNorth;
 
-        public StickerFrontNorthBlueModel StickerFrontNorthBlue { get; private set; } = new StickerFrontNorthBlueModel();
+        public  StickerFrontModel StickerFront { get; private set; }
 
-        public StickerFrontNorthWhiteModel StickerFrontNorthWhite { get; private set; } = new StickerFrontNorthWhiteModel();
+        public StickerNorthModel StickerNorth { get; private set; }
+
+        public override PieceSideModelBase CopyPiece(XyzCubeTypes patternCubeType)
+        {
+            var copy = new PieceFrontNorthModel(patternCubeType);
+
+            return copy;
+        }
     }
 
 }

@@ -8,7 +8,7 @@ namespace RC.Model.Slots
 
     public class SlotNorthWestModel : SlotSideModelBase, IGetStickers, IStickerNorth, IStickerWest
     {
-        public SlotNorthWestModel()
+        public SlotNorthWestModel() : base()
         {
 
         }

@@ -1,4 +1,5 @@
 ﻿using RC.Enumerations;
+using System.Collections.Generic;
 
 namespace RC.Model
 {
@@ -17,9 +18,12 @@ namespace RC.Model
         }
 
 
+        public HashSet<SlotSideModelBase> AdjacentSideSlots { get; } = new HashSet<SlotSideModelBase>(3);
+
         public override string ToString()
         {
             return string.Format("{0} {1}", this.PositionCornerType.ToString(), base.ToString());
         }
+
     }
 }

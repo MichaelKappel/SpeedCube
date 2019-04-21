@@ -1,26 +1,38 @@
 ﻿using RC.Enumerations;
 using RC.Model.Stickers;
+using System;
 
 namespace RC.Model.Pieces
 {
 
-    public class PieceBackNorthEastModel : PieceCornerModelBase
+    public class PieceBackNorthEastModel : PieceCornerModelBase       //<PieceBackNorthEastModel>
     {
-        public PieceBackNorthEastModel() : base()
+        public PieceBackNorthEastModel(XyzCubeTypes patternCubeType) : base()
         {
-            this.Stickers.Add(this.StickerBackNorthEastGreen);
-            this.Stickers.Add(this.StickerBackNorthEastWhite);
-            this.Stickers.Add(this.StickerBackNorthEastOrange);
+            this.StickerBack = new StickerBackModel(this.GetBackStickerColorType(patternCubeType));
+            this.StickerNorth = new StickerNorthModel(this.GetNorthStickerColorType(patternCubeType));
+            this.StickerEast = new StickerEastModel(this.GetEastStickerColorType(patternCubeType));
+
+            this.Stickers.Add(this.StickerBack);
+            this.Stickers.Add(this.StickerNorth);
+            this.Stickers.Add(this.StickerEast);
         }
 
         public override PositionCornerTypes InitialCornerType { get; protected set; } = PositionCornerTypes.BackNorthEast;
 
 
-        public StickerBackNorthEastGreenModel StickerBackNorthEastGreen { get; private set; } = new StickerBackNorthEastGreenModel();
+        public StickerBackModel StickerBack { get; private set; }
 
-        public StickerBackNorthEastWhiteModel StickerBackNorthEastWhite { get; private set; } = new StickerBackNorthEastWhiteModel();
+        public StickerNorthModel StickerNorth { get; private set; }
 
-        public StickerBackNorthEastOrangeModel StickerBackNorthEastOrange { get; private set; } = new StickerBackNorthEastOrangeModel();
+        public StickerEastModel StickerEast { get; private set; }
+
+        public override PieceCornerModelBase CopyPiece(XyzCubeTypes patternCubeType)
+        {
+            var copy = new PieceBackNorthEastModel(patternCubeType);
+
+            return copy;
+        }
     }
 
 }

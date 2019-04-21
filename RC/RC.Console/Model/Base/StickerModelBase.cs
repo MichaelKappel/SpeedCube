@@ -5,9 +5,10 @@ namespace RC.Model
 {
     public abstract class StickerModelBase 
     {
-        public StickerModelBase(StickerColorTypes stickerColorType) 
+        public StickerModelBase(StickerColorTypes stickerColorType, PositionMiddleTypes positionMiddleType) 
         {
             this.StickerColorType = stickerColorType;
+            this.PositionMiddleType = positionMiddleType;
         }
 
         public StickerColorTypes StickerColorType
@@ -16,7 +17,14 @@ namespace RC.Model
             protected set;
         }
 
-        public override string ToString()
+        public PositionMiddleTypes PositionMiddleType
+        {
+            get;
+            set;
+        }
+
+
+    public override string ToString()
         {
             return this.StickerColorType.ToString();
         }

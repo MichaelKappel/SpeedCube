@@ -1,4 +1,5 @@
 ﻿using RC.Enumerations;
+using RC.Interfaces;
 using System;
 using System.Linq;
 
@@ -8,7 +9,10 @@ namespace RC.Model
     {
         public PieceSideModelBase(): base()
         {
+
         }
+
+        public abstract PieceSideModelBase CopyPiece(XyzCubeTypes patternCubeType);
 
         public abstract PositionSideTypes InitialSideType
         {
@@ -20,5 +24,6 @@ namespace RC.Model
         {
             return string.Format("{0} {1}", this.InitialSideType.ToString(), base.ToString());
         }
+
     }
 }

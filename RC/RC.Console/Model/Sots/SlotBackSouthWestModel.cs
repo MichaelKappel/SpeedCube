@@ -6,9 +6,9 @@ using RC.Model;
 namespace RC.Model.Slots
 {
 
-    public class SlotBackSouthWestModel : SlotCornerModelBase, IGetStickers, IStickerSouth, IStickerBack, IStickerWest
+    public class SlotBackSouthWestModel : SlotCornerModelBase, IGetStickers, IStickerBack, IStickerSouth, IStickerWest
     {
-        public SlotBackSouthWestModel()
+        public SlotBackSouthWestModel() : base()
         {
 
         }

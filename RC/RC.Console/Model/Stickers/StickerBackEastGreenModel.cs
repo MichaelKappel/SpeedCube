@@ -8,7 +8,7 @@ namespace RC.Model.Stickers
     {
         public StickerBackEastGreenModel() : base()
         {
-
+            
         }
     }
 

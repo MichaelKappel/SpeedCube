@@ -1,24 +1,36 @@
 ﻿using RC.Enumerations;
 using RC.Model.Stickers;
+using System;
 
 namespace RC.Model.Pieces
 {
 
-    public class PieceFrontSouthEastModel : PieceCornerModelBase
+    public class PieceFrontSouthEastModel : PieceCornerModelBase       //<PieceFrontSouthEastModel>
     {
-        public PieceFrontSouthEastModel() : base()
+        public PieceFrontSouthEastModel(XyzCubeTypes patternCubeType) : base()
         {
-            this.Stickers.Add(this.StickerFrontSouthEastBlue);
-            this.Stickers.Add(this.StickerFrontSouthEastYellow);
-            this.Stickers.Add(this.StickerFrontSouthEastOrange);
+            this.StickerFront = new StickerFrontModel(this.GetFrontStickerColorType(patternCubeType));
+            this.StickerSouth = new StickerSouthModel(this.GetSouthStickerColorType(patternCubeType));
+            this.StickerEast = new StickerEastModel(this.GetEastStickerColorType(patternCubeType));
+
+            this.Stickers.Add(this.StickerFront);
+            this.Stickers.Add(this.StickerSouth);
+            this.Stickers.Add(this.StickerEast);
         }
 
         public override PositionCornerTypes InitialCornerType { get; protected set; } = PositionCornerTypes.FrontSouthEast;
 
-        public StickerFrontSouthEastBlueModel StickerFrontSouthEastBlue { get; private set; } = new StickerFrontSouthEastBlueModel();
+        public StickerFrontModel StickerFront { get; private set; }
 
-        public StickerFrontSouthEastYellowModel StickerFrontSouthEastYellow { get; private set; } = new StickerFrontSouthEastYellowModel();
+        public StickerSouthModel StickerSouth { get; private set; }
 
-        public StickerFrontSouthEastOrangeModel StickerFrontSouthEastOrange { get; private set; } = new StickerFrontSouthEastOrangeModel();
+        public StickerEastModel StickerEast { get; private set; }
+
+        public override PieceCornerModelBase CopyPiece(XyzCubeTypes patternCubeType)
+        {
+            var copy = new PieceFrontSouthEastModel(patternCubeType);
+
+            return copy;
+        }
     }
 }
