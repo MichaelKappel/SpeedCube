@@ -9,8 +9,10 @@ namespace RC.Model
 {
     public class CubeModel
     {
-        public CubeModel()
+        public CubeModel(XyzCubeTypes xyzCubeType)
         {
+            this.XyzCubeType = xyzCubeType;
+
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontNorth);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.NorthWest);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontWest);
@@ -127,6 +129,8 @@ namespace RC.Model
             this.Back.AdjacentSideSlots.Add(this.BackSouth);
             this.Back.AdjacentSideSlots.Add(this.BackWest);
         }
+
+        public XyzCubeTypes XyzCubeType { get; private set; }
 
         //Middles
         public SlotNorthModel North { get; } = new SlotNorthModel();

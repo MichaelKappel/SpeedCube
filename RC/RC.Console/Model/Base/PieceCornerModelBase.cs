@@ -19,7 +19,6 @@ namespace RC.Model
             protected set;
         }
 
-
         public override string ToString()
         {
             return string.Format("{0} {1}", this.InitialCornerType.ToString(), base.ToString());

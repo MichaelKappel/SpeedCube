@@ -15,32 +15,42 @@ namespace RC
     {
         public static CubeModel[] Cubes;
         public static CubeLogic Logic = new CubeLogic();
-        //public static CubePatternLogic PatternLogic = new CubePatternLogic();
+        public static CubePatternLogic PatternLogic = new CubePatternLogic();
         public static List<String> Combinations;
-        //public static List<String> Patterns;
+        public static List<String> Patterns;
 
         static void Main(string[] args)
         {
             if (Cubes == default(CubeModel[]))
             {
                 Cubes = Logic.CreateAllVariations();
-                //if (Load())
-                //{
-                //    Logic.SetCubeState(Cube, Combinations.Last());
-                //}
+                Load();
+
+                    //Logic.SetCubeState(Cube, Combinations.Last());
+                
             }
 
             //PatternLogic.GetSideCompleteness(Cube);
 
             OutputCubes();
-
+            foreach (CubeModel cube in Cubes)
+            {
+                foreach (var completeness in PatternLogic.GetSideCompleteness(cube))
+                {
+                    Console.Write("\n");
+                    Console.Write(completeness.Key);
+                    Console.Write("\nFace:" + completeness.Value.PatternFaceResult.Pattern);
+                    Console.Write("\nCorner:" + completeness.Value.PatternAdjacentResult.Pattern);
+                    Console.Write("\n");
+                }
+            }
             var command = Console.ReadLine().ToUpper();
 
             if (command == "PRINT")
             {
                 foreach (CubeModel cube in Cubes)
                 {
-                    Console.WriteLine(Logic.GetCubeState(cube));
+                    Console.WriteLine(Logic.GetCubePattern(cube));
                 }
             }
 
@@ -56,10 +66,10 @@ namespace RC
             //{
             //    RunTest();
             //}
-            //else if (command == "SAVEPATTERN")
-            //{
-            //    RunTest();
-            //}
+            else if (command == "SAVEPATTERN")
+            {
+                RunTest();
+            }
             else
             {
                 Logic.RunMoves(Cubes, command);
@@ -68,18 +78,27 @@ namespace RC
             Main(null);
         }
 
-        public static Boolean Load()
+        public static void Load()
         {
             try
             {
-                Combinations = new List<String>(File.ReadAllLines("Combination.txt"));
-                Combinations.Capacity = Int32.MaxValue / 2;
-                return true;
+                Combinations = new List<String>(File.ReadAllLines("Combinations.txt"));
+                //Combinations.Capacity = Int32.MaxValue / 2;
             }
-            catch
+            catch (Exception ex)
             {
                 Combinations = new List<String>(Int32.MaxValue / 2);
-                return false;
+            }
+
+
+            try
+            {
+                Patterns = new List<String>(File.ReadAllLines("Patterns.txt"));
+                //Patterns.Capacity = Int32.MaxValue / 2;
+            }
+            catch (Exception ex)
+            {
+                Patterns = new List<String>(Int32.MaxValue / 2);
             }
         }
 
@@ -109,6 +128,47 @@ namespace RC
         //        RunTest();
         //    }
         //}
+
+        public static void RunTest()
+        {
+            Logic.Scramble(Cubes, 1);
+            foreach (CubeModel cube in Cubes)
+            {
+                String state = Logic.GetCubeState(cube);
+                if (!Combinations.Contains(state))
+                {
+                    Combinations.Add(state);
+                    if (Combinations.Count % 1000 == 0)
+                    {
+                        File.AppendAllLines("Combinations.txt", Combinations.Skip(Combinations.Count - 1000).Take(1000));
+                        Console.WriteLine(Combinations.Count);
+                        Thread.Sleep(100);
+                    }
+                }
+
+                String pattern = Logic.GetCubePattern(cube);
+                if (!Patterns.Contains(pattern))
+                {
+                    Patterns.Add(pattern);
+                    if (Patterns.Count % 1000 == 0)
+                    {
+                        File.AppendAllLines("Patterns.txt", Patterns.Skip(Patterns.Count - 1000).Take(1000));
+                        Console.WriteLine(Patterns.Count);
+                        Thread.Sleep(100);
+                    }
+                }
+            }
+
+            try
+            {
+                RunTest();
+            }
+            catch
+            {
+                Console.WriteLine("ERROR");
+                RunTest();
+            }
+        }
 
 
         public static void FindPatterns()
