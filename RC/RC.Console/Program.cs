@@ -18,6 +18,12 @@ namespace RC
         public static CubePatternLogic PatternLogic = new CubePatternLogic();
         public static List<String> Combinations;
         public static List<String> Patterns;
+        public static List<String> FacePatterns;
+        public static List<String> CubePatterns;
+        public static List<String> UniqueFacePatterns;
+        public static List<String> UniqueCubePatterns;
+
+        public static Int32 Count = 0;
 
         static void Main(string[] args)
         {
@@ -100,6 +106,49 @@ namespace RC
             {
                 Patterns = new List<String>(Int32.MaxValue / 2);
             }
+
+            try
+            {
+                CubePatterns = new List<String>(File.ReadAllLines("CubePatterns.txt"));
+                //Patterns.Capacity = Int32.MaxValue / 2;
+            }
+            catch (Exception ex)
+            {
+                CubePatterns = new List<String>(Int32.MaxValue / 2);
+            }
+
+            try
+            {
+                UniqueCubePatterns = new List<String>(File.ReadAllLines("UniqueCubePatterns.txt"));
+                //Patterns.Capacity = Int32.MaxValue / 2;
+            }
+            catch (Exception ex)
+            {
+                UniqueCubePatterns = new List<String>(Int32.MaxValue / 2);
+            }
+
+            try
+            {
+                FacePatterns = new List<String>(File.ReadAllLines("FacePatterns.txt"));
+                //Patterns.Capacity = Int32.MaxValue / 2;
+            }
+            catch (Exception ex)
+            {
+                FacePatterns = new List<String>(Int32.MaxValue / 2);
+            }
+
+            try
+            {
+                UniqueFacePatterns = new List<String>(File.ReadAllLines("UniqueFacePatterns.txt"));
+                //Patterns.Capacity = Int32.MaxValue / 2;
+            }
+            catch (Exception ex)
+            {
+                UniqueFacePatterns = new List<String>(Int32.MaxValue / 2);
+            }
+
+
+            
         }
 
         //public static void RunTest()
@@ -134,27 +183,93 @@ namespace RC
             Logic.Scramble(Cubes, 1);
             foreach (CubeModel cube in Cubes)
             {
-                String state = Logic.GetCubeState(cube);
-                if (!Combinations.Contains(state))
+
+                Console.WriteLine(Count++);
+                //String state = Logic.GetCubeState(cube);
+                //if (!Combinations.Contains(state))
+                //{
+                //    Combinations.Add(state);
+                //    if (Combinations.Count % 1000 == 0)
+                //    {
+                //        File.AppendAllLines("Combinations.txt", Combinations.Skip(Combinations.Count - 1000).Take(1000));
+                //        Console.WriteLine("Combinations:" + Combinations.Count);
+                //        Thread.Sleep(100);
+                //    }
+                //}
+
+                //String pattern = Logic.GetCubePattern(cube);
+                //if (!Patterns.Contains(pattern))
+                //{
+                //    Patterns.Add(pattern);
+                //    if (Patterns.Count % 1000 == 0)
+                //    {
+                //        File.AppendAllLines("Patterns.txt", Patterns.Skip(Patterns.Count - 1000).Take(1000));
+                //        Console.WriteLine("Patterns:" + Patterns.Count);
+                //        Thread.Sleep(100);
+                //    }
+                //}
+
+
+
+                String cubePattern = Logic.GetCubePattern(cube);
+                if (!CubePatterns.Contains(cubePattern))
                 {
-                    Combinations.Add(state);
-                    if (Combinations.Count % 1000 == 0)
+                    CubePatterns.Add(cubePattern);
+                    if (CubePatterns.Count % 100 == 0)
                     {
-                        File.AppendAllLines("Combinations.txt", Combinations.Skip(Combinations.Count - 1000).Take(1000));
-                        Console.WriteLine(Combinations.Count);
+                        File.AppendAllLines("CubePatterns.txt", CubePatterns.Skip(CubePatterns.Count - 100).Take(100));
+                        Console.WriteLine("CubePatterns:" + CubePatterns.Count);
                         Thread.Sleep(100);
                     }
                 }
 
-                String pattern = Logic.GetCubePattern(cube);
-                if (!Patterns.Contains(pattern))
+                String[] cubePatternsVariations = Logic.GetAllCubePatterns(cubePattern);
+                String[] cubePatternsVariationsFound = UniqueCubePatterns.Where(x => cubePatternsVariations.Contains(x)).ToArray();
+                if (cubePatternsVariationsFound.Length == 0)
                 {
-                    Patterns.Add(pattern);
-                    if (Patterns.Count % 1000 == 0)
+                    UniqueCubePatterns.Add(cubePattern);
+
+                    File.AppendAllText("UniqueCubePatterns.txt", "\n" + cubePattern);
+                    File.AppendAllText("UniqueCubePatternDetails.txt", "\n" + $"{UniqueCubePatterns.Count} {cubePatternsVariations.Count()} " + String.Join(",", cubePatternsVariations));
+
+                    Console.WriteLine("UniqueCubePatterns:" + UniqueCubePatterns.Count);
+                    Thread.Sleep(10);
+                }
+                else
+                {
+
+                }
+
+                String[] facePatterns = Logic.GetCubeFacePatterns(cube);
+                foreach (string facePattern in facePatterns)
+                {
+                    if (!FacePatterns.Contains(facePattern))
                     {
-                        File.AppendAllLines("Patterns.txt", Patterns.Skip(Patterns.Count - 1000).Take(1000));
-                        Console.WriteLine(Patterns.Count);
-                        Thread.Sleep(100);
+                        FacePatterns.Add(facePattern);
+                        if (FacePatterns.Count % 100 == 0)
+                        {
+                            File.AppendAllLines("FacePatterns.txt", FacePatterns.Skip(FacePatterns.Count - 100).Take(100));
+                            Console.WriteLine("FacePatterns:" + FacePatterns.Count);
+                            Thread.Sleep(100);
+                        }
+                    }
+                    if (facePattern.ToCharArray()[4] == 'A') {
+                        String[] facePatternsVariations = Logic.GetAllFacePatterns(facePattern);
+                        String[] facePatternsVariationsFound = UniqueFacePatterns.Where(x => facePatternsVariations.Contains(x)).ToArray();
+                        if (facePatternsVariationsFound.Length == 0)
+                        {
+                            UniqueFacePatterns.Add(facePattern);
+
+                            File.AppendAllText("UniqueFacePatterns.txt", "\n" + facePattern);
+                            File.AppendAllText("UniqueFacePatternDetails.txt", "\n" + $"{UniqueFacePatterns.Count} {facePatternsVariations.Count()} " + String.Join(",", facePatternsVariations));
+
+                            Console.WriteLine("UniqueFacePatterns:" + UniqueFacePatterns.Count);
+                            Thread.Sleep(10);
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
             }
@@ -202,7 +317,22 @@ namespace RC
             foreach (CubeModel cube in Cubes)
             {
                 Console.Write("\n\n************************************************\n\n");
-                OutputCube(cube);
+
+                String[] cubePatternsVariations = Logic.GetAllCubePatterns(Logic.GetCubePattern(cube));
+                foreach (String cubePatternsVariation in cubePatternsVariations)
+                {
+                    var tempCube = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+                    String pattern = Logic.GetCube(cubePatternsVariation);
+                    try
+                    {
+                        Logic.SetCubeState(tempCube, pattern);
+                        OutputCube(tempCube);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write($"\n        ERROR INVALID PATTERN: { pattern } \n");
+                    }
+                }
             }
         }
 
