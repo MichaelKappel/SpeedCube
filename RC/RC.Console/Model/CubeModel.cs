@@ -1,9 +1,7 @@
 ﻿using RC.Enumerations;
-using RC.Model.Pieces;
 using RC.Model.Slots;
 using RC.Model.Sots;
-using RC.Model.Stickers;
-using System.Linq;
+using RC.Extensions;
 
 namespace RC.Model
 {
@@ -11,8 +9,6 @@ namespace RC.Model
     {
         public CubeModel(XyzCubeTypes xyzCubeType)
         {
-            this.XyzCubeType = xyzCubeType;
-
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontNorth);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.NorthWest);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontWest);
@@ -26,24 +22,24 @@ namespace RC.Model
             this.FrontNorthEast.AdjacentSideSlots.Add(this.NorthEast);
             this.FrontNorthEast.AdjacentSideSlots.Add(this.FrontEast);
 
-            this.NorthEast.AdjacentCornerSlots.Add(this.BackNorthWest);
+            this.NorthEast.AdjacentCornerSlots.Add(this.FrontNorthEast);
             this.NorthEast.AdjacentCornerSlots.Add(this.BackNorthEast);
             this.NorthEast.AdjacentMiddlePieces.Add(this.North);
             this.NorthEast.AdjacentMiddlePieces.Add(this.East);
 
 
-            this.BackNorthEast.AdjacentSideSlots.Add(this.FrontNorth);
             this.BackNorthEast.AdjacentSideSlots.Add(this.BackNorth);
-            this.BackNorthEast.AdjacentSideSlots.Add(this.FrontEast);
+            this.BackNorthEast.AdjacentSideSlots.Add(this.NorthEast);
+            this.BackNorthEast.AdjacentSideSlots.Add(this.BackEast);
 
             this.BackNorth.AdjacentCornerSlots.Add(this.BackNorthEast);
             this.BackNorth.AdjacentCornerSlots.Add(this.BackNorthWest);
             this.BackNorth.AdjacentMiddlePieces.Add(this.Back);
             this.BackNorth.AdjacentMiddlePieces.Add(this.North);
 
-            this.BackNorthWest.AdjacentSideSlots.Add(this.FrontNorth);
             this.BackNorthWest.AdjacentSideSlots.Add(this.BackNorth);
-            this.BackNorthWest.AdjacentSideSlots.Add(this.FrontEast);
+            this.BackNorthWest.AdjacentSideSlots.Add(this.NorthWest);
+            this.BackNorthWest.AdjacentSideSlots.Add(this.BackWest);
 
 
 
@@ -130,8 +126,6 @@ namespace RC.Model
             this.Back.AdjacentSideSlots.Add(this.BackWest);
         }
 
-        public XyzCubeTypes XyzCubeType { get; private set; }
-
         //Middles
         public SlotNorthModel North { get; } = new SlotNorthModel();
         public SlotSouthModel South { get; } = new SlotSouthModel();
@@ -167,6 +161,9 @@ namespace RC.Model
         public SlotBackNorthWestModel BackNorthWest { get; } = new SlotBackNorthWestModel();
 
 
-
+        public override string ToString()
+        {
+            return this.GetPattern();
+        }
     }
 }

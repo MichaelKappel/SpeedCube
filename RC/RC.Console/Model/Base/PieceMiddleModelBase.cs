@@ -7,6 +7,7 @@ using RC.Enumerations;
 using RC.Interfaces;
 using RC.Model;
 using RC.Model.Pieces;
+using RC.Model.Sots;
 
 namespace RC.Model
 {

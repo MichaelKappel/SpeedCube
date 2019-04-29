@@ -16,5 +16,6 @@ namespace RC.Model.Sots
         {
             return new[] { this.StickerNorth };
         }
+
     }
 }

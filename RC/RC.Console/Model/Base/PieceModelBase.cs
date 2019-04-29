@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RC.Enumerations;
 using RC.Interfaces;
 
@@ -14,7 +15,31 @@ namespace RC.Model
 
         public HashSet<StickerModelBase> Stickers { get; private set; } = new HashSet<StickerModelBase>();
 
-
+        //public StickerModelBase GetNorthSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetNorthStickerColorType(patternCubeType));
+        //}
+        //public StickerModelBase GetSouthSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetSouthStickerColorType(patternCubeType));
+        //}
+        //public StickerModelBase GetEastSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetEastStickerColorType(patternCubeType));
+        //}
+        //public StickerModelBase GetWestSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetWestStickerColorType(patternCubeType));
+        //}
+        //public StickerModelBase GetFrontSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetFrontStickerColorType(patternCubeType));
+        //}
+        //public StickerModelBase GetBackSticker(XyzCubeTypes patternCubeType)
+        //{
+        //    return this.Stickers.Single(x => x.StickerColorType == this.GetBackStickerColorType(patternCubeType));
+        //}
+     
         public StickerColorTypes GetNorthStickerColorType(XyzCubeTypes patternCubeType)
         {
             StickerColorTypes result;
@@ -533,19 +558,19 @@ namespace RC.Model
             }
             else if (patternCubeType == XyzCubeTypes.YellowBlueRed)
             {
-                result = StickerColorTypes.Yellow;
+                result = StickerColorTypes.White;
             }
             else if (patternCubeType == XyzCubeTypes.YellowGreenOrange)
             {
-                result = StickerColorTypes.Yellow;
+                result = StickerColorTypes.White;
             }
             else if (patternCubeType == XyzCubeTypes.YellowOrangeBlue)
             {
-                result = StickerColorTypes.Yellow;
+                result = StickerColorTypes.White;
             }
             else if (patternCubeType == XyzCubeTypes.YellowRedGreen)
             {
-                result = StickerColorTypes.Yellow;
+                result = StickerColorTypes.White;
             }
             else
             {

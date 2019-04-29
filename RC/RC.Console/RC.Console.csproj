@@ -68,6 +68,7 @@
     <Compile Include="Enumerations\PositionMiddleTypes.cs" />
     <Compile Include="Enumerations\PositionSideTypes.cs" />
     <Compile Include="Enumerations\RotationTypes.cs" />
+    <Compile Include="Extensions\CubePatternExtensions.cs" />
     <Compile Include="Interfaces\ICopySidePieceModel.cs" />
     <Compile Include="Interfaces\ICopyCornerPieceModel.cs" />
     <Compile Include="Interfaces\IGetStickers.cs" />
@@ -77,7 +78,11 @@
     <Compile Include="Interfaces\IStickerNorth.cs" />
     <Compile Include="Interfaces\IStickerSouth.cs" />
     <Compile Include="Interfaces\IStickerWest.cs" />
+    <Compile Include="Logic\CubeFacePatternLogic.cs" />
     <Compile Include="Logic\CubePatternLogic.cs" />
+    <Compile Include="Logic\LogicBase.cs" />
+    <Compile Include="Logic\PatternLogicBase.cs" />
+    <Compile Include="Logic\PatternRecognitionLogic.cs" />
     <Compile Include="Model\Base\SlotMiddleModelBase.cs" />
     <Compile Include="Model\Stickers\StickerFrontModel.cs" />
     <Compile Include="Model\Stickers\StickerBackModel.cs" />

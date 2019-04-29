@@ -1,0 +1,7 @@
+D:\git\SpeedCube\RC\RC.Console\bin\Release\RC.exe.config
+D:\git\SpeedCube\RC\RC.Console\bin\Release\RC.exe
+D:\git\SpeedCube\RC\RC.Console\bin\Release\RC.pdb
+D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.Console.csprojAssemblyReference.cache
+D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.Console.csproj.CoreCompileInputs.cache
+D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.exe
+D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.pdb
