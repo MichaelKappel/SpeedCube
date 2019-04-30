@@ -441,14 +441,6 @@ namespace RC
         {
             Console.WriteLine("\n\n**************** START ****************\n\n");
             {
-                foreach (var item in FindPatterns(Cube))
-                {
-                    Console.WriteLine(item);
-                }
-
-                Thread.Sleep(2000);
-            }
-            {
                 var cubeResults = new Dictionary<String, (Int32, Int32)>();
                 var faceResults = new Dictionary<String, (Int32, Int32)>();
                 String initalPattern = PatternLogic.GetCubePattern(Cube);
@@ -456,7 +448,7 @@ namespace RC
                 UpdateFaceCount(faceResults, initalPattern);
                 {
                     var cubesPatterns = new List<String>();
-                    for (var i = 0; i < 100; i++)
+                    for (var i = 0; i < 500; i++)
                     {
                         cubesPatterns.Add(Scamble(Cube));
                     }
