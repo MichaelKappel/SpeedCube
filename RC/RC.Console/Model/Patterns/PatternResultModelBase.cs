@@ -15,5 +15,10 @@ namespace RC.Model.Patterns
         public Int32 Middles { get; set; }
 
         public T Pattern { get; set; }
+
+        public override string ToString()
+        {
+            return this.Pattern.ToString();
+        }
     }
 }

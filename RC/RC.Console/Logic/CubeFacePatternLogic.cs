@@ -11,6 +11,22 @@ namespace RC.Logic
     {
 
 
+        public String Visualize(String pattern)
+        {
+
+            var s = pattern.ToCharArray();
+
+
+            String result = $@" 
+                    [0:{s[0]}|1:{s[1]}|2:{s[2]}]
+                    [3:{s[3]}|4:{s[4]}|5:{s[5]}]
+                    [6:{s[6]}|7:{s[7]}|8:{s[8]}]
+";
+
+            return result;
+
+        }
+
         public string[] GetCubeFacePatterns(CubeModel cube)
         {
             String north = $"{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackNorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackNorth.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackNorthEast.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.NorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.North.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.NorthEast.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontNorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontNorth.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontNorthEast.StickerNorth.StickerColorType)}";
@@ -21,6 +37,41 @@ namespace RC.Logic
             String east = $"{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontNorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.NorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackNorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.East.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.FrontSouthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.SouthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(GetXyzCubeType(cube), cube.BackSouthEast.StickerEast.StickerColorType)}";
 
             return new string[] { north, south, front, back, west, east };
+        }
+
+        public string[] GetCubeFacePatterns(String cubePattern)
+        {
+                //Debug.WriteLine("GetCubePatternNorthBackToFront");
+
+                var originalStickers = cubePattern.ToCharArray();
+
+                var north = $"{originalStickers[0]}{originalStickers[1]}{originalStickers[2]}";
+                north += $"{originalStickers[3]}{originalStickers[4]}{originalStickers[5]}";
+                north += $"{originalStickers[6]}{originalStickers[7]}{originalStickers[8]}";
+
+                var south = $"{originalStickers[9]}{originalStickers[10]}{originalStickers[11]}";
+                south += $"{originalStickers[12]}{originalStickers[13]}{originalStickers[14]}";
+                south += $"{originalStickers[15]}{originalStickers[16]}{originalStickers[17]}";
+
+                var front = $"{originalStickers[18]}{originalStickers[19]}{originalStickers[20]}";
+                front += $"{originalStickers[21]}{originalStickers[22]}{originalStickers[23]}";
+                front += $"{originalStickers[24]}{originalStickers[25]}{originalStickers[26]}";
+
+                var back = $"{originalStickers[27]}{originalStickers[28]}{originalStickers[29]}";
+                back += $"{originalStickers[30]}{originalStickers[31]}{originalStickers[32]}";
+                back += $"{originalStickers[33]}{originalStickers[34]}{originalStickers[35]}";
+
+                var west = $"{originalStickers[36]}{originalStickers[37]}{originalStickers[38]}";
+                west += $"{originalStickers[39]}{originalStickers[40]}{originalStickers[41]}";
+                west += $"{originalStickers[42]}{originalStickers[43]}{originalStickers[44]}";
+
+                var east = $"{originalStickers[45]}{originalStickers[46]}{originalStickers[47]}";
+                east += $"{originalStickers[48]}{originalStickers[49]}{originalStickers[50]}";
+                east += $"{originalStickers[51]}{originalStickers[52]}{originalStickers[53]}";
+
+            
+
+                return new String[] {north,south,front,back,west,east};
         }
 
         public String[] GetAllFacePatterns(String original)

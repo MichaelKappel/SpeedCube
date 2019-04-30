@@ -9,6 +9,9 @@ namespace RC.Model.Patterns
 {
     public class PatternFaceResultModel: PatternResultModelBase<PatternFaceTypes>
     {
-
+        public override string ToString()
+        {
+            return this.Pattern.ToString();
+        }
     }
 }

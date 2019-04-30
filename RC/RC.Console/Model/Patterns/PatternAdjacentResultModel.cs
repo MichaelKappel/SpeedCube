@@ -9,6 +9,9 @@ namespace RC.Model.Patterns
 {
     public class PatternAdjacentResultModel: PatternResultModelBase<PatternAdjacentTypes>
     {
-
+        public override string ToString()
+        {
+            return this.Pattern.ToString();
+        }
     }
 }

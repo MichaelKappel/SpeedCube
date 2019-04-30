@@ -1086,71 +1086,58 @@ namespace RC.Logic
         {
             var result = new List<CubeModel>();
 
-            try
-            {
-                result.Add(this.Create(XyzCubeTypes.BlueOrangeWhite));
+            result.Add(this.Create(XyzCubeTypes.BlueOrangeWhite));
 
-                result.Add(this.Create(XyzCubeTypes.BlueRedYellow));
+            result.Add(this.Create(XyzCubeTypes.BlueRedYellow));
 
-                result.Add(this.Create(XyzCubeTypes.BlueWhiteRed));
+            result.Add(this.Create(XyzCubeTypes.BlueWhiteRed));
 
-                result.Add(this.Create(XyzCubeTypes.BlueYellowOrange));
+            result.Add(this.Create(XyzCubeTypes.BlueYellowOrange));
 
 
-                result.Add(this.Create(XyzCubeTypes.GreenOrangeYellow));
+            result.Add(this.Create(XyzCubeTypes.GreenOrangeYellow));
 
-                result.Add(this.Create(XyzCubeTypes.GreenRedWhite));
+            result.Add(this.Create(XyzCubeTypes.GreenRedWhite));
 
-                result.Add(this.Create(XyzCubeTypes.GreenWhiteOrange));
+            result.Add(this.Create(XyzCubeTypes.GreenWhiteOrange));
 
-                result.Add(this.Create(XyzCubeTypes.GreenYellowRed));
-
-
-                result.Add(this.Create(XyzCubeTypes.OrangeBlueYellow));
-
-                result.Add(this.Create(XyzCubeTypes.OrangeGreenWhite));
-
-                result.Add(this.Create(XyzCubeTypes.OrangeWhiteBlue));
-
-                result.Add(this.Create(XyzCubeTypes.OrangeYellowGreen));
+            result.Add(this.Create(XyzCubeTypes.GreenYellowRed));
 
 
-                result.Add(this.Create(XyzCubeTypes.RedBlueWhite));
+            result.Add(this.Create(XyzCubeTypes.OrangeBlueYellow));
 
-                result.Add(this.Create(XyzCubeTypes.RedGreenYellow));
+            result.Add(this.Create(XyzCubeTypes.OrangeGreenWhite));
 
-                result.Add(this.Create(XyzCubeTypes.RedWhiteGreen));
+            result.Add(this.Create(XyzCubeTypes.OrangeWhiteBlue));
 
-                result.Add(this.Create(XyzCubeTypes.RedYellowBlue));
+            result.Add(this.Create(XyzCubeTypes.OrangeYellowGreen));
 
 
-                result.Add(this.Create(XyzCubeTypes.WhiteBlueOrange));
+            result.Add(this.Create(XyzCubeTypes.RedBlueWhite));
 
-                result.Add(this.Create(XyzCubeTypes.WhiteGreenRed));
+            result.Add(this.Create(XyzCubeTypes.RedGreenYellow));
 
-                result.Add(this.Create(XyzCubeTypes.WhiteOrangeGreen));
+            result.Add(this.Create(XyzCubeTypes.RedWhiteGreen));
 
-                result.Add(this.Create(XyzCubeTypes.WhiteRedBlue));
+            result.Add(this.Create(XyzCubeTypes.RedYellowBlue));
 
-                result.Add(this.Create(XyzCubeTypes.YellowBlueRed));
 
-                result.Add(this.Create(XyzCubeTypes.YellowGreenOrange));
+            result.Add(this.Create(XyzCubeTypes.WhiteBlueOrange));
 
-                result.Add(this.Create(XyzCubeTypes.YellowOrangeBlue));
-            }
-            catch
-            {
+            result.Add(this.Create(XyzCubeTypes.WhiteGreenRed));
 
-            }
-            try
-            {
-                result.Add(this.Create(XyzCubeTypes.YellowRedGreen));
-            }
-            catch
-            {
+            result.Add(this.Create(XyzCubeTypes.WhiteOrangeGreen));
 
-            }
+            result.Add(this.Create(XyzCubeTypes.WhiteRedBlue));
 
+            result.Add(this.Create(XyzCubeTypes.YellowBlueRed));
+
+            result.Add(this.Create(XyzCubeTypes.YellowGreenOrange));
+
+            result.Add(this.Create(XyzCubeTypes.YellowOrangeBlue));
+
+            result.Add(this.Create(XyzCubeTypes.YellowRedGreen));
+           
             return result.ToArray();
         }
 

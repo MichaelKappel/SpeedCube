@@ -59,8 +59,8 @@ namespace RC.Logic
 
         public PatternFaceResultModel GetFaceCompleteness(StickerColorTypes colorToCheck,
             StickerColorTypes t52, StickerColorTypes t60, StickerColorTypes t07,
-            StickerColorTypes t15, StickerColorTypes t00, StickerColorTypes t22,
-            StickerColorTypes t30, StickerColorTypes t37, StickerColorTypes t45)
+            StickerColorTypes t45, StickerColorTypes t00, StickerColorTypes t15,
+            StickerColorTypes t37, StickerColorTypes t30, StickerColorTypes t22, Int32 tryCount = 0)
         {
             var result = new PatternFaceResultModel();
             if (t52 == colorToCheck)
@@ -249,9 +249,50 @@ namespace RC.Logic
                     }
                 }
             }
-
-
-            return result;
+            tryCount += 1;
+            if (result.Stickers > 0 && result.Pattern == PatternFaceTypes.None)
+            {
+                if (tryCount <= 4 || tryCount % 2 == 0)
+                {
+                    //Rotate Clockwise
+                    return this.GetFaceCompleteness(colorToCheck,
+                            t37, t45, t52,
+                            t30, t00, t60,
+                            t22, t15, t07, tryCount);
+                }
+                else if (tryCount <= 12)
+                {
+                    //Mirror: Top To Bottom
+                    return this.GetFaceCompleteness(colorToCheck,
+                             t37, t30, t22,
+                             t45, t00, t15,
+                             t52, t60, t07, tryCount);
+                }
+                else if (tryCount <= 20)
+                {
+                    //Mirror: Right To Left
+                    return this.GetFaceCompleteness(colorToCheck,
+                            t07, t60, t52,
+                            t15, t00, t45,
+                            t22, t30, t37, tryCount);
+                }
+                else if (tryCount <= 28)
+                {
+                    //Mirror: Right To Left & Top To Bottom
+                    return this.GetFaceCompleteness(colorToCheck,
+                            t22, t30, t37,
+                            t15, t00, t45,
+                            t07, t60, t52, tryCount);
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                return result;
+            }
         }
 
         public PatternAdjacentResultModel GetAdjacentCompleteness(StickerColorTypes colorToCheck,
@@ -265,7 +306,7 @@ namespace RC.Logic
                                                                                                                                                                     */StickerColorTypes sw, StickerColorTypes se,
                                                                                                                                                                                                                       /*                                        
                                                                                                                                                                                                                                                         */StickerColorTypes s
-            )
+            ,Int32 tryCount = 0)
         {
 
             var result = new PatternAdjacentResultModel();
@@ -683,21 +724,172 @@ namespace RC.Logic
 
             }
 
-            return result;
+            tryCount += 1;
+            if (result.Stickers > 0 && result.Pattern == PatternAdjacentTypes.None)
+            {
+                if (tryCount == 1 || tryCount == 3)
+                {
+                    //Mirror: Top To Bottom
+                    return this.GetAdjacentCompleteness(colorToCheck,
+                                    s,
+                                    sw, se,
+                                    wm, w, e, em,
+                                    nw, ne,
+                                    n,
+                                    tryCount);
+                }
+                else if (tryCount == 2 || tryCount == 4)
+                {
+                    //Mirror: Right To Left
+                    return this.GetAdjacentCompleteness(colorToCheck,
+                                    n,
+                                    ne, nw,
+                                    em, e, w, wm,
+                                    se, sw,
+                                    s,
+                                    tryCount);
+                }
+                else 
+                {
+
+                    return result;
+                }                               
+         
+            }
+            else
+            {
+                return result;
+            }
         }
 
-        public PatternAdjacentFaceResultModel GetCompleteness(CubeModel cube, StickerColorTypes color)
+        /// <summary>
+        /// 
+        /// 
+
+        ///
+        /// </summary>
+        /// <param name="cube"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public PatternStatisticModel GetCompleteness(CubeModel cube, StickerColorTypes color)
         {
-            var result = new PatternAdjacentFaceResultModel();
-            result.PatternFaceResult = this.GetFaceCompleteness(color,
-                cube.NorthWest.StickerNorth.StickerColorType, cube.NorthEast.StickerNorth.StickerColorType, cube.FrontNorth.StickerNorth.StickerColorType,
-                cube.BackNorth.StickerNorth.StickerColorType, cube.North.StickerNorth.StickerColorType, cube.FrontNorthEast.StickerNorth.StickerColorType,
-                cube.BackNorthEast.StickerNorth.StickerColorType, cube.BackNorthWest.StickerNorth.StickerColorType, cube.FrontNorthWest.StickerNorth.StickerColorType
+            var result = new PatternStatisticModel();
+
+            /// [BNW ] [ BN ] [ BNE]
+            /// [NW  ] [  N ] [  NE]
+            /// [FNW ] [ FN ] [ FNE]
+            PatternFaceResultModel north =  this.GetFaceCompleteness(color,
+                cube.BackNorthWest.StickerNorth.StickerColorType, cube.BackNorth.StickerNorth.StickerColorType, cube.BackNorthEast.StickerNorth.StickerColorType,
+                cube.NorthWest.StickerNorth.StickerColorType, cube.North.StickerNorth.StickerColorType, cube.NorthEast.StickerNorth.StickerColorType,
+                cube.FrontNorthWest.StickerNorth.StickerColorType, cube.FrontNorth.StickerNorth.StickerColorType, cube.FrontNorthEast.StickerNorth.StickerColorType
             );
 
-            if (result.PatternFaceResult.Pattern == PatternFaceTypes.None) { }
+            // [FSW ] [ FS ] [ FSE]
+            // [SW  ] [  S ] [  SE]
+            // [BSW ] [ BS ] [ BSE]
+            PatternFaceResultModel south = this.GetFaceCompleteness(color,
+                cube.FrontSouthWest.StickerSouth.StickerColorType, cube.FrontSouth.StickerSouth.StickerColorType, cube.FrontSouthEast.StickerSouth.StickerColorType,
+                cube.SouthWest.StickerSouth.StickerColorType, cube.South.StickerSouth.StickerColorType, cube.SouthEast.StickerSouth.StickerColorType,
+                cube.BackSouthWest.StickerSouth.StickerColorType, cube.BackSouth.StickerSouth.StickerColorType, cube.BackSouthEast.StickerSouth.StickerColorType
+            );
 
-            result.PatternAdjacentResult = this.GetAdjacentCompleteness(color,
+            //  [BNW ] [ NW ] [ FNW]   
+            //  [BW  ] [  W ] [  FW]   
+            //  [BSW ] [ SW ] [ FSW]   
+            PatternFaceResultModel west = this.GetFaceCompleteness(color,
+                cube.BackNorthWest.StickerWest.StickerColorType, cube.NorthWest.StickerWest.StickerColorType, cube.FrontNorthWest.StickerWest.StickerColorType,
+                cube.BackWest.StickerWest.StickerColorType, cube.West.StickerWest.StickerColorType, cube.FrontWest.StickerWest.StickerColorType,
+                cube.BackSouthWest.StickerWest.StickerColorType, cube.SouthWest.StickerWest.StickerColorType, cube.FrontSouthWest.StickerWest.StickerColorType
+            );
+
+            //  [FNE ] [ NE ] [ BNE]    
+            //  [FE  ] [  E ] [  BE]    
+            //  [FSE ] [ SE ] [ BSE]  
+            PatternFaceResultModel east = this.GetFaceCompleteness(color,
+                   cube.FrontNorthEast.StickerEast.StickerColorType, cube.NorthEast.StickerEast.StickerColorType, cube.BackNorthEast.StickerEast.StickerColorType,
+                   cube.FrontEast.StickerEast.StickerColorType, cube.East.StickerEast.StickerColorType, cube.BackEast.StickerEast.StickerColorType,
+                   cube.FrontSouthEast.StickerEast.StickerColorType, cube.SouthEast.StickerEast.StickerColorType, cube.BackSouthEast.StickerEast.StickerColorType
+               );
+
+            //  [FNW ] [ FN ] [ FNE]       
+            //  [FW  ] [  F ] [  FE]       
+            //  [FSW ] [ FS ] [ FSE]     
+            PatternFaceResultModel front = this.GetFaceCompleteness(color,
+                   cube.FrontNorthWest.StickerFront.StickerColorType, cube.FrontNorth.StickerFront.StickerColorType, cube.FrontNorthEast.StickerFront.StickerColorType,
+                   cube.FrontWest.StickerFront.StickerColorType, cube.Front.StickerFront.StickerColorType, cube.FrontEast.StickerFront.StickerColorType,
+                   cube.FrontSouthWest.StickerFront.StickerColorType, cube.FrontSouth.StickerFront.StickerColorType, cube.FrontSouthEast.StickerFront.StickerColorType
+               );
+
+            //  [BNW ] [ BN ] [ BNE]
+            //  [BW  ] [  B ] [  BE]
+            //  [BSW ] [ BS ] [ BSE]
+            PatternFaceResultModel back = this.GetFaceCompleteness(color,
+                   cube.BackNorthWest.StickerBack.StickerColorType, cube.BackNorth.StickerBack.StickerColorType, cube.BackNorthEast.StickerBack.StickerColorType,
+                   cube.BackWest.StickerBack.StickerColorType, cube.Back.StickerBack.StickerColorType, cube.BackEast.StickerBack.StickerColorType,
+                   cube.BackSouthWest.StickerBack.StickerColorType, cube.BackSouth.StickerBack.StickerColorType, cube.BackSouthEast.StickerBack.StickerColorType
+               );
+
+            result.PatternFaceResults = new List<PatternFaceResultModel>() { north, south, east, west, front, back };
+
+            //            [ FNE]
+            //         [ FNE] [FNE ]  
+            //  [  F ] [  FE] [FE  ] [  E ] 
+            //         [ FSE] [FSE ] 
+            //            [ FSE]
+            PatternAdjacentResultModel fe = this.GetAdjacentCompleteness(color,
+                cube.FrontNorthEast.StickerNorth.StickerColorType,
+                cube.FrontNorthEast.StickerFront.StickerColorType, cube.FrontNorthEast.StickerEast.StickerColorType,
+                cube.Front.StickerFront.StickerColorType, cube.FrontEast.StickerFront.StickerColorType, cube.FrontEast.StickerEast.StickerColorType, cube.East.StickerEast.StickerColorType,
+                cube.FrontSouthEast.StickerFront.StickerColorType, cube.FrontSouthEast.StickerEast.StickerColorType,
+                cube.FrontSouthEast.StickerSouth.StickerColorType
+            );
+
+            //            [ FNW]
+            //         [ FNW] [FNW ]  
+            //  [  F ] [  FW] [FW  ] [  W ] 
+            //         [ FSW] [FSW ] 
+            //            [ FSW]
+            PatternAdjacentResultModel fw = this.GetAdjacentCompleteness(color,
+                cube.FrontNorthWest.StickerNorth.StickerColorType,
+                cube.FrontNorthWest.StickerFront.StickerColorType, cube.FrontNorthWest.StickerWest.StickerColorType,
+                cube.Front.StickerFront.StickerColorType, cube.FrontWest.StickerFront.StickerColorType, cube.FrontWest.StickerWest.StickerColorType, cube.West.StickerWest.StickerColorType,
+                cube.FrontSouthWest.StickerFront.StickerColorType, cube.FrontSouthWest.StickerWest.StickerColorType,
+                cube.FrontSouthWest.StickerSouth.StickerColorType
+            );
+
+
+            //            [ FNW]
+            //         [ FNW] [FNW ]  
+            //  [  F ] [  FN] [FN  ] [  N ] 
+            //         [ FNE] [FNE ] 
+            //            [ FNE]
+            PatternAdjacentResultModel fn = this.GetAdjacentCompleteness(color,
+                cube.FrontNorthWest.StickerWest.StickerColorType,
+                cube.FrontNorthWest.StickerFront.StickerColorType, cube.FrontNorthWest.StickerWest.StickerColorType,
+                cube.Front.StickerFront.StickerColorType, cube.FrontNorth.StickerFront.StickerColorType, cube.FrontNorth.StickerNorth.StickerColorType, cube.North.StickerNorth.StickerColorType,
+                cube.FrontNorthEast.StickerFront.StickerColorType, cube.FrontNorthEast.StickerNorth.StickerColorType,
+                cube.FrontNorthEast.StickerEast.StickerColorType
+            );
+
+            //            [ FSE]
+            //         [ FSE] [FSE ]  
+            //  [  F ] [  FS] [FS  ] [  S ] 
+            //         [ FSW] [FSW ] 
+            //            [ FSW]
+            PatternAdjacentResultModel fs = this.GetAdjacentCompleteness(color,
+                cube.FrontSouthEast.StickerEast.StickerColorType,
+                cube.FrontSouthEast.StickerFront.StickerColorType, cube.FrontSouthEast.StickerSouth.StickerColorType,
+                cube.Front.StickerFront.StickerColorType, cube.FrontSouth.StickerFront.StickerColorType, cube.FrontSouth.StickerSouth.StickerColorType, cube.South.StickerSouth.StickerColorType,
+                cube.FrontSouthWest.StickerFront.StickerColorType, cube.FrontSouthWest.StickerSouth.StickerColorType,
+                cube.FrontSouthWest.StickerWest.StickerColorType
+            );
+
+            //            [ BNE]
+            //         [ BNE] [BNE ]  
+            //  [  N ] [  NE] [NE  ] [  E ] 
+            //         [ FNE] [FNE ] 
+            //            [ FNE]
+            PatternAdjacentResultModel ne = this.GetAdjacentCompleteness(color,
                 cube.BackNorthEast.StickerBack.StickerColorType,
                 cube.BackNorthEast.StickerNorth.StickerColorType, cube.BackNorthEast.StickerEast.StickerColorType,
                 cube.North.StickerNorth.StickerColorType, cube.NorthEast.StickerNorth.StickerColorType, cube.NorthEast.StickerEast.StickerColorType, cube.East.StickerEast.StickerColorType,
@@ -705,12 +897,107 @@ namespace RC.Logic
                 cube.FrontNorthEast.StickerFront.StickerColorType
             );
 
+            //            [ FNW]
+            //         [ FNW] [FNW ]  
+            //  [  N ] [  NW] [NW  ] [  W ] 
+            //         [ BNW] [BNW ] 
+            //            [ BNW]
+            PatternAdjacentResultModel nw = this.GetAdjacentCompleteness(color,
+                cube.FrontNorthWest.StickerFront.StickerColorType,
+                cube.FrontNorthWest.StickerNorth.StickerColorType, cube.FrontNorthWest.StickerWest.StickerColorType,
+                cube.North.StickerNorth.StickerColorType, cube.NorthWest.StickerNorth.StickerColorType, cube.NorthWest.StickerWest.StickerColorType, cube.West.StickerWest.StickerColorType,
+                cube.BackNorthWest.StickerNorth.StickerColorType, cube.BackNorthWest.StickerWest.StickerColorType,
+                cube.BackNorthWest.StickerWest.StickerColorType
+            );
+
+            //            [ FSE]
+            //         [ FSE] [FSE ]  
+            //  [  S ] [  SW] [SW  ] [  E ] 
+            //         [ BSE] [BSE ] 
+            //            [ BSE]
+            PatternAdjacentResultModel se = this.GetAdjacentCompleteness(color,
+                cube.FrontSouthEast.StickerFront.StickerColorType,
+                cube.FrontSouthWest.StickerSouth.StickerColorType, cube.FrontSouthWest.StickerWest.StickerColorType,
+                cube.South.StickerSouth.StickerColorType, cube.SouthEast.StickerSouth.StickerColorType, cube.SouthEast.StickerEast.StickerColorType, cube.East.StickerEast.StickerColorType,
+                cube.BackSouthEast.StickerSouth.StickerColorType, cube.BackSouthEast.StickerEast.StickerColorType,
+                cube.BackSouthEast.StickerBack.StickerColorType
+            );
+
+            //            [ BSW]
+            //         [ BSW] [BSW ]  
+            //  [  S ] [  SW] [SW  ] [  W ] 
+            //         [ FSW] [FSW ] 
+            //            [ FSW]
+            PatternAdjacentResultModel sw = this.GetAdjacentCompleteness(color,
+                cube.BackSouthWest.StickerBack.StickerColorType,
+                cube.BackSouthWest.StickerSouth.StickerColorType, cube.BackSouthWest.StickerWest.StickerColorType,
+                cube.South.StickerSouth.StickerColorType, cube.SouthWest.StickerSouth.StickerColorType, cube.SouthWest.StickerWest.StickerColorType, cube.West.StickerWest.StickerColorType,
+                cube.FrontSouthWest.StickerSouth.StickerColorType, cube.FrontSouthWest.StickerWest.StickerColorType,
+                cube.FrontSouthWest.StickerFront.StickerColorType
+            );
+
+
+            //            [ BNE]
+            //         [ BNE] [BNE ]  
+            //  [  B ] [  BE] [BE  ] [  E ] 
+            //         [ BSE] [BSE ] 
+            //            [ BSE]
+            PatternAdjacentResultModel be = this.GetAdjacentCompleteness(color,
+                cube.BackNorthEast.StickerEast.StickerColorType,
+                cube.BackNorthEast.StickerBack.StickerColorType, cube.BackNorthEast.StickerEast.StickerColorType,
+                cube.Back.StickerBack.StickerColorType, cube.BackEast.StickerBack.StickerColorType, cube.BackEast.StickerEast.StickerColorType, cube.East.StickerEast.StickerColorType,
+                cube.BackSouthEast.StickerBack.StickerColorType, cube.BackSouthEast.StickerEast.StickerColorType,
+                cube.BackSouthEast.StickerSouth.StickerColorType
+            );
+
+            //            [ BNW]
+            //         [ BNW] [BNW ]  
+            //  [  B ] [  BW] [BW  ] [  W ] 
+            //         [ BSW] [BSW ] 
+            //            [ BSW]
+            PatternAdjacentResultModel bw = this.GetAdjacentCompleteness(color,
+                cube.BackNorthWest.StickerNorth.StickerColorType,
+                cube.BackNorthWest.StickerBack.StickerColorType, cube.BackNorthWest.StickerWest.StickerColorType,
+                cube.Back.StickerBack.StickerColorType, cube.BackWest.StickerBack.StickerColorType, cube.BackWest.StickerWest.StickerColorType, cube.West.StickerWest.StickerColorType,
+                cube.BackSouthWest.StickerBack.StickerColorType, cube.BackSouthWest.StickerWest.StickerColorType,
+                cube.BackSouthWest.StickerSouth.StickerColorType
+            );
+
+            //            [ BSE]
+            //         [ BSE] [BSE ]  
+            //  [  B ] [  BS] [BS  ] [  S ] 
+            //         [ BSW] [BSW ] 
+            //            [ BSW]
+            PatternAdjacentResultModel bs = this.GetAdjacentCompleteness(color,
+                cube.BackSouthEast.StickerEast.StickerColorType,
+                cube.BackSouthEast.StickerBack.StickerColorType, cube.BackSouthEast.StickerSouth.StickerColorType,
+                cube.Back.StickerBack.StickerColorType, cube.BackSouth.StickerBack.StickerColorType, cube.BackSouth.StickerSouth.StickerColorType, cube.South.StickerSouth.StickerColorType,
+                cube.BackSouthWest.StickerBack.StickerColorType, cube.BackSouthWest.StickerSouth.StickerColorType,
+                cube.BackSouthWest.StickerWest.StickerColorType
+            );
+
+            //            [ BNE]
+            //         [ BNE] [BNE ]  
+            //  [  B ] [  BN] [BN  ] [  N ] 
+            //         [ BNW] [BNW ] 
+            //            [ BNW]
+            PatternAdjacentResultModel bn = this.GetAdjacentCompleteness(color,
+                cube.BackNorthEast.StickerEast.StickerColorType,
+                cube.BackNorthEast.StickerBack.StickerColorType, cube.BackNorthEast.StickerNorth.StickerColorType,
+                cube.Back.StickerBack.StickerColorType, cube.BackNorth.StickerBack.StickerColorType, cube.BackNorth.StickerNorth.StickerColorType, cube.North.StickerNorth.StickerColorType,
+                cube.BackNorthWest.StickerBack.StickerColorType, cube.BackNorthWest.StickerNorth.StickerColorType,
+                cube.BackNorthWest.StickerBack.StickerColorType
+            );
+
+
+            result.PatternAdjacentResults = new List<PatternAdjacentResultModel>() { fn, fe, fs, fw, ne, se, sw, nw, bn, be, bs, bw };
+
             return result;
         }
 
-        public Dictionary<StickerColorTypes, PatternAdjacentFaceResultModel> GetSideCompleteness(CubeModel cube)
+        public Dictionary<StickerColorTypes, PatternStatisticModel> GetSideCompleteness(CubeModel cube)
         {
-            var sideColorTotals = new Dictionary<StickerColorTypes, PatternAdjacentFaceResultModel>();
+            var sideColorTotals = new Dictionary<StickerColorTypes, PatternStatisticModel>();
 
             sideColorTotals[StickerColorTypes.White] = this.GetCompleteness(cube, StickerColorTypes.White);
             sideColorTotals[StickerColorTypes.Yellow] = this.GetCompleteness(cube, StickerColorTypes.Yellow);

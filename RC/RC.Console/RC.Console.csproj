@@ -106,7 +106,7 @@
     <Compile Include="Model\CubeAbstractorModel.cs" />
     <Compile Include="Model\CubePatternModel.cs" />
     <Compile Include="Model\Patterns\PatternAdjacentResultModel.cs" />
-    <Compile Include="Model\Patterns\PatternCubeModel.cs" />
+    <Compile Include="Model\Patterns\PatternStatisticModel.cs" />
     <Compile Include="Model\Patterns\PatternFaceResultModel.cs" />
     <Compile Include="Model\Patterns\PatternModel.cs" />
     <Compile Include="Model\Patterns\PatternResultModel.cs" />
