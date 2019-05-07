@@ -622,6 +622,13 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O O O |
+        /// | O X O |
+        /// | X O X |
+        /// </summary>
+        F13,
+
+        /// <summary>
+        /// | O O O |
         /// | O O O |
         /// | O X X |
         /// </summary>

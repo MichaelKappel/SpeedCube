@@ -164,6 +164,10 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.B8;
                 }
+                else if (t52 == colorToCheck && t30 == colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.B9;
+                }
             }
             else if (result.Stickers == 3)
             {
@@ -460,6 +464,14 @@ namespace RC.Logic
                 else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.F10;
+                }
+                else if (t07 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F11;
+                }
+                else if (t45 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F12;
                 }
                 else if (t07 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck)
                 {
