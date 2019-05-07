@@ -146,8 +146,15 @@ namespace RC.Logic
                 }
             }
 
-            String[] results = resultWithDups.Distinct().ToArray();
+            var normalizeRresultWithDups = new List<String>();
+            foreach (var resultUnnormalized in resultWithDups.Distinct())
+            {
+                normalizeRresultWithDups.Add(this.Normalize(original));
+            }
 
+            String[] results = normalizeRresultWithDups.Distinct().ToArray();
+
+            //String[] results = resultWithDups.Distinct().ToArray();
             return results;
         }
 
@@ -659,8 +666,6 @@ namespace RC.Logic
 
         public void ValidateCube(String pattern)
         {
-            return;
-
             this.ValidateStickerCount(pattern);
             this.ValidateMiddleStickers(pattern);
             this.ValidateAdjacentStickers(pattern);
@@ -690,12 +695,12 @@ namespace RC.Logic
 
         public Boolean IsStickerCountValid(String pattern)
         {
-            if (pattern.ToArray().Count(x => x == 'A') > 9
-                    || pattern.ToArray().Count(x => x == 'B') > 9
-                    || pattern.ToArray().Count(x => x == 'C') > 9
-                    || pattern.ToArray().Count(x => x == 'a') > 9
-                    || pattern.ToArray().Count(x => x == 'b') > 9
-                    || pattern.ToArray().Count(x => x == 'c') > 9)
+            if (pattern.ToArray().Count(x => x == 'A') != 9
+                    || pattern.ToArray().Count(x => x == 'B') != 9
+                    || pattern.ToArray().Count(x => x == 'C') != 9
+                    || pattern.ToArray().Count(x => x == 'a') != 9
+                    || pattern.ToArray().Count(x => x == 'b') != 9
+                    || pattern.ToArray().Count(x => x == 'c') != 9)
             {
                 return false;
             }

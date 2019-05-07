@@ -9,6 +9,13 @@ namespace RC.Model.Patterns
 {
     public class PatternFaceResultModel: PatternResultModelBase<PatternFaceTypes>
     {
+        public PatternFaceResultModel()
+        {
+            this.Pattern = PatternFaceTypes.Unknown;
+        }
+
+        public StickerColorTypes MiddleColorType { get; set; }
+
         public override string ToString()
         {
             return this.Pattern.ToString();

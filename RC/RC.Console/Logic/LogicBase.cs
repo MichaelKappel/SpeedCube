@@ -36,10 +36,6 @@ namespace RC.Logic
         {
             switch (sticker)
             {
-                case 'C':
-                    return "B";
-                case 'c':
-                    return "G";
                 case 'A':
                     return "O";
                 case 'a':
@@ -48,6 +44,10 @@ namespace RC.Logic
                     return "W";
                 case 'b':
                     return "Y";
+                case 'C':
+                    return "B";
+                case 'c':
+                    return "G";
                 default:
                     return "#";
             }

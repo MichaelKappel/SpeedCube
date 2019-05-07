@@ -76,22 +76,29 @@ namespace RC.Logic
 
         public String[] GetAllFacePatterns(String original)
         {
-            var resultWithDups = new List<String>();
+            var resultsWithDups = new List<String>();
             String[] shiftedPatterns = this.ShiftSwitchAndMirrorFacePatterns(original);
             foreach (var shiftedPattern in shiftedPatterns)
             {
                 foreach (var rotatedPattern in this.RotateFacePattern(shiftedPattern))
                 {
-                    resultWithDups.Add(rotatedPattern);
-                    resultWithDups.Add(this.ReversePattern(rotatedPattern));
+                    resultsWithDups.Add(rotatedPattern);
+                    resultsWithDups.Add(this.ReversePattern(rotatedPattern));
 
                     var reversedRotatedPattern = new String(shiftedPattern.Reverse().ToArray());
-                    resultWithDups.Add(reversedRotatedPattern);
-                    resultWithDups.Add(this.ReversePattern(reversedRotatedPattern));
+                    resultsWithDups.Add(reversedRotatedPattern);
+                    resultsWithDups.Add(this.ReversePattern(reversedRotatedPattern));
                 }
             }
 
-            String[] results = resultWithDups.Distinct().ToArray();
+            var normalizedResultsWithDups = new List<String>();
+
+            foreach(var resultWithDups in resultsWithDups)
+            {
+                normalizedResultsWithDups.Add(this.Normalize(resultWithDups));
+            }
+
+            String[] results = normalizedResultsWithDups.Distinct().ToArray();
 
             return results;
         }
@@ -193,16 +200,7 @@ namespace RC.Logic
             var result5 = codedOriginal.Replace("A1", "c").Replace("B1", "A").Replace("C1", "B").Replace("a1", "C").Replace("b1", "a").Replace("c1", "b");
 
             var result = new string[] { original, result1, result2, result3, result3, result4, result5 };
-            if (result.ToArray().Count(x => x == "A") > 9
-                   || result.ToArray().Count(x => x == "B") > 9
-                   || result.ToArray().Count(x => x == "C") > 9
-                   || result.ToArray().Count(x => x == "a") > 9
-                   || result.ToArray().Count(x => x == "b") > 9
-                   || result.ToArray().Count(x => x == "c") > 9)
-            {
-                throw new Exception("Invalid ShiftPatternComprehensive Result: " + result);
-            }
-
+          
             return result.Distinct().ToArray();
         }
 
@@ -219,5 +217,50 @@ namespace RC.Logic
             return result;
         }
 
+
+        public String Normalize(String pattern)
+        {
+            String resultRaw = pattern.Replace("A", "X").Replace("a".ToString(), "x")
+                .Replace("B", "Y").Replace("b".ToString(), "y")
+                .Replace("C", "Z").Replace("c", "z");
+
+            if (pattern[4] == 'A')
+            {
+                return pattern;
+            }
+            if (pattern[4] == 'a')
+            {
+                return resultRaw.Replace("x", "A").Replace("X", "a")
+                         .Replace("y", "B").Replace("Y", "b")
+                         .Replace("z", "C").Replace("Z", "c");
+            }
+            else if (pattern[4] == 'B')
+            {
+                return resultRaw.Replace("X", "B").Replace("x", "b")
+                         .Replace("Y", "A").Replace("y", "a")
+                         .Replace("Z", "C").Replace("z", "c");
+            }
+            else if (pattern[4] == 'b')
+            {
+                return resultRaw.Replace("x", "B").Replace("X", "b")
+                         .Replace("y", "A").Replace("Y", "a")
+                         .Replace("z", "C").Replace("Z", "c");
+            }
+            else if (pattern[4] == 'C')
+            {
+                return resultRaw.Replace("X", "C").Replace("x", "c")
+                         .Replace("Y", "B").Replace("y", "b")
+                         .Replace("Z", "A").Replace("z", "a");
+            }
+            else if (pattern[4] == 'c')
+            {
+                return resultRaw.Replace("x", "c").Replace("X", "C")
+                         .Replace("y", "B").Replace("Y", "B")
+                         .Replace("z", "A").Replace("Z", "a");
+            }
+
+            throw new Exception($"Unexpected char {pattern[4]}");
+
+        }
     }
 }

@@ -9,6 +9,14 @@ namespace RC.Model.Patterns
 {
     public class PatternAdjacentResultModel: PatternResultModelBase<PatternAdjacentTypes>
     {
+        public PatternAdjacentResultModel()
+        {
+            this.Pattern = PatternAdjacentTypes.Unknown;
+        }
+
+        public StickerColorTypes MiddleColorTypeEast { get; set; }
+        public StickerColorTypes MiddleColorTypeWest { get; set; }
+
         public override string ToString()
         {
             return this.Pattern.ToString();

@@ -100,10 +100,10 @@ namespace RC.Logic
         public void VerifyPieceInSlot(SlotModelBase<PieceCornerModelBase> slot)
         {
             
-                if (!this.PieceIsValid(slot))
-                {
-                    throw new Exception("Corner Sticker Wrong");
-                }
+            if (!this.PieceIsValid(slot))
+            {
+                throw new Exception("Corner Sticker Wrong");
+            }
         }
 
 
@@ -620,6 +620,27 @@ namespace RC.Logic
                 }
             }
             this.VerifyAllPieces(cube);
+        }
+
+
+        public void SetCubeState(CubeModel cube, String pattern)
+        {
+            var patternWithColor = String.Empty;
+            Char[] patternArray = pattern.ToCharArray();
+            foreach (var item in patternArray)
+            {
+                patternWithColor += this.GetStickerAbbreviation(item);
+            }
+
+            String north = $"BNW:{ patternWithColor[0]}|BN:{patternWithColor[1]}|BNE:{ patternWithColor[2]}|NW:{ patternWithColor[3]}|N:{ patternWithColor[4]}|NE:{ patternWithColor[5]}|FNW:{ patternWithColor[6]}|FN:{ patternWithColor[7]}|FNE:{ patternWithColor[8]}";
+            String south = $"FSW:{ patternWithColor[9]}|FS:{patternWithColor[10]}|FSE:{ patternWithColor[11]}|SW:{ patternWithColor[12]}|S:{ patternWithColor[13]}|SE:{ patternWithColor[14]}|BSW:{ patternWithColor[15]}|BS:{ patternWithColor[16]}|BSE:{ patternWithColor[17]}";
+            String front = $"FNW:{ patternWithColor[18]}|FN:{patternWithColor[19]}|FNE:{ patternWithColor[20]}|FW:{ patternWithColor[21]}|F:{ patternWithColor[22]}|FE:{ patternWithColor[23]}|FSW:{ patternWithColor[24]}|FS:{ patternWithColor[25]}|FSE:{ patternWithColor[26]}";
+            String back = $"BNW:{ patternWithColor[27]}|BN:{patternWithColor[28]}|BNE:{ patternWithColor[29]}|BW:{ patternWithColor[30]}|B:{ patternWithColor[31]}|BE:{ patternWithColor[32]}|BSW:{ patternWithColor[33]}|BS:{ patternWithColor[34]}|BSE:{ patternWithColor[35]}";
+            String west = $"BNW:{ patternWithColor[36]}|NW:{patternWithColor[37]}|FNW:{ patternWithColor[38]}|BW:{ patternWithColor[39]}|W:{ patternWithColor[40]}|FW:{ patternWithColor[41]}|BSW:{ patternWithColor[42]}|SW:{ patternWithColor[43]}|FSW:{ patternWithColor[44]}";
+            String east = $"FNE:{ patternWithColor[45]}|NE:{patternWithColor[46]}|BNE:{ patternWithColor[47]}|FE:{ patternWithColor[48]}|E:{ patternWithColor[49]}|BE:{ patternWithColor[50]}|FSE:{ patternWithColor[51]}|SE:{ patternWithColor[52]}|BSE:{ patternWithColor[53]}";
+
+            String detailedCubeState = $"{north},{south},{front},{back},{west},{east}";
+            this.SetDetailedCubeState(cube, detailedCubeState);
         }
 
         public void SetDetailedCubeState(CubeModel cube, String detailedCubeState)
