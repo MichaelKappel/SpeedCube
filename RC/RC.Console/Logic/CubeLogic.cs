@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using RC.Enumerations;
 using RC.Model;
 using RC.Model.Pieces;
@@ -848,37 +849,31 @@ namespace RC.Logic
         {
             foreach (CubeModel cube in cubes)
             {
-                if (moves.Contains(","))
-                {
-                    foreach (String move in moves.Split(','))
-                    {
-                        this.RunMove(cube, move);
-                    }
-                }
-                else
-                {
-                    this.RunMove(cube, moves);
-                }
-            }
-
-            foreach (CubeModel cube in cubes)
-            {
-                this.VerifyAllPieces(cube);
+                this.RunMoves(cube, moves);
             }
         }
 
+        public void RunMoves(CubeModel cube, String moves, Int32 times)
+        {
+            for (var i = 0; i < times; i++)
+            {
+                RunMoves(cube, moves);
+            }
+        }
         public void RunMoves(CubeModel cube, String moves)
         {
-            if (moves.Contains(","))
+            MatchCollection matches = Regex.Matches(moves, @"(?<times>[0-9])\((?<algorithm>[0-9a-zA-Z',].+)\)|(?<prime>[a-zA-Z])'|(?<move>[a-zA-Z])");
+            foreach (Match match in matches)
             {
-                foreach (String move in moves.Split(','))
+                if (String.IsNullOrWhiteSpace(match.Groups["algorithm"].Value))
                 {
-                    this.RunMove(cube, move);
+                    this.RunMove(cube, match.Value);
                 }
-            }
-            else
-            {
-                this.RunMove(cube, moves);
+                else
+                {
+                    Int32 times = Int32.Parse(match.Groups["times"].Value);
+                    this.RunMoves(cube, match.Groups["algorithm"].Value, times);
+                }
             }
             this.VerifyAllPieces(cube);
         }

@@ -23,6 +23,10 @@ namespace RC
         public static Dictionary<String, (Int32, Int32)> UniqueFacePatterns;
         public static CubePatternSegments UniqueCubePatterns;
 
+
+        public static Dictionary<PatternAdjacentTypes, Int32> UniqueAdjacentPatternTypes;
+        public static Dictionary<PatternFaceTypes, Int32> UniqueFacePatternTypes;
+
         public static Int32 Count = 0;
 
         static void Main(string[] args)
@@ -54,7 +58,7 @@ namespace RC
             }
             else if (command.ToUpper() == "SCRAMBLE")
             {
-                logic.Scramble(Cube, 500);
+                logic.Scramble(Cube, 20);
             }
             else if (command.Length == 9 * 6)
             {
@@ -64,8 +68,13 @@ namespace RC
             {
                 RunTest();
             }
+            else if (command.ToUpper() == "RESET")
+            {
+                Cube = logic.Create(XyzCubeTypes.BlueOrangeWhite);
+            }
             else if (command.ToUpper() == "GO")
             {
+                //GeneratePatternTypeStatistics();
                 GenerateStatistics();
             }
             else if (command.Trim().Length > 100)
@@ -99,6 +108,38 @@ namespace RC
                 }
             }
 
+            if (!File.Exists("UniqueAdjacentPatternTypes.txt"))
+            {
+                using (var fs = File.Create("UniqueAdjacentPatternTypes.txt"))
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            if (!File.Exists("UniqueFacePatternTypes.txt"))
+            {
+                using (var fs = File.Create("UniqueFacePatternTypes.txt"))
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            if (!File.Exists("UniqueAdjacentPatternTypes2.txt"))
+            {
+                using (var fs = File.Create("UniqueAdjacentPatternTypes2.txt"))
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            if (!File.Exists("UniqueFacePatternTypes2.txt"))
+            {
+                using (var fs = File.Create("UniqueFacePatternTypes2.txt"))
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
             UniqueCubePatterns = new CubePatternSegments();
 
             String[] uniqueCubePatternHitsRaw = File.ReadAllLines("UniqueCubePatterns.txt");
@@ -107,7 +148,7 @@ namespace RC
 
                 foreach (var uniqueCubePatternHitRaw in uniqueCubePatternHitsRaw)
                 {
-                    String[] uniqueCubePatternHitRawArgs = uniqueCubePatternHitRaw.Split(' ');
+                    String[] uniqueCubePatternHitRawArgs = uniqueCubePatternHitRaw.Trim().Split(' ');
                     String key = uniqueCubePatternHitRawArgs[1];
                     Int32 value1 = Int32.Parse(uniqueCubePatternHitRawArgs[0]);
                     Int32 value2 = Int32.Parse(uniqueCubePatternHitRawArgs[2]);
@@ -123,7 +164,7 @@ namespace RC
 
                 foreach (var uniqueFacePatternRaw in uniqueFacePatternsRaw)
                 {
-                    String[] uniqueFacePatternRawArgs = uniqueFacePatternRaw.Split(' ');
+                    String[] uniqueFacePatternRawArgs = uniqueFacePatternRaw.Trim().Split(' ');
                     String key = uniqueFacePatternRawArgs[1];
                     Int32 value1 = Int32.Parse(uniqueFacePatternRawArgs[0]);
                     Int32 value2 = Int32.Parse(uniqueFacePatternRawArgs[2]);
@@ -132,6 +173,31 @@ namespace RC
 
             }
 
+            UniqueAdjacentPatternTypes = new Dictionary<PatternAdjacentTypes, Int32>();
+            String[] uniqueAdjacentPatternTypesRaw = File.ReadAllLines("UniqueAdjacentPatternTypes.txt");
+            if (uniqueAdjacentPatternTypesRaw.Length > 0)
+            {
+                foreach (var uniqueAdjacentPatternTypeRaw in uniqueAdjacentPatternTypesRaw)
+                {
+                    String[] uniqueAdjacentPatternTypeRawArgs = uniqueAdjacentPatternTypeRaw.Trim().Split(' ');
+                    PatternAdjacentTypes key = (PatternAdjacentTypes)Enum.Parse(typeof(PatternAdjacentTypes), uniqueAdjacentPatternTypeRawArgs[1]);
+                    Int32 value = Int32.Parse(uniqueAdjacentPatternTypeRawArgs[0]);
+                    UniqueAdjacentPatternTypes.Add(key, value);
+                }
+            }
+
+            UniqueFacePatternTypes = new Dictionary<PatternFaceTypes, Int32>();
+            String[] uniqueFacePatternTypesRaw = File.ReadAllLines("UniqueFacePatternTypes.txt");
+            if (uniqueFacePatternTypesRaw.Length > 0)
+            {
+                foreach (var uniqueFacePatternTypeRaw in uniqueFacePatternTypesRaw)
+                {
+                    String[] uniqueFacePatternTypeRawArgs = uniqueFacePatternTypeRaw.Trim().Split(' ');
+                    PatternFaceTypes key = (PatternFaceTypes)Enum.Parse(typeof(PatternFaceTypes), uniqueFacePatternTypeRawArgs[1]);
+                    Int32 value = Int32.Parse(uniqueFacePatternTypeRawArgs[0]);
+                    UniqueFacePatternTypes.Add(key, value);
+                }
+            }
         }
 
         public static String Scamble(CubeModel cube)
@@ -150,7 +216,7 @@ namespace RC
             {
 
                 var result  = UniqueCubePatterns.GetOrAdd(pattern, (variationCount, 1));
-                Console.WriteLine($"{result.Occurrences.ToString().PadLeft(5, '0')} {pattern} {result.Variations} ");
+                Console.WriteLine($"{result.Occurrences.ToString().PadLeft(5, ' ')} {pattern} {result.Variations} ");
             }
         }
 
@@ -167,9 +233,9 @@ namespace RC
                 {
                     UniqueFacePatterns.Add(pattern, (variationCount, 1));
                 }
-                Console.WriteLine($"{UniqueFacePatterns[pattern].Item2.ToString().PadLeft(5, '0')} {pattern} {UniqueFacePatterns[pattern].Item1} ");
+                Console.WriteLine($"{UniqueFacePatterns[pattern].Item2.ToString().PadLeft(5, ' ')} {pattern} {UniqueFacePatterns[pattern].Item1} ");
             }
-            }
+       }
 
         public static void UpdateCubeCount(Dictionary<String, (Int32, Int32)> cubePatterns, String pattern)
         {
@@ -263,6 +329,89 @@ namespace RC
             }
         }
 
+        public static void UpdatePatternTypeCount(Dictionary<PatternFaceTypes, Int32> resultFacePatterns, Dictionary<PatternAdjacentTypes, Int32> resultAdjacentPatterns, CubeModel cube)
+        {
+
+            Dictionary<StickerColorTypes, PatternStatisticModel> patternsFound = PatternRecognition.GetSideCompleteness(cube);
+
+            var colorTypes = new StickerColorTypes[]
+            {
+                StickerColorTypes.Blue,
+                StickerColorTypes.Green,
+                StickerColorTypes.Orange,
+                StickerColorTypes.Red,
+                StickerColorTypes.White,
+                StickerColorTypes.Yellow
+            };
+            for (var i = 0; i < colorTypes.Length; i++)
+            {
+                for (var i2 = 0; i2 < patternsFound[colorTypes[i]].PatternFaceResults.Count(); i2++)
+                {
+                    PatternFaceTypes currentPattern = patternsFound[colorTypes[i]].PatternFaceResults[i2].Pattern;
+                    lock (resultFacePatterns)
+                    {
+                        if (resultFacePatterns.ContainsKey(patternsFound[colorTypes[i]].PatternFaceResults[i2].Pattern))
+                        {
+                            resultFacePatterns[currentPattern] += 1;
+                        }
+                        else
+                        {
+                            resultFacePatterns.Add(currentPattern, 1);
+                        }
+                    }
+                }
+
+                for (var i2 = 0; i2 < patternsFound[colorTypes[i]].PatternAdjacentResults.Count(); i2++)
+                {
+                    PatternAdjacentTypes currentPattern = patternsFound[colorTypes[i]].PatternAdjacentResults[i2].Pattern;
+                    lock (resultAdjacentPatterns)
+                    {
+                        if (resultAdjacentPatterns.ContainsKey(currentPattern))
+                        {
+                            resultAdjacentPatterns[currentPattern] += 1;
+                        }
+                        else
+                        {
+                            resultAdjacentPatterns.Add(currentPattern, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void UpdateFacePatternStatistics(PatternFaceTypes pattern, Int32 occurrences)
+        {
+            lock (UniqueFacePatternTypes)
+            {
+                if (UniqueFacePatternTypes.ContainsKey(pattern))
+                {
+                    var item = UniqueFacePatternTypes[pattern];
+                    UniqueFacePatternTypes[pattern] = occurrences + item;
+                }
+                else
+                {
+                    UniqueFacePatternTypes.Add(pattern, occurrences);
+                }
+                Console.WriteLine($"{UniqueFacePatternTypes[pattern].ToString().PadLeft(5, ' ')} {pattern}");
+            }
+        }
+
+        public static void UpdateAdjacentPatternStatistics(PatternAdjacentTypes pattern, Int32 occurrences)
+        {
+            lock (UniqueAdjacentPatternTypes)
+            {
+                if (UniqueAdjacentPatternTypes.ContainsKey(pattern))
+                {
+                    var item = UniqueAdjacentPatternTypes[pattern];
+                    UniqueAdjacentPatternTypes[pattern] = occurrences + item;
+                }
+                else
+                {
+                    UniqueAdjacentPatternTypes.Add(pattern, occurrences);
+                }
+                Console.WriteLine($"{UniqueAdjacentPatternTypes[pattern].ToString().PadLeft(5, ' ')} {pattern}");
+            }
+        }
 
         public static void RunTest()
         {
@@ -378,26 +527,111 @@ namespace RC
             return result;
         }
 
+        public static void GeneratePatternTypeStatistics()
+        {
+            Console.WriteLine("\n\n**************** START GeneratePatternTypeStatistics ****************\n\n");
+            {
+                var resultFacePatterns = new Dictionary<PatternFaceTypes, Int32>();
+                var resultAdjacentPatterns = new Dictionary<PatternAdjacentTypes, Int32>();
+
+                UpdatePatternTypeCount(resultFacePatterns, resultAdjacentPatterns, Cube);
+
+                for (var i = 0; i < 400; i++)
+                {
+                    UpdatePatternTypeCount(resultFacePatterns, resultAdjacentPatterns, Cube);
+                    Logic.Scramble(Cube, 4);
+                    Console.WriteLine($"{i}");
+                }
+
+                foreach (var result in resultFacePatterns)
+                {
+                    UpdateFacePatternStatistics(result.Key, result.Value);
+                }
+
+                foreach (var result in resultAdjacentPatterns)
+                {
+                    UpdateAdjacentPatternStatistics(result.Key, result.Value);
+                }
+
+                {
+                    List<String> facePatterns = UniqueFacePatternTypes.Select(x => x.Value.ToString().PadLeft(10, ' ') + " " + x.Key).ToList();
+                    using (StreamWriter writer = new StreamWriter("UniqueFacePatternTypes.txt", false))
+                    {
+                        foreach (var uniqueCubePatternHit in facePatterns.OrderByDescending(x => x, StringComparer.Ordinal))
+                        {
+                            writer.WriteLine(uniqueCubePatternHit);
+                        }
+                    }
+                    facePatterns = null;
+                }
+
+                {
+                    List<String> adjacentPatterns = UniqueAdjacentPatternTypes.Select(x => x.Value.ToString().PadLeft(10, ' ') + " " + x.Key).ToList();
+                    using (StreamWriter writer = new StreamWriter("UniqueAdjacentPatternTypes.txt", false))
+                    {
+                        foreach (var uniqueCubePatternHit in adjacentPatterns.OrderByDescending(x => x, StringComparer.Ordinal))
+                        {
+                            writer.WriteLine(uniqueCubePatternHit);
+                        }
+                    }
+                    adjacentPatterns = null;
+                }
+
+                {
+
+                    List<String> facePatterns2 = UniqueFacePatternTypes.Select(x => x.Key + " " + x.Value.ToString().PadLeft(10, ' ')).ToList();
+                    using (StreamWriter writer = new StreamWriter("UniqueFacePatternTypes2.txt", false))
+                    {
+                        foreach (var uniqueCubePatternHit in facePatterns2.OrderBy(x => x, StringComparer.Ordinal))
+                        {
+                            writer.WriteLine(uniqueCubePatternHit);
+                        }
+                    }
+                    facePatterns2 = null;
+                }
+
+                {
+                    List<String> adjacentPatterns2 = UniqueAdjacentPatternTypes.Select(x => x.Key + " " + x.Value.ToString().PadLeft(10, ' ')).ToList();
+                    using (StreamWriter writer = new StreamWriter("UniqueAdjacentPatternTypes2.txt", false))
+                    {
+                        foreach (var uniqueCubePatternHit in adjacentPatterns2.OrderBy(x => x, StringComparer.Ordinal))
+                        {
+                            writer.WriteLine(uniqueCubePatternHit);
+                        }
+                    }
+                    adjacentPatterns2 = null;
+                }
+
+                Console.WriteLine("\n\n**************** DONE GeneratePatternTypeStatistics ****************\n\n");
+            }
+            //GeneratePatternTypeStatistics();
+        }
+
         public static void GenerateStatistics()
         {
+            GeneratePatternTypeStatistics();
+
             Console.WriteLine("\n\n**************** START ****************\n\n");
             {
                 var cubeResults = new Dictionary<String, (Int32, Int32)>();
                 var faceResults = new Dictionary<String, (Int32, Int32)>();
+
+
                 String initalPattern = PatternLogic.GetCubePattern(Cube);
+
                 UpdateCubeCount(cubeResults, initalPattern);
                 UpdateFaceCount(faceResults, initalPattern);
                 {
                     var cubesPatterns = new List<String>();
-                    for (var i = 0; i < 500; i++)
+                    for (var i = 0; i < 400; i++)
                     {
                         cubesPatterns.Add(Scamble(Cube));
                     }
-
                     Parallel.ForEach(cubesPatterns, (pattern) =>
                     {
                         //try
                         //{
+
                             UpdateCubeCount(cubeResults, pattern);
                             UpdateFaceCount(faceResults, pattern);
                         //}
@@ -419,6 +653,7 @@ namespace RC
                 {
                     UpdateOrAddFaceStatistics(result.Key, result.Value.Item1, result.Value.Item2);
                 }
+
                 cubeResults = null;
                 faceResults = null;
             }
@@ -430,7 +665,7 @@ namespace RC
             Logic.Scramble(Cube, 20);
 
             {
-                List<String> list = UniqueCubePatterns.Select(x => x.Occurrences.ToString().PadLeft(5, '0') + " " + x.Pattern + " " + x.Variations).ToList();
+                List<String> list = UniqueCubePatterns.Select(x => x.Occurrences.ToString().PadLeft(5, ' ') + " " + x.Pattern + " " + x.Variations).ToList();
                 using (StreamWriter writer = new StreamWriter("UniqueCubePatterns.txt", false))
                 {
                     foreach (var uniqueCubePatternHit in list.OrderByDescending(x => x, StringComparer.Ordinal))
@@ -442,7 +677,7 @@ namespace RC
             }
 
             {
-                List<String> list = UniqueFacePatterns.Select(x => x.Value.Item2.ToString().PadLeft(5, '0') + " " + x.Key + " " + x.Value.Item1).ToList();
+                List<String> list = UniqueFacePatterns.Select(x => x.Value.Item2.ToString().PadLeft(5, ' ') + " " + x.Key + " " + x.Value.Item1).ToList();
                 using (StreamWriter writer = new StreamWriter("UniqueFacePatterns.txt", false))
                 {
                     foreach (var uniqueCubePatternHit in list.OrderByDescending(x => x, StringComparer.Ordinal))

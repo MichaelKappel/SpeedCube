@@ -10,14 +10,14 @@ namespace RC.Model
     public class CubePatternFaceModel
     {
         public CubePatternFaceModel(
-            PaternStickerTypes face52, PaternStickerTypes face60, PaternStickerTypes face07,
+            PaternStickerTypes face52, PaternStickerTypes face60, PaternStickerTypes face_7,
             PaternStickerTypes face15, PaternStickerTypes face00, PaternStickerTypes face22,
             PaternStickerTypes face30, PaternStickerTypes face37, PaternStickerTypes face45
             )
         {
             this.Face52 = face52;
             this.Face60 = face60;
-            this.Face07 = face07;
+            this.Face07 = face_7;
             this.Face15 = face15;
             this.Face00 = face00;
             this.Face22 = face22;

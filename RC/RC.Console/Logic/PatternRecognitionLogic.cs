@@ -3,6 +3,7 @@ using RC.Model;
 using RC.Model.Patterns;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,43 +26,19 @@ namespace RC.Logic
             return result;
         }
 
-        //public PatternNorthFaceResultModel GetFaceCompleteness(PieceNorthModel pieceMiddle, StickerColorTypes colorToCheck)
-        //{
-        //    StickerColorTypes f00 = pieceMiddle.Stickers.Single().StickerColorType;
-
-        //    StickerColorTypes f52;
-        //    StickerColorTypes f60;
-        //    StickerColorTypes f07;
-        //    StickerColorTypes f15;
-        //    StickerColorTypes f22;
-        //    StickerColorTypes f30;
-        //    StickerColorTypes f37;
-        //    StickerColorTypes f45;
-
-        //    var slotSideCount = new Dictionary<SlotSideModelBase, Int32>();
-
-        //    foreach (SlotSideModelBase slotSide in pieceMiddle.AdjacentSideSlots)
-        //    {
-        //        slotSide.AdjacentCornerSlots.Where(x => x.AdjacentSideSlots.)
-
-        //        foreach (SlotCornerModelBase slotCorner in slotSide.AdjacentCornerSlots)
-        //        {
-        //            slotCorner.GetStickers();
-
-        //            foreach (SlotSideModelBase slotCornerSide in slotCorner.AdjacentSideSlots)
-        //            {
-        //                slotCornerSide.GetStickers();
-
-        //            }
-        //        }
-        //    }
-        //}
-
         public PatternFaceResultModel GetFaceCompleteness(StickerColorTypes colorToCheck,
             StickerColorTypes t52, StickerColorTypes t60, StickerColorTypes t07,
             StickerColorTypes t45, StickerColorTypes t00, StickerColorTypes t15,
             StickerColorTypes t37, StickerColorTypes t30, StickerColorTypes t22, Int32 tryCount = 0)
         {
+
+            //Debug.Write($@" face pattern not found
+            //                {colorToCheck},
+            //                {t52}, {t60}, {t07},
+            //                {t45}, {t00}, {t15},
+            //                {t37}, {t30}, {t22},
+            //                {tryCount}");
+
             var result = new PatternFaceResultModel();
             result.MiddleColorType = t00;
             if (t52 == colorToCheck)
@@ -119,99 +96,99 @@ namespace RC.Logic
             {
                 if (t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.A1;
+                    result.Pattern = PatternFaceTypes.A01;
                 }
                 else if (result.Corners == 1)
                 {
-                    result.Pattern = PatternFaceTypes.A2;
+                    result.Pattern = PatternFaceTypes.A02;
                 }
                 else if (result.Sides == 1)
                 {
-                    result.Pattern = PatternFaceTypes.A3;
+                    result.Pattern = PatternFaceTypes.A03;
                 }
             }
             else if (result.Stickers == 2)
             {
                 if (t52 == colorToCheck && t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B1;
+                    result.Pattern = PatternFaceTypes.B01;
                 }
                 else if (t60 == colorToCheck && t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B2;
+                    result.Pattern = PatternFaceTypes.B02;
                 }
                 else if (t60 == colorToCheck && t15 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B3;
+                    result.Pattern = PatternFaceTypes.B03;
                 }
                 else if (t60 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B4;
+                    result.Pattern = PatternFaceTypes.B04;
                 }
                 else if (t52 == colorToCheck && t07 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B5;
+                    result.Pattern = PatternFaceTypes.B05;
                 }
                 else if (t52 == colorToCheck && t22 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B6;
+                    result.Pattern = PatternFaceTypes.B06;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B7;
+                    result.Pattern = PatternFaceTypes.B07;
                 }
                 else if (t52 == colorToCheck && t15 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B8;
+                    result.Pattern = PatternFaceTypes.B08;
                 }
                 else if (t52 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.B9;
+                    result.Pattern = PatternFaceTypes.B09;
                 }
             }
             else if (result.Stickers == 3)
             {
                 if (t60 == colorToCheck && t00 == colorToCheck && t15 == colorToCheck )
                 {
-                    result.Pattern = PatternFaceTypes.C1;
+                    result.Pattern = PatternFaceTypes.C01;
                 }
                 else if (t60 == colorToCheck && t00 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C2;
+                    result.Pattern = PatternFaceTypes.C02;
                 }
                 else if (t52 == colorToCheck && t07 == colorToCheck && t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C3;
+                    result.Pattern = PatternFaceTypes.C03;
                 }
                 else if (t52 == colorToCheck && t00 == colorToCheck && t22 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C4;
+                    result.Pattern = PatternFaceTypes.C04;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C5;
+                    result.Pattern = PatternFaceTypes.C05;
                 }
                 else if (t52 == colorToCheck && t00 == colorToCheck && t15 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C6;
+                    result.Pattern = PatternFaceTypes.C06;
                 }
                 else if (t60 == colorToCheck && t15 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C7;
+                    result.Pattern = PatternFaceTypes.C07;
                 }
                 else if (t52 == colorToCheck && t07 == colorToCheck && t22 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C8;
+                    result.Pattern = PatternFaceTypes.C08;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t15 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C9;
+                    result.Pattern = PatternFaceTypes.C09;
                 }
                 else if (t60 == colorToCheck && t07 == colorToCheck && t15 == colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.C10;
                 }
-                else if (t52 == colorToCheck && t60 == colorToCheck && t15 == colorToCheck)
+                else if (t52 == colorToCheck && t60 == colorToCheck && t22 == colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.C11;
                 }
@@ -239,60 +216,48 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.C17;
                 }
-                else if (t52 == colorToCheck && t60 == colorToCheck && t00 == colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.C18;
-                }
-                else if (t52 == colorToCheck && t00 == colorToCheck && t15 == colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.C19;
-                }
                 else if (t52 == colorToCheck && t15 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.C20;
-                }
-                else if (t52 == colorToCheck && t00 == colorToCheck && t30 == colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.C21;
+                    result.Pattern = PatternFaceTypes.C18;
                 }
             }
             else if (result.Stickers == 4)
             {
                 if (t52 == colorToCheck && t60 == colorToCheck && t07 == colorToCheck && t15 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D1;
+                    result.Pattern = PatternFaceTypes.D01;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t07 == colorToCheck && t00 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D2;
+                    result.Pattern = PatternFaceTypes.D02;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t07 == colorToCheck && t37 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D3;
+                    result.Pattern = PatternFaceTypes.D03;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t07 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D4;
+                    result.Pattern = PatternFaceTypes.D04;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t45 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D5;
+                    result.Pattern = PatternFaceTypes.D05;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t00 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D6;
+                    result.Pattern = PatternFaceTypes.D06;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t15 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D7;
+                    result.Pattern = PatternFaceTypes.D07;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t37 == colorToCheck && t30 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D8;
+                    result.Pattern = PatternFaceTypes.D08;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t30 == colorToCheck && t22 == colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.D9;
+                    result.Pattern = PatternFaceTypes.D09;
                 }
                 else if (t52 == colorToCheck && t60 == colorToCheck && t45 == colorToCheck && t00 == colorToCheck)
                 {
@@ -310,7 +275,7 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.D13;
                 }
-                else if (t52 == colorToCheck && t60 == colorToCheck && t30 == colorToCheck && t22 == colorToCheck)
+                else if (t52 == colorToCheck && t07 == colorToCheck && t00 == colorToCheck && t22 == colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.D14;
                 }
@@ -322,7 +287,7 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.D16;
                 }
-                else if (t52 == colorToCheck && t60 == colorToCheck && t15 == colorToCheck && t30 == colorToCheck)
+                else if (t52 == colorToCheck && t60 == colorToCheck && t00 == colorToCheck && t22 == colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.D17;
                 }
@@ -338,45 +303,60 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.D20;
                 }
-
+                else if (t52 == colorToCheck && t60 == colorToCheck && t15 == colorToCheck && t22 == colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.D21;
+                }
+                else if (t52 == colorToCheck && t07 == colorToCheck && t00 == colorToCheck && t30 == colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.D22;
+                }
+                else if (t52 == colorToCheck && t00 == colorToCheck && t15 == colorToCheck && t30 == colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.D23;
+                }
+                else if (t52 == colorToCheck && t60 == colorToCheck && t45 == colorToCheck && t22 == colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.D24;
+                }
             }
             else if (result.Stickers == 5)
             {
                 if (t15 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E1;
+                    result.Pattern = PatternFaceTypes.E01;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E2;
+                    result.Pattern = PatternFaceTypes.E02;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E3;
+                    result.Pattern = PatternFaceTypes.E03;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E4;
+                    result.Pattern = PatternFaceTypes.E04;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E5;
+                    result.Pattern = PatternFaceTypes.E05;
                 }
                 else if (t45 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E6;
+                    result.Pattern = PatternFaceTypes.E06;
                 }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E7;
+                    result.Pattern = PatternFaceTypes.E07;
                 }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E8;
+                    result.Pattern = PatternFaceTypes.E08;
                 }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.E9;
+                    result.Pattern = PatternFaceTypes.E09;
                 }
                 else if (t07 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
                 {
@@ -418,48 +398,89 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.E19;
                 }
+                //else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck)
+                //{
+                //    result.Pattern = PatternFaceTypes.E20;
+                //}
+                else if (t60 != colorToCheck && t07 != colorToCheck && t45 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E20;
+                }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.E20;
                 }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t00 != colorToCheck && t30 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E21;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E22;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E23;
+                }
+                else if (t45 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E24;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E25;
+                }
+                else if (t60 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E26;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t00 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E27;
+                }
+                else if (t52 != colorToCheck && t00 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.E28;
+                }
+                
             }
             else if (result.Stickers == 6)
             {
                 if (t37 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F1;
+                    result.Pattern = PatternFaceTypes.F01;
                 }
                 else if (t15 != colorToCheck && t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F2;
+                    result.Pattern = PatternFaceTypes.F02;
                 }
                 else if (t15 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F3;
+                    result.Pattern = PatternFaceTypes.F03;
                 }
                 else if (t15 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F4;
+                    result.Pattern = PatternFaceTypes.F04;
                 }
                 else if (t00 != colorToCheck && t37 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F5;
+                    result.Pattern = PatternFaceTypes.F05;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F6;
+                    result.Pattern = PatternFaceTypes.F06;
                 }
                 else if (t00 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F7;
+                    result.Pattern = PatternFaceTypes.F07;
                 }
                 else if (t45 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F8;
+                    result.Pattern = PatternFaceTypes.F08;
                 }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t37 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F9;
+                    result.Pattern = PatternFaceTypes.F09;
                 }
                 else if (t45 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck)
                 {
@@ -469,68 +490,84 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternFaceTypes.F11;
                 }
-                else if (t45 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
+                else if (t45 != colorToCheck && t15 != colorToCheck && t30 != colorToCheck)
                 {
                     result.Pattern = PatternFaceTypes.F12;
                 }
-                else if (t07 != colorToCheck && t00 != colorToCheck && t15 != colorToCheck)
+                else if (t00 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.F11;
+                    result.Pattern = PatternFaceTypes.F13;
+                }
+                else if (t07 != colorToCheck && t15 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F14;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F15;
+                }
+                else if (t07 != colorToCheck && t45 != colorToCheck && t30 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F16;
+                }
+                else if (t07 != colorToCheck && t00 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F17;
+                }
+                else if (t07 != colorToCheck && t37 != colorToCheck && t22 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.F18;
                 }
             }
             else if (result.Stickers == 7)
             {
                 if (t30 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.G1;
+                    result.Pattern = PatternFaceTypes.G01;
                 }
                 else if (t37 != colorToCheck && t22 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.G2;
-                }
-                else if (t52 != colorToCheck && t22 != colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.G3;
-                }
-                else if (t15 != colorToCheck && t30 != colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.G4;
-                }
-                else if (t15 != colorToCheck && t37 != colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.G5;
-                }
-                else if (t00 != colorToCheck && t37 != colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.G6;
-                }
-                else if (t00 != colorToCheck && t15 != colorToCheck)
-                {
-                    result.Pattern = PatternFaceTypes.G7;
+                    result.Pattern = PatternFaceTypes.G02;
                 }
                 else if (t45 != colorToCheck && t15 != colorToCheck)
                 {
-                    result.Pattern = PatternFaceTypes.G8;
+                    result.Pattern = PatternFaceTypes.G03;
+                }
+                else if (t15 != colorToCheck && t30 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.G04;
+                }
+                else if (t15 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.G05;
+                }
+                else if (t00 != colorToCheck && t37 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.G06;
+                }
+                else if (t00 != colorToCheck && t15 != colorToCheck)
+                {
+                    result.Pattern = PatternFaceTypes.G07;
                 }
             }
             else if (result.Stickers == 8)
             {
                 if (result.Corners == 3)
                 {
-                    result.Pattern = PatternFaceTypes.H1;
+                    result.Pattern = PatternFaceTypes.H01;
                 }
                 else if (result.Sides == 3)
                 {
-                    result.Pattern = PatternFaceTypes.H2;
+                    result.Pattern = PatternFaceTypes.H02;
                 }
                 else if (result.Middles == 0)
                 {
-                    result.Pattern = PatternFaceTypes.H3;
+                    result.Pattern = PatternFaceTypes.H03;
                 }
             }
             else if (result.Stickers == 9)
             {
-                result.Pattern = PatternFaceTypes.I1;
+                result.Pattern = PatternFaceTypes.I01;
             }
             tryCount += 1;
             if (result.Pattern == PatternFaceTypes.Unknown)
@@ -563,7 +600,7 @@ namespace RC.Logic
                 {
                     throw new Exception($@" face pattern not found
                             {colorToCheck},
-                            {t52}, {t60}, {t22},
+                            {t52}, {t60}, {t07},
                             {t45}, {t00}, {t15},
                             {t37}, {t30}, {t22},
                             {tryCount}");
@@ -583,6 +620,16 @@ namespace RC.Logic
             /*                                   */StickerColorTypes s
             ,Int32 tryCount = 0)
         {
+
+            //Debug.Write($@"adjacent pattern not found
+            //                {colorToCheck},
+            //                        {n},
+            //                        {nw}, {ne},
+            //                        {wm}, {w}, {e}, {em},
+            //                        {sw}, {se},
+            //                        {s},
+            //                { tryCount}
+            //        ");
 
             var result = new PatternAdjacentResultModel();
 
@@ -649,58 +696,58 @@ namespace RC.Logic
             {
                 if (n == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.A1;
+                    result.Pattern = PatternAdjacentTypes.A01;
                 }
                 else if (nw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.A2;
+                    result.Pattern = PatternAdjacentTypes.A02;
                 }
                 else if (w == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.A3;
+                    result.Pattern = PatternAdjacentTypes.A03;
                 }
                 else if (wm == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.A4;
+                    result.Pattern = PatternAdjacentTypes.A04;
                 }
             }
             else if (result.Stickers == 2)
             {
                 if (n == colorToCheck && wm == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B1;
+                    result.Pattern = PatternAdjacentTypes.B01;
                 }
                 else if (n == colorToCheck && w == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B2;
+                    result.Pattern = PatternAdjacentTypes.B02;
                 }
                 else if (n == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B3;
+                    result.Pattern = PatternAdjacentTypes.B03;
                 }
                 else if (n == colorToCheck && s == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B4;
+                    result.Pattern = PatternAdjacentTypes.B04;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B5;
+                    result.Pattern = PatternAdjacentTypes.B05;
                 }
                 else if (nw == colorToCheck && w == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B6;
+                    result.Pattern = PatternAdjacentTypes.B06;
                 }
                 else if (nw == colorToCheck && e == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B7;
+                    result.Pattern = PatternAdjacentTypes.B07;
                 }
                 else if (nw == colorToCheck && em == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B8;
+                    result.Pattern = PatternAdjacentTypes.B08;
                 }
                 else if (nw == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.B9;
+                    result.Pattern = PatternAdjacentTypes.B09;
                 }
                 else if (nw == colorToCheck && se == colorToCheck)
                 {
@@ -719,39 +766,39 @@ namespace RC.Logic
             {
                 if (n == colorToCheck && wm == colorToCheck && w == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C1;
+                    result.Pattern = PatternAdjacentTypes.C01;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C2;
+                    result.Pattern = PatternAdjacentTypes.C02;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && s == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C3;
+                    result.Pattern = PatternAdjacentTypes.C03;
                 }
                 else if (n == colorToCheck && w == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C4;
+                    result.Pattern = PatternAdjacentTypes.C04;
                 }
                 else if (n == colorToCheck && w == colorToCheck && s == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C5;
+                    result.Pattern = PatternAdjacentTypes.C05;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck && w == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C6;
+                    result.Pattern = PatternAdjacentTypes.C06;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck && e == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C7;
+                    result.Pattern = PatternAdjacentTypes.C07;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C8;
+                    result.Pattern = PatternAdjacentTypes.C08;
                 }
                 else if (nw == colorToCheck && w == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C9;
+                    result.Pattern = PatternAdjacentTypes.C09;
                 }
                 else if (nw == colorToCheck && e == colorToCheck && em == colorToCheck)
                 {
@@ -785,80 +832,68 @@ namespace RC.Logic
                 {
                     result.Pattern = PatternAdjacentTypes.C17;
                 }
-                else if (n == colorToCheck && w == colorToCheck && sw == colorToCheck)
-                {
-                    result.Pattern = PatternAdjacentTypes.C18;
-                }
                 else if (n == colorToCheck && w == colorToCheck && se == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.C19;
+                    result.Pattern = PatternAdjacentTypes.C18;
                 }
             }
             else
             {
                 if (n == colorToCheck && wm == colorToCheck && w == colorToCheck && s == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D1;
+                    result.Pattern = PatternAdjacentTypes.D01;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && e == colorToCheck && s == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D2;
+                    result.Pattern = PatternAdjacentTypes.D02;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && w == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D3;
+                    result.Pattern = PatternAdjacentTypes.D03;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && w == colorToCheck && se == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D4;
+                    result.Pattern = PatternAdjacentTypes.D04;
                 }
                 else if (n == colorToCheck && wm == colorToCheck && e == colorToCheck && se == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D5;
+                    result.Pattern = PatternAdjacentTypes.D05;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck && w == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D6;
+                    result.Pattern = PatternAdjacentTypes.D06;
                 }
                 else if (nw == colorToCheck && e == colorToCheck && em == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D7;
+                    result.Pattern = PatternAdjacentTypes.D07;
                 }
                 else if (nw == colorToCheck && w == colorToCheck && em == colorToCheck && sw == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D8;
+                    result.Pattern = PatternAdjacentTypes.D08;
                 }
                 else if (nw == colorToCheck && wm == colorToCheck && w == colorToCheck && se == colorToCheck)
                 {
-                    result.Pattern = PatternAdjacentTypes.D9;
+                    result.Pattern = PatternAdjacentTypes.D09;
                 }
                 else if (nw == colorToCheck && e == colorToCheck && em == colorToCheck && se == colorToCheck)
                 {
                     result.Pattern = PatternAdjacentTypes.D10;
                 }
-                else if (n == colorToCheck && nw == colorToCheck && e == colorToCheck && em == colorToCheck)
+                else if (nw == colorToCheck && wm == colorToCheck && e == colorToCheck && sw == colorToCheck)
                 {
                     result.Pattern = PatternAdjacentTypes.D11;
                 }
-                else if (n == colorToCheck && nw == colorToCheck && e == colorToCheck && se == colorToCheck)
+                else if (n == colorToCheck && w == colorToCheck && em == colorToCheck && sw == colorToCheck)
                 {
                     result.Pattern = PatternAdjacentTypes.D12;
                 }
-                else if (n == colorToCheck && nw == colorToCheck && em == colorToCheck && se == colorToCheck)
+                else if (nw == colorToCheck && w == colorToCheck && em == colorToCheck && se == colorToCheck)
                 {
                     result.Pattern = PatternAdjacentTypes.D13;
                 }
-                else if (nw == colorToCheck && wm == colorToCheck && e == colorToCheck && sw == colorToCheck)
+                else if (n == colorToCheck && wm == colorToCheck && e == colorToCheck && sw == colorToCheck)
                 {
                     result.Pattern = PatternAdjacentTypes.D14;
-                }
-                else if (n == colorToCheck && w == colorToCheck && em == colorToCheck && sw == colorToCheck)
-                {
-                    result.Pattern = PatternAdjacentTypes.D15;
-                }
-                else if (nw == colorToCheck && w == colorToCheck && em == colorToCheck && se == colorToCheck)
-                {
-                    result.Pattern = PatternAdjacentTypes.D16;
                 }
             }
 

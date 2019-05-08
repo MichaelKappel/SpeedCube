@@ -29,147 +29,147 @@ namespace RC.Enumerations
         /// | X O X |
         /// | X X X |
         /// </summary>
-        A1,
+        A01,
 
         /// <summary>
         /// | O X X |
         /// | X X X |
         /// | X X X |
         /// </summary>
-        A2,
+        A02,
 
         /// <summary>
         /// | X O X |
         /// | X X X |
         /// | X X X |
         /// </summary>
-        A3,
+        A03,
 
         /// <summary>
         /// | O X X |
         /// | X O X |
         /// | X X X |
         /// </summary>
-        B1,
+        B01,
 
         /// <summary>
         /// | X O X |
         /// | X O X |
         /// | X X X |
         /// </summary>
-        B2,
+        B02,
 
         /// <summary>
         /// | X O X |
         /// | X X O |
         /// | X X X |
         /// </summary>
-        B3,
+        B03,
 
         /// <summary>
         /// | X O X |
         /// | X X X |
         /// | X O X |
         /// </summary>
-        B4,
+        B04,
 
         /// <summary>
         /// | O X O |
         /// | X X X |
         /// | X X X |
         /// </summary>
-        B5,
+        B05,
 
         /// <summary>
         /// | O X X |
         /// | X X X |
         /// | X X O |
         /// </summary>
-        B6,
+        B06,
 
         /// <summary>
         /// | O O X |
         /// | X X X |
         /// | X X X |
         /// </summary>
-        B7,
+        B07,
 
         /// <summary>
         /// | O X X |
         /// | X X O |
         /// | X X X |
         /// </summary>
-        B8,
+        B08,
 
         /// <summary>
         /// | O X X |
         /// | X X X |
         /// | X O X |
         /// </summary>
-        B9,
+        B09,
 
         /// <summary>
         /// | X O X |
         /// | X O O |
         /// | X X X |
         /// </summary>
-        C1,
+        C01,
 
         /// <summary>
         /// | X O X |
         /// | X O X |
         /// | X O X |
         /// </summary>
-        C2,
+        C02,
 
         /// <summary>
         /// | O X O |
         /// | X O X |
         /// | X X X |
         /// </summary>
-        C3,
+        C03,
 
         /// <summary>
         /// | O X X |
         /// | X O X |
         /// | X X O |
         /// </summary>
-        C4,
+        C04,
 
         /// <summary>
         /// | O O X |
         /// | X O X |
         /// | X X X |
         /// </summary>
-        C5,
+        C05,
 
         /// <summary>
         /// | O X X |
         /// | X O O |
         /// | X X X |
         /// </summary>
-        C6,
+        C06,
 
         /// <summary>
         /// | X O X |
         /// | X X O |
         /// | X O X |
         /// </summary>
-        C7,
+        C07,
 
         /// <summary>
         /// | O X O |
         /// | X X X |
         /// | X X O |
         /// </summary>
-        C8,
+        C08,
 
         /// <summary>
         /// | O O X |
         /// | X X O |
         /// | X X X |
         /// </summary>
-        C9,
+        C09,
 
 
         /// <summary>
@@ -181,8 +181,8 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O O X |
-        /// | X X O |
         /// | X X X |
+        /// | X X O |
         /// </summary>
         C11,
 
@@ -229,95 +229,74 @@ namespace RC.Enumerations
         C17,
 
         /// <summary>
-        /// | O O X |
+        /// | O X X |
+        /// | X X O |
         /// | X O X |
-        /// | X X X |
         /// </summary>
         C18,
 
         /// <summary>
-        /// | O X X |
-        /// | X O O |
-        /// | X X X |
-        /// </summary>
-        C19,
-
-        /// <summary>
-        /// | O X X |
-        /// | X X O |
-        /// | X O X |
-        /// </summary>
-        C20,
-
-        /// <summary>
-        /// | O X X |
-        /// | X O X |
-        /// | X O X |
-        /// </summary>
-        C21,
-
-        /// <summary>
         /// | O O O |
         /// | O X X |
         /// | X X X |
         /// </summary>
-        D1,
+        D01,
 
         /// <summary>
         /// | O O O |
         /// | X O X |
         /// | X X X |
         /// </summary>
-        D2,
+        D02,
 
         /// <summary>
         /// | O O O |
         /// | X X X |
         /// | O X X |
         /// </summary>
-        D3,
+        D03,
 
         /// <summary>
         /// | O O O |
         /// | X X X |
         /// | X O X |
         /// </summary>
-        D4,
+        D04,
 
         /// <summary>
         /// | O O X |
         /// | O X X |
         /// | X O X |
         /// </summary>
-        D5,
+        D05,
 
         /// <summary>
         /// | O O X |
         /// | X O X |
         /// | X O X |
         /// </summary>
-        D6,
+        D06,
 
         /// <summary>
         /// | O O X |
         /// | X X O |
         /// | X O X |
         /// </summary>
-        D7,
+        D07,
 
         /// <summary>
         /// | O O X |
         /// | X X X |
         /// | O O X |
         /// </summary>
-        D8,
+        D08,
 
         /// <summary>
         /// | O O X |
         /// | X X X |
         /// | X O O |
         /// </summary>
-        D9,
+        D09,
 
         /// <summary>
         /// | O O X |
@@ -348,13 +327,6 @@ namespace RC.Enumerations
         D13,
 
         /// <summary>
-        /// | O O X |
-        /// | X X X |
-        /// | X O O |
-        /// </summary>
-        D14,
-
-        /// <summary>
         /// | X O X |
         /// | O O O |
         /// | X X X |
@@ -370,8 +342,8 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O O X |
-        /// | X X O |
         /// | X O X |
+        /// | X X O |
         /// </summary>
         D17,
 
@@ -390,74 +362,109 @@ namespace RC.Enumerations
         D19,
 
         /// <summary>
-        /// | O O X |
-        /// | X O O |
-        /// | X X X |
+        /// | O X O |
+        /// | X X O |
+        /// | X X O |
         /// </summary>
         D20,
 
         /// <summary>
+        /// | O O X |
+        /// | X X O |
+        /// | X X O |
+        /// </summary>
+        D21,
+
+        /// <summary>
+        /// | O X O |
+        /// | X O X |
+        /// | X O X |
+        /// </summary>
+        D22,
+
+        /// <summary>
+        /// | O X X |
+        /// | X O O |
+        /// | X O X |
+        /// </summary>
+        D23,
+
+        /// <summary>
+        /// | O O X |
+        /// | O X X |
+        /// | X X O |
+        /// </summary>
+        D24,
+
+        /// <summary>
+        /// | O X O |
+        /// | X O X |
+        /// | X X O |
+        /// </summary>
+        D14,
+
+        /// <summary>
         /// | O O O |
         /// | O O X |
         /// | X X X |
         /// </summary>
-        E1,
-
-        /// <summary>
-        /// | O O O |
-        /// | O X O |
-        /// | X X X |
-        /// </summary>
-        E2,
+        E01,
 
         /// <summary>
         /// | O O O |
         /// | O X X |
         /// | O X X |
         /// </summary>
-        E3,
+        E02,
+
+        /// <summary>
+        /// | O O O |
+        /// | O X X |
+        /// | O X X |
+        /// </summary>
+        E03,
 
         /// <summary>
         /// | O O O |
         /// | O X X |
         /// | X O X |
         /// </summary>
-        E4,
+        E04,
 
         /// <summary>
         /// | O O O |
         /// | O X X |
         /// | X X O |
         /// </summary>
-        E5,
+        E05,
 
         /// <summary>
         /// | O O O |
         /// | X O X |
         /// | X X O |
         /// </summary>
-        E6,
+        E06,
 
         /// <summary>
         /// | O O O |
         /// | X X O |
         /// | X X O |
         /// </summary>
-        E7,
+        E07,
 
         /// <summary>
         /// | O O O |
         /// | X X X |
         /// | O X O |
         /// </summary>
-        E8,
+        E08,
 
         /// <summary>
         /// | O O O |
         /// | X X X |
         /// | X O O |
         /// </summary>
-        E9,
+        E09,
 
         /// <summary>
         /// | O O X |
@@ -537,67 +544,123 @@ namespace RC.Enumerations
         E20,
 
         /// <summary>
+        /// | O O X |
+        /// | X X O |
+        /// | O X O |
+        /// </summary>
+        E21,
+
+        /// <summary>
+        /// | O O X |
+        /// | X O O |
+        /// | X O X |
+        /// </summary>
+        E22,
+
+        /// <summary>
+        /// | O O X |
+        /// | X O O |
+        /// | O X X |
+        /// </summary>
+        E23,
+
+        /// <summary>
+        /// | O O O |
+        /// | X O X |
+        /// | X O X |
+        /// </summary>
+        E24,
+
+        /// <summary>
+        /// | O O X |
+        /// | X O O |
+        /// | X X O |
+        /// </summary>
+        E25,
+
+        /// <summary>
+        /// | O X O |
+        /// | O O O |
+        /// | X X X |
+        /// </summary>
+        E26,
+
+        /// <summary>
+        /// | O O X |
+        /// | X X O |
+        /// | O O X |
+        /// </summary>
+        E27,
+
+        /// <summary>
+        /// | X O O |
+        /// | O X O |
+        /// | X O X |
+        /// </summary>
+        E28,
+
+        /// <summary>
         /// | O O O |
         /// | O O O |
         /// | X X X |
         /// </summary>
-        F1,
+        F01,
 
         /// <summary>
         /// | O O O |
         /// | O O X |
         /// | O X X |
         /// </summary>
-        F2,
+        F02,
 
         /// <summary>
         /// | O O O |
         /// | O O X |
         /// | X O X |
         /// </summary>
-        F3,
+        F03,
 
         /// <summary>
         /// | O O O |
         /// | O O X |
         /// | X X O |
         /// </summary>
-        F4,
+        F04,
 
         /// <summary>
         /// | O O O |
         /// | O X O |
         /// | X X O |
         /// </summary>
-        F5,
+        F05,
 
         /// <summary>
         /// | O O O |
         /// | O X X |
         /// | O X O |
         /// </summary>
-        F6,
+        F06,
 
         /// <summary>
         /// | O O O |
         /// | O X X |
         /// | X O O |
         /// </summary>
-        F7,
+        F07,
 
         /// <summary>
         /// | O O O |
         /// | X O X |
         /// | X O O |
         /// </summary>
-        F8,
+        F08,
 
         /// <summary>
         /// | O O O |
         /// | X X O |
         /// | X O O |
         /// </summary>
-        F9,
+        F09,
 
         /// <summary>
         /// | O O O |
@@ -616,7 +679,7 @@ namespace RC.Enumerations
         /// <summary>
         /// | O O O |
         /// | X O X |
-        /// | X O O |
+        /// | O X O |
         /// </summary>
         F12,
 
@@ -628,92 +691,116 @@ namespace RC.Enumerations
         F13,
 
         /// <summary>
+        /// | O O X |
+        /// | O O X |
+        /// | X O O |
+        /// </summary>
+        F14,
+
+        /// <summary>
+        /// | O O X |
+        /// | X O O |
+        /// | O O X |
+        /// </summary>
+        F15,
+
+        /// <summary>
+        /// | O O X |
+        /// | X O O |
+        /// | O X O |
+        /// </summary>
+        F16,
+
+        /// <summary>
+        /// | O O X |
+        /// | O X O |
+        /// | X O O |
+        /// </summary>
+        F17,
+
+        /// <summary>
+        /// | O O X |
+        /// | O O O |
+        /// | X O X |
+        /// </summary>
+        F18,
+
+        /// <summary>
         /// | O O O |
         /// | O O O |
         /// | O X X |
         /// </summary>
-        G1,
+        G01,
 
         /// <summary>
         /// | O O O |
         /// | O O O |
         /// | X O X |
         /// </summary>
-        G2,
-
-        /// <summary>
-        /// | X O O |
-        /// | O O O |
-        /// | O O X |
-        /// </summary>
-        G3,
-
-        /// <summary>
-        /// | O O O |
-        /// | O O X |
-        /// | O X O |
-        /// </summary>
-        G4,
-
-        /// <summary>
-        /// | O O O |
-        /// | O O X |
-        /// | X O O |
-        /// </summary>
-        G5,
-
-        /// <summary>
-        /// | O O O |
-        /// | O X O |
-        /// | X O O |
-        /// </summary>
-        G6,
-
-        /// <summary>
-        /// | O O O |
-        /// | O X X |
-        /// | O O O |
-        /// </summary>
-        G7,
+        G02,
 
         /// <summary>
         /// | O O O |
         /// | X O X |
         /// | O O O |
         /// </summary>
-        G8,
+        G03,
+
+        /// <summary>
+        /// | O O O |
+        /// | O O X |
+        /// | O X O |
+        /// </summary>
+        G04,
+
+        /// <summary>
+        /// | O O O |
+        /// | O O X |
+        /// | X O O |
+        /// </summary>
+        G05,
+
+        /// <summary>
+        /// | O O O |
+        /// | O X O |
+        /// | X O O |
+        /// </summary>
+        G06,
+
+        /// <summary>
+        /// | O O O |
+        /// | O X X |
+        /// | O O O |
+        /// </summary>
+        G07,
 
         /// <summary>
         /// | O O O |
         /// | O O O |
         /// | O O X |
         /// </summary>
-        H1,
+        H01,
 
         /// <summary>
         /// | O O O |
         /// | O O O |
         /// | O X O |
         /// </summary>
-        H2,
+        H02,
 
         /// <summary>
         /// | O O O |
         /// | O X O |
         /// | O O O |
         /// </summary>
-        H3,
+        H03,
 
         /// <summary>
         /// | O O O |
         /// | O O O |
         /// | O O O |
         /// </summary>
-        I1
+        I01
     }
 
 }
-
-// | X X X |
-// | X X X |
-// | X X X |

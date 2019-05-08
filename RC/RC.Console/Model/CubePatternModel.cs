@@ -150,7 +150,7 @@ namespace RC.Model
 
         public PaternStickerTypes Back52 { get; protected set; }
         public PaternStickerTypes Back60 { get; protected set; }
-        public PaternStickerTypes Back07 { get; protected set; }
+        public PaternStickerTypes Back_7 { get; protected set; }
         public PaternStickerTypes Back15 { get; protected set; }
         public PaternStickerTypes Back00 { get; protected set; }
         public PaternStickerTypes Back22 { get; protected set; }
