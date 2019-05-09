@@ -458,7 +458,7 @@ namespace RC
         {
             String result = $"C:{stickerColorType}|F[";
 
-            PatternStatisticModel patternStatistic = PatternRecognition.GetCompleteness(cube, stickerColorType);
+            PatternStatisticModel patternStatistic = PatternRecognition.GetPatternStatisticModel(cube, stickerColorType);
             foreach (var patternFaceResult in patternStatistic.PatternFaceResults)
             {
                 if (patternFaceResult.Pattern != PatternFaceTypes.None)
@@ -501,7 +501,7 @@ namespace RC
         {
             String result = $"C:{stickerColorType}|";
 
-            PatternStatisticModel patternStatistic = PatternRecognition.GetCompleteness(cube, stickerColorType);
+            PatternStatisticModel patternStatistic = PatternRecognition.GetPatternStatisticModel(cube, stickerColorType);
             foreach (var patternFaceResult in patternStatistic.PatternFaceResults)
             {
                 if (patternFaceResult.Pattern != PatternFaceTypes.None)

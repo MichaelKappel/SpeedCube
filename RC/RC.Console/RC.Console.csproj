@@ -85,6 +85,8 @@
     <Compile Include="Logic\PatternRecognitionLogic.cs" />
     <Compile Include="Model\Base\SlotMiddleModelBase.cs" />
     <Compile Include="Model\CubePatternSegments.cs" />
+    <Compile Include="Model\Patterns\PatternAdjacentModel.cs" />
+    <Compile Include="Model\Patterns\PatternFaceWithAdjacentsModel.cs" />
     <Compile Include="Model\Stickers\StickerFrontModel.cs" />
     <Compile Include="Model\Stickers\StickerBackModel.cs" />
     <Compile Include="Model\Base\StickerModelBase.cs" />

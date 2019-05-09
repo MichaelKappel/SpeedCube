@@ -102,13 +102,6 @@ namespace RC.Enumerations
         B08,
 
         /// <summary>
-        /// | O X X |
-        /// | X X X |
-        /// | X O X |
-        /// </summary>
-        B09,
-
-        /// <summary>
         /// | X O X |
         /// | X O O |
         /// | X X X |
@@ -171,7 +164,6 @@ namespace RC.Enumerations
         /// </summary>
         C09,
 
-
         /// <summary>
         /// | X O O |
         /// | X X O |
@@ -195,14 +187,14 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O X O |
-        /// | X X O |
         /// | X X X |
+        /// | X O X |
         /// </summary>
         C13,
 
         /// <summary>
-        /// | O X O |
-        /// | X X X |
+        /// | O X X |
+        /// | X X O |
         /// | X O X |
         /// </summary>
         C14,
@@ -220,20 +212,6 @@ namespace RC.Enumerations
         /// | O X X |
         /// </summary>
         C16,
-
-        /// <summary>
-        /// | X O X |
-        /// | O O X |
-        /// | X X X |
-        /// </summary>
-        C17,
-
-        /// <summary>
-        /// | O X X |
-        /// | X X O |
-        /// | X O X |
-        /// </summary>
-        C18,
 
         /// <summary>
         /// | O O O |
@@ -327,9 +305,16 @@ namespace RC.Enumerations
         D13,
 
         /// <summary>
+        /// | O X O |
         /// | X O X |
-        /// | O O O |
-        /// | X X X |
+        /// | X X O |
+        /// </summary>
+        D14,
+
+        /// <summary>
+        /// | O O X |
+        /// | O X X |
+        /// | X X O |
         /// </summary>
         D15,
 
@@ -390,20 +375,6 @@ namespace RC.Enumerations
         D23,
 
         /// <summary>
-        /// | O O X |
-        /// | O X X |
-        /// | X X O |
-        /// </summary>
-        D24,
-
-        /// <summary>
-        /// | O X O |
-        /// | X O X |
-        /// | X X O |
-        /// </summary>
-        D14,
-
-        /// <summary>
         /// | O O O |
         /// | O O X |
         /// | X X X |
@@ -418,9 +389,9 @@ namespace RC.Enumerations
         E02,
 
         /// <summary>
-        /// | O O O |
-        /// | O X X |
-        /// | O X X |
+        /// | O O X |
+        /// | O O X |
+        /// | X X O |
         /// </summary>
         E03,
 
@@ -446,9 +417,9 @@ namespace RC.Enumerations
         E06,
 
         /// <summary>
-        /// | O O O |
+        /// | O O X |
         /// | X X O |
-        /// | X X O |
+        /// | O O X |
         /// </summary>
         E07,
 
@@ -482,15 +453,15 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O O X |
-        /// | X X O |
         /// | X O O |
+        /// | O X X |
         /// </summary>
         E12,
 
         /// <summary>
-        /// | O O X |
-        /// | X X X |
         /// | O O O |
+        /// | X O X |
+        /// | X O X |
         /// </summary>
         E13,
 
@@ -530,16 +501,16 @@ namespace RC.Enumerations
         E18,
 
         /// <summary>
-        /// | O O O |
-        /// | O O X |
-        /// | X X X |
+        /// | X O O |
+        /// | O X O |
+        /// | X O X |
         /// </summary>
         E19,
 
         /// <summary>
+        /// | O X O |
         /// | O O O |
         /// | X X X |
-        /// | O X O |
         /// </summary>
         E20,
 
@@ -560,44 +531,9 @@ namespace RC.Enumerations
         /// <summary>
         /// | O O X |
         /// | X O O |
-        /// | O X X |
+        /// | X X O |
         /// </summary>
         E23,
-
-        /// <summary>
-        /// | O O O |
-        /// | X O X |
-        /// | X O X |
-        /// </summary>
-        E24,
-
-        /// <summary>
-        /// | O O X |
-        /// | X O O |
-        /// | X X O |
-        /// </summary>
-        E25,
-
-        /// <summary>
-        /// | O X O |
-        /// | O O O |
-        /// | X X X |
-        /// </summary>
-        E26,
-
-        /// <summary>
-        /// | O O X |
-        /// | X X O |
-        /// | O O X |
-        /// </summary>
-        E27,
-
-        /// <summary>
-        /// | X O O |
-        /// | O X O |
-        /// | X O X |
-        /// </summary>
-        E28,
 
         /// <summary>
         /// | O O O |
@@ -656,9 +592,9 @@ namespace RC.Enumerations
         F08,
 
         /// <summary>
+        /// | O O X |
         /// | O O O |
-        /// | X X O |
-        /// | X O O |
+        /// | X O X |
         /// </summary>
         F09,
 
@@ -671,8 +607,8 @@ namespace RC.Enumerations
 
         /// <summary>
         /// | O O X |
-        /// | O X X |
-        /// | O O O |
+        /// | O X O |
+        /// | X O O |
         /// </summary>
         F11,
 
@@ -710,20 +646,6 @@ namespace RC.Enumerations
         /// | O X O |
         /// </summary>
         F16,
-
-        /// <summary>
-        /// | O O X |
-        /// | O X O |
-        /// | X O O |
-        /// </summary>
-        F17,
-
-        /// <summary>
-        /// | O O X |
-        /// | O O O |
-        /// | X O X |
-        /// </summary>
-        F18,
 
         /// <summary>
         /// | O O O |
@@ -773,6 +695,13 @@ namespace RC.Enumerations
         /// | O O O |
         /// </summary>
         G07,
+
+        /// <summary>
+        /// | O O X |
+        /// | O O O |
+        /// | X O O |
+        /// </summary>
+        G08,
 
         /// <summary>
         /// | O O O |
