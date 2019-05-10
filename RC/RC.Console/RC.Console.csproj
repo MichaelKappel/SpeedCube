@@ -63,10 +63,12 @@
     <Compile Include="Enumerations\PatternAdjacentStickerTypes.cs" />
     <Compile Include="Enumerations\PatternAdjacentTypes.cs" />
     <Compile Include="Enumerations\PatternCubeTypes.cs" />
+    <Compile Include="Enumerations\PatternAdjacentFlipTypes.cs" />
     <Compile Include="Enumerations\PatternFaceTypes.cs" />
     <Compile Include="Enumerations\PositionCornerTypes.cs" />
     <Compile Include="Enumerations\PositionMiddleTypes.cs" />
     <Compile Include="Enumerations\PositionSideTypes.cs" />
+    <Compile Include="Enumerations\PatternFaceRotationTypes.cs" />
     <Compile Include="Enumerations\RotationTypes.cs" />
     <Compile Include="Extensions\CubePatternExtensions.cs" />
     <Compile Include="Interfaces\ICopySidePieceModel.cs" />
@@ -81,6 +83,8 @@
     <Compile Include="Logic\CubeFacePatternLogic.cs" />
     <Compile Include="Logic\CubePatternLogic.cs" />
     <Compile Include="Logic\LogicBase.cs" />
+    <Compile Include="Model\Patterns\PatternAdjacentBitModel.cs" />
+    <Compile Include="Model\Patterns\PatternFaceBitModel.cs.cs" />
     <Compile Include="Logic\PatternLogicBase.cs" />
     <Compile Include="Logic\PatternRecognitionLogic.cs" />
     <Compile Include="Model\Base\SlotMiddleModelBase.cs" />

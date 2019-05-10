@@ -77,6 +77,18 @@ namespace RC
                 //GeneratePatternTypeStatistics();
                 GenerateStatistics();
             }
+            else if (command.ToUpper() == "ORANGE")
+            {
+                PatternRecognition.GetCubePatternModel(Cube, StickerColorTypes.Orange);
+            }
+            else if (command.ToUpper() == "BLUE")
+            {
+                PatternRecognition.GetCubePatternModel(Cube, StickerColorTypes.Blue);
+            }
+            else if (command.ToUpper() == "WHITE")
+            {
+                PatternRecognition.GetCubePatternModel(Cube, StickerColorTypes.White);
+            }
             else if (command.Trim().Length > 100)
             {
                 logic.SetDetailedCubeState(Cube, PatternLogic.GetCubePatternDetail(command));

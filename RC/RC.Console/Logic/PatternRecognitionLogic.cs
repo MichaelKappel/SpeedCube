@@ -3,29 +3,27 @@ using RC.Model;
 using RC.Model.Patterns;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RC.Logic
 {
     public class PatternRecognitionLogic
     {
-        public Dictionary<StickerColorTypes, PatternResultModel> GetCompletenessDictionary()
-        {
-            var result = new Dictionary<StickerColorTypes, PatternResultModel>(6);
+        //public Dictionary<StickerColorTypes, PatternResultModel> GetCompletenessDictionary()
+        //{
+        //    var result = new Dictionary<StickerColorTypes, PatternResultModel>(6);
 
-            result.Add(StickerColorTypes.Blue, new PatternResultModel());
-            result.Add(StickerColorTypes.Green, new PatternResultModel());
-            result.Add(StickerColorTypes.Orange, new PatternResultModel());
-            result.Add(StickerColorTypes.Red, new PatternResultModel());
-            result.Add(StickerColorTypes.White, new PatternResultModel());
-            result.Add(StickerColorTypes.Yellow, new PatternResultModel());
+        //    result.Add(StickerColorTypes.Blue, new PatternResultModel());
+        //    result.Add(StickerColorTypes.Green, new PatternResultModel());
+        //    result.Add(StickerColorTypes.Orange, new PatternResultModel());
+        //    result.Add(StickerColorTypes.Red, new PatternResultModel());
+        //    result.Add(StickerColorTypes.White, new PatternResultModel());
+        //    result.Add(StickerColorTypes.Yellow, new PatternResultModel());
 
-            return result;
-        }
+        //    return result;
+        //}
 
+        #region public methods
         public PatternFaceResultModel[] GetPatternFaceResult(StickerColorTypes colorToCheck,
             StickerColorTypes t52, StickerColorTypes t60, StickerColorTypes t07,
             StickerColorTypes t45, StickerColorTypes t00, StickerColorTypes t15,
@@ -908,57 +906,45 @@ namespace RC.Logic
             }
         }
 
-        public (PatternFaceResultModel face, PatternAdjacentResultModel north, PatternAdjacentResultModel east, PatternAdjacentResultModel south, PatternAdjacentResultModel west) GetCubePatternModel(CubeModel cube, StickerColorTypes color)
+        public PatternFaceWithAdjacentsModel[] GetCubePatternModel(CubeModel cube, StickerColorTypes color)
         {
+            var results = new List<PatternFaceWithAdjacentsModel>();
+
             PatternStatisticModel patternStatistic = this.GetPatternStatisticModel(cube, color);
-            (PatternFaceResultModel face, PatternAdjacentResultModel north, PatternAdjacentResultModel east, PatternAdjacentResultModel south, PatternAdjacentResultModel west) model = default;
 
-            //patternStatistic.PatternFaceResults[0].Pattern
+            IEnumerable<PatternAdjacentBitModel> adjacentModels = patternStatistic.PatternAdjacentResults.Select(x => this.Convert(x.Pattern));
 
-            return model;
+            for (var i = 0; i < 6; i++)
+            {
+                PatternFaceBitModel faceForI = this.Convert(patternStatistic.PatternFaceResults[i].Pattern);
+
+                IEnumerable<PatternAdjacentBitModel> modelsForI = adjacentModels.Where(x => this.IsAdjacentPattern(faceForI, x));
+
+                PatternFaceWithAdjacentsModel result = this.GetFaceLayer(faceForI, modelsForI);
+
+                if (result != default)
+                {
+                    results.Add(result);
+                }
+            }
+
+            return results.ToArray();
         }
 
-        public PatternFaceWithAdjacentsModel GetPatternAdjacent(PatternFaceTypes patternFaceTypes, PatternAdjacentTypes[] patternAdjacentTypes)
+        public Dictionary<StickerColorTypes, PatternStatisticModel> GetSideCompleteness(CubeModel cube)
         {
-            var facePatternBytes = this.Convert(patternFaceTypes);
+            var sideColorTotals = new Dictionary<StickerColorTypes, PatternStatisticModel>();
 
-            IList<(PatternAdjacentTypes PatternAdjacentType, ( 
-                /*             */Boolean n,
-            /*            */Boolean nw, Boolean ne,
-            /* */Boolean wm, Boolean w, Boolean e, Boolean em,
-            /*            */Boolean sw, Boolean se,
-            /*                   */Boolean s) PatternAdjacentTypeBytes)> adjacentPatternTypesBytes = patternAdjacentTypes.Select(x => (x,this.Convert(x))).Where(x=>x.Item2.wm == facePatternBytes.t00 || x.Item2.em == facePatternBytes.t00).ToList();
+            sideColorTotals[StickerColorTypes.White] = this.GetPatternStatisticModel(cube, StickerColorTypes.White);
+            sideColorTotals[StickerColorTypes.Yellow] = this.GetPatternStatisticModel(cube, StickerColorTypes.Yellow);
 
-            if (adjacentPatternTypesBytes.Count != 4)
-            {
-                throw new Exception("GetPatternAdjacent invalid patternAdjacentTypes");
-            }
+            sideColorTotals[StickerColorTypes.Blue] = this.GetPatternStatisticModel(cube, StickerColorTypes.Blue);
+            sideColorTotals[StickerColorTypes.Green] = this.GetPatternStatisticModel(cube, StickerColorTypes.Green);
 
-            var result = new PatternFaceWithAdjacentsModel();
+            sideColorTotals[StickerColorTypes.Red] = this.GetPatternStatisticModel(cube, StickerColorTypes.Red);
+            sideColorTotals[StickerColorTypes.Orange] = this.GetPatternStatisticModel(cube, StickerColorTypes.Orange);
 
-
-            var stuff = new List<PatternAdjacentModel>();
-            foreach (var adjacentPatternTypeBytes in adjacentPatternTypesBytes)
-            {
-                //if (facePatternBytes.t00 == adjacentPatternTypeBytes.PatternAdjacentTypeBytes.em)
-                //{
-                //    stuff.Add(new PatternAdjacentModel() {
-                //        PatternAdjacentType = adjacentPatternTypeBytes.PatternAdjacentType,
-                //        RotationType = RotationTypes.R0
-                //    });
-                //}
-                //else if (facePatternBytes.t00 == adjacentPatternTypeBytes.wm)
-                //{
-                //    stuff.Add(new PatternAdjacentModel()
-                //    {
-                //        PatternAdjacentType = adjacentPatternTypeBytes.PatternAdjacentType,
-                //        RotationType = RotationTypes.R0
-                //    });
-                //}
-            }
-
-
-            return default;
+            return sideColorTotals;
         }
 
         public PatternStatisticModel GetPatternStatisticModel(CubeModel cube, StickerColorTypes color)
@@ -1061,7 +1047,7 @@ namespace RC.Logic
                     cube.FrontSouthWest.StickerSouth.StickerColorType
                 );
 
-                PatternAdjacentResultModel fw = feResults.Single();
+                PatternAdjacentResultModel fw = fwResults.Single();
 
 
                 //            [ FNW]
@@ -1077,7 +1063,7 @@ namespace RC.Logic
                     cube.FrontNorthEast.StickerEast.StickerColorType
                 );
 
-                PatternAdjacentResultModel fn = feResults.Single();
+                PatternAdjacentResultModel fn = fnResults.Single();
 
                 //            [ FSE]
                 //         [ FSE] [FSE ]  
@@ -1092,7 +1078,7 @@ namespace RC.Logic
                     cube.FrontSouthWest.StickerWest.StickerColorType
                 );
 
-                PatternAdjacentResultModel fs = feResults.Single();
+                PatternAdjacentResultModel fs = fsResults.Single();
 
                 //            [ BNE]
                 //         [ BNE] [BNE ]  
@@ -1107,7 +1093,7 @@ namespace RC.Logic
                     cube.FrontNorthEast.StickerFront.StickerColorType
                 );
 
-                PatternAdjacentResultModel ne = feResults.Single();
+                PatternAdjacentResultModel ne = neResults.Single();
 
                 //            [ FNW]
                 //         [ FNW] [FNW ]  
@@ -1122,7 +1108,7 @@ namespace RC.Logic
                     cube.BackNorthWest.StickerBack.StickerColorType
                 );
 
-                PatternAdjacentResultModel nw = feResults.Single();
+                PatternAdjacentResultModel nw = nwResults.Single();
 
                 //            [ FSE]
                 //         [ FSE] [FSE ]  
@@ -1137,7 +1123,7 @@ namespace RC.Logic
                     cube.BackSouthEast.StickerBack.StickerColorType
                 );
 
-                PatternAdjacentResultModel se = feResults.Single();
+                PatternAdjacentResultModel se = seResults.Single();
 
                 //            [ BSW]
                 //         [ BSW] [BSW ]  
@@ -1152,8 +1138,7 @@ namespace RC.Logic
                     cube.FrontSouthWest.StickerFront.StickerColorType
                 );
 
-                PatternAdjacentResultModel sw = feResults.Single();
-
+                PatternAdjacentResultModel sw = swResults.Single();
 
                 //            [ BNE]
                 //         [ BNE] [BNE ]  
@@ -1168,7 +1153,7 @@ namespace RC.Logic
                     cube.BackSouthEast.StickerSouth.StickerColorType
                 );
 
-                PatternAdjacentResultModel be = feResults.Single();
+                PatternAdjacentResultModel be = beResults.Single();
 
                 //            [ BNW]
                 //         [ BNW] [BNW ]  
@@ -1183,7 +1168,7 @@ namespace RC.Logic
                     cube.BackSouthWest.StickerSouth.StickerColorType
                 );
 
-                PatternAdjacentResultModel bw = feResults.Single();
+                PatternAdjacentResultModel bw = bwResults.Single();
 
                 //            [ BSE]
                 //         [ BSE] [BSE ]  
@@ -1198,7 +1183,7 @@ namespace RC.Logic
                     cube.BackSouthWest.StickerWest.StickerColorType
                 );
 
-                PatternAdjacentResultModel bs = feResults.Single();
+                PatternAdjacentResultModel bs = bsResults.Single();
 
                 //            [ BNE]
                 //         [ BNE] [BNE ]  
@@ -1213,7 +1198,7 @@ namespace RC.Logic
                     cube.BackNorthWest.StickerWest.StickerColorType
                 );
 
-                PatternAdjacentResultModel bn = feResults.Single();
+                PatternAdjacentResultModel bn = bnResults.Single();
 
 
                 result.PatternAdjacentResults = new List<PatternAdjacentResultModel>() { fn, fe, fs, fw, ne, se, sw, nw, bn, be, bs, bw };
@@ -1221,23 +1206,141 @@ namespace RC.Logic
             return result;
         }
 
-        public Dictionary<StickerColorTypes, PatternStatisticModel> GetSideCompleteness(CubeModel cube)
+        #endregion
+
+        #region protected methods
+
+        protected Boolean IsAdjacentPattern(PatternFaceBitModel facePatternBits, PatternAdjacentBitModel patternAdjacentTypeBits)
         {
-            var sideColorTotals = new Dictionary<StickerColorTypes, PatternStatisticModel>();
-
-            sideColorTotals[StickerColorTypes.White] = this.GetPatternStatisticModel(cube, StickerColorTypes.White);
-            sideColorTotals[StickerColorTypes.Yellow] = this.GetPatternStatisticModel(cube, StickerColorTypes.Yellow);
-
-            sideColorTotals[StickerColorTypes.Blue] = this.GetPatternStatisticModel(cube, StickerColorTypes.Blue);
-            sideColorTotals[StickerColorTypes.Green] = this.GetPatternStatisticModel(cube, StickerColorTypes.Green);
-
-            sideColorTotals[StickerColorTypes.Red] = this.GetPatternStatisticModel(cube, StickerColorTypes.Red);
-            sideColorTotals[StickerColorTypes.Orange] = this.GetPatternStatisticModel(cube, StickerColorTypes.Orange);
-
-            return sideColorTotals;
+            return (patternAdjacentTypeBits.WM && facePatternBits.T00) || (patternAdjacentTypeBits.EM && facePatternBits.T00);
         }
 
-        public PatternAdjacentStickerTypes PatternAdjacentStickerType(StickerColorTypes stickerColorA, StickerColorTypes stickerColorB)
+        protected PatternFaceWithAdjacentsModel GetFaceLayer(PatternFaceBitModel patternFaceBitModel, IEnumerable<PatternAdjacentBitModel> patternAdjacentModels)
+        {
+            var result = new PatternFaceWithAdjacentsModel();
+
+            foreach (var patternAdjacentBitModel in patternAdjacentModels)
+            {
+                if (patternFaceBitModel.T00 == patternAdjacentBitModel.EM)
+                {
+                    foreach (RotationTypes rotationType in (RotationTypes[])Enum.GetValues(typeof(RotationTypes)))
+                    {
+                        if (patternAdjacentBitModel.NE == patternFaceBitModel.T07
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T15
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T22)
+                        {
+                            result.East = new PatternAdjacentModel(PatternAdjacentFlipTypes.None, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T22
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T30
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T37)
+                        {
+                            result.South = new PatternAdjacentModel(PatternAdjacentFlipTypes.None, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T37
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T45
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T52)
+                        {
+                            result.West = new PatternAdjacentModel(PatternAdjacentFlipTypes.None, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T52
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T60
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T07)
+                        {
+                            result.North = new PatternAdjacentModel(PatternAdjacentFlipTypes.None, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T07
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T15
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T22)
+                        {
+                            result.East = new PatternAdjacentModel(PatternAdjacentFlipTypes.Vertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T22
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T30
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T37)
+                        {
+                            result.South = new PatternAdjacentModel(PatternAdjacentFlipTypes.Vertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T37
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T45
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T52)
+                        {
+                            result.West = new PatternAdjacentModel(PatternAdjacentFlipTypes.Vertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NE == patternFaceBitModel.T52
+                            && patternAdjacentBitModel.E == patternFaceBitModel.T60
+                            && patternAdjacentBitModel.SE == patternFaceBitModel.T07)
+                        {
+                            result.North = new PatternAdjacentModel(PatternAdjacentFlipTypes.Vertical, patternAdjacentBitModel);
+                        }
+                    }
+                }
+                else if (patternFaceBitModel.T00 == patternAdjacentBitModel.NW)
+                {
+                    foreach (RotationTypes rotationType in (RotationTypes[])Enum.GetValues(typeof(RotationTypes)))
+                    {
+                        if (patternAdjacentBitModel.NW == patternFaceBitModel.T07
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T15
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T22)
+                        {
+                            result.East = new PatternAdjacentModel(PatternAdjacentFlipTypes.Horizontal, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T22
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T30
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T37)
+                        {
+                            result.South = new PatternAdjacentModel(PatternAdjacentFlipTypes.None, patternAdjacentBitModel);
+                            result.South.PatternAdjacentFlipType = PatternAdjacentFlipTypes.Horizontal;
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T37
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T45
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T52)
+                        {
+                            result.West = new PatternAdjacentModel(PatternAdjacentFlipTypes.Horizontal, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T52
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T60
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T07)
+                        {
+                            result.North = new PatternAdjacentModel(PatternAdjacentFlipTypes.Horizontal, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T07
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T15
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T22)
+                        {
+                            result.East = new PatternAdjacentModel(PatternAdjacentFlipTypes.HorizontalAndVertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T22
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T30
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T37)
+                        {
+                            result.South = new PatternAdjacentModel(PatternAdjacentFlipTypes.HorizontalAndVertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T37
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T45
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T52)
+                        {
+                            result.West = new PatternAdjacentModel(PatternAdjacentFlipTypes.HorizontalAndVertical, patternAdjacentBitModel);
+                        }
+                        else if (patternAdjacentBitModel.NW == patternFaceBitModel.T52
+                            && patternAdjacentBitModel.W == patternFaceBitModel.T60
+                            && patternAdjacentBitModel.SW == patternFaceBitModel.T07)
+                        {
+                            result.North = new PatternAdjacentModel(PatternAdjacentFlipTypes.HorizontalAndVertical, patternAdjacentBitModel);
+                        }
+                    }
+                }
+            }
+
+            //if (result.North..PatternAdjacentType == PatternAdjacentTypes.)
+            //{
+
+            //}
+
+            return result;
+        }
+
+        protected PatternAdjacentStickerTypes PatternAdjacentStickerType(StickerColorTypes stickerColorA, StickerColorTypes stickerColorB)
         {
             if (stickerColorA == stickerColorB)
             {
@@ -1259,9 +1362,7 @@ namespace RC.Logic
 
         }
 
-        public (Boolean t52, Boolean t60, Boolean t07,
-            Boolean t45, Boolean t00, Boolean t15,
-            Boolean t37, Boolean t30, Boolean t22) Convert(PatternFaceTypes patternFaceType)
+        protected PatternFaceBitModel Convert(PatternFaceTypes patternFaceType)
         {
 
 
@@ -1270,714 +1371,714 @@ namespace RC.Logic
             /// | X X X |
             /// | X X X |
             /// </summary>
-            if (patternFaceType == PatternFaceTypes.None) { return (false, false, false, false, false, false, false, false, false); }
+            if (patternFaceType == PatternFaceTypes.None) { return new PatternFaceBitModel(PatternFaceTypes.None, false, false, false, false, false, false, false, false, false); }
 
             /// <summary>
             /// | X X X |
             /// | X O X |
             /// | X X X |
             /// </summary>
-            else if (patternFaceType == PatternFaceTypes.A01) { return (false, false, false, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.A02) { return (true, false, false, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.A03) { return (false, true, false, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B01) { return (true, false, false, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B02) { return (false, true, false, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X X O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B03) { return (false, true, false, false, false, true, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B04) { return (false, true, false, false, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B05) { return (true, false, true, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X X X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B06) { return (true, false, false, false, false, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B07) { return (true, true, false, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X X O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.B08) { return (true, false, false, false, false, true, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X O O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C01) { return (false, true, false, false, true, true, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C02) { return (false, true, false, false, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C03) { return (true, false, true, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C04) { return (true, false, false, false, true, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C05) { return (true, true, false, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X O O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C06) { return (true, false, false, false, true, true, false, false, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | X X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C07) { return (false, true, false, false, false, true, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X X X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C08) { return (true, false, true, false, false, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C09) { return (true, true, false, false, false, true, false, false, false); }
-
-            /// <summary>
-            /// | X O O |
-            /// | X X O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C10) { return (false, true, true, false, false, true, false, false, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C11) { return (true, true, false, false, false, false, false, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C12) { return (true, true, true, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C13) { return (true, false, true, false, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C14) { return (true, false, false, false, false, true, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C15) { return (true, true, false, false, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.C16) { return (true, true, false, false, false, false, true, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D01) { return (true, true, true, true, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D02) { return (true, true, true, false, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D03) { return (true, true, true, false, false, false, true, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D04) { return (true, true, true, false, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D05) { return (true, true, false, true, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D06) { return (true, true, false, false, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D07) { return (true, true, false, false, false, true, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | O O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D08) { return (true, true, false, false, false, false, true, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D09) { return (true, true, false, false, false, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D10) { return (true, true, false, true, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X X X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D11) { return (true, false, true, false, false, false, true, false, true); }
-
-            /// <summary>
-            /// | X O X |
-            /// | O X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D12) { return (false, true, false, true, false, true, false, true, false); }
-
-            /// <summary>
-            /// | X O X |
-            /// | O O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D13) { return (false, true, false, true, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D14) { return (true, false, true, false, true, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O X X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D15) { return (true, true, false, true, false, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D16) { return (true, true, false, false, false, true, true, false, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D17) { return (true, true, false, false, true, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O X |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D18) { return (true, true, false, false, true, false, true, false, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X X O |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D19) { return (true, false, false, false, false, true, true, false, true); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X X O |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D20) { return (true, false, true, false, false, true, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D21) { return (true, true, false, false, false, true, false, false, true); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D22) { return (true, false, true, false, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O X X |
-            /// | X O O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.D23) { return (false, false, false, false, false, false, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E01) { return (true, true, true, true, true, false, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E02) { return (true, true, true, true, false, false, true, false, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E03) { return (true, true, false, true, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E04) { return (true, true, true, true, false, false, false, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E05) { return (true, true, true, true, false, false, false, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E06) { return (true, true, true, false, true, false, false, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | O O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E07) { return (true, true, false, false, false, true, true, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E08) { return (true, true, true, false, false, false, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E09) { return (true, true, true, false, false, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O X X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E10) { return (true, true, false, true, false, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E11) { return (true, true, false, false, true, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O O |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E12) { return (true, true, false, false, true, true, true, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E13) { return (true, true, true, false, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X O X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E14) { return (true, false, true, false, true, false, true, false, true); }
-
-            /// <summary>
-            /// | X O X |
-            /// | O O O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E15) { return (false, true, false, true, true, true, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E16) { return (true, true, false, true, true, true, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E17) { return (true, true, true, true, false, true, false, false, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | X O X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E18) { return (true, false, true, false, true, false, false, true, true); }
-
-            /// <summary>
-            /// | X O O |
-            /// | O X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E19) { return (false, true, true, true, false, true, false, true, false); }
-
-            /// <summary>
-            /// | O X O |
-            /// | O O O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E20) { return (true, false, true, true, true, true, false, false, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X X O |
-            /// | O X O |
-            /// </summarytrue
-            else if (patternFaceType == PatternFaceTypes.E21) { return (true, true, false, false, false, true, true, false, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E22) { return (true, true, false, false, true, true, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O O |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.E23) { return (true, true, false, false, true, true, false, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | X X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F01) { return (true, true, true, true, true, true, false, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F02) { return (true, true, true, true, true, false, true, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F03) { return (true, true, true, true, true, false, false, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F04) { return (true, true, true, true, true, false, false, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X O |
-            /// | X X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F05) { return (true, true, true, true, false, true, false, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F06) { return (true, true, true, true, false, false, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F07) { return (true, true, true, true, false, false, false, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F08) { return (true, true, true, false, true, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F09) { return (true, true, false, true, true, true, false, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X X X |
-            /// | O O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F10) { return (true, true, true, false, false, false, true, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O X O |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F11) { return (true, true, false, true, false, true, false, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F12) { return (true, true, true, false, true, false, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F13) { return (true, true, true, true, false, true, false, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F14) { return (true, true, false, true, true, false, false, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O O |
-            /// | O O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F15) { return (true, true, false, false, true, true, true, true, false); }
-
-            /// <summary>
-            /// | O O X |
-            /// | X O O |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.F16) { return (true, true, false, false, true, true, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | O X X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G01) { return (true, true, true, true, true, true, true, false, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | X O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G02) { return (true, true, true, true, true, true, false, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | X O X |
-            /// | O O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G03) { return (true, true, true, false, true, false, true, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G04) { return (true, true, true, true, true, false, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O X |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G05) { return (true, true, true, true, true, false, false, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X O |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G06) { return (true, true, true, true, false, true, false, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X X |
-            /// | O O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G07) { return (true, true, true, true, false, false, true, true, true); }
-
-            /// <summary>
-            /// | O O X |
-            /// | O O O |
-            /// | X O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.G08) { return (true, true, false, true, true, true, false, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | O O X |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.H01) { return (true, true, true, true, true, true, true, true, false); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | O X O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.H02) { return (true, true, true, true, true, true, true, false, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O X O |
-            /// | O O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.H03) { return (true, true, true, true, false, true, true, true, true); }
-
-            /// <summary>
-            /// | O O O |
-            /// | O O O |
-            /// | O O O |
-            /// </summary>
-            else if (patternFaceType == PatternFaceTypes.I01) { return (true, true, true, true, true, true, true, true, true); }
+            else if (patternFaceType == PatternFaceTypes.A01) { return new PatternFaceBitModel(PatternFaceTypes.A01, false, false, false, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.A02) { return new PatternFaceBitModel(PatternFaceTypes.A02, true, false, false, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.A03) { return new PatternFaceBitModel(PatternFaceTypes.A03, false, true, false, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B01) { return new PatternFaceBitModel(PatternFaceTypes.B01, true, false, false, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B02) { return new PatternFaceBitModel(PatternFaceTypes.B02, false, true, false, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B03) { return new PatternFaceBitModel(PatternFaceTypes.B03, false, true, false, false, false, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B04) { return new PatternFaceBitModel(PatternFaceTypes.B04, false, true, false, false, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B05) { return new PatternFaceBitModel(PatternFaceTypes.B05, true, false, true, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X X X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B06) { return new PatternFaceBitModel(PatternFaceTypes.B06, true, false, false, false, false, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B07) { return new PatternFaceBitModel(PatternFaceTypes.B07, true, true, false, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X X O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.B08) { return new PatternFaceBitModel(PatternFaceTypes.B08, true, false, false, false, false, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X O O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C01) { return new PatternFaceBitModel(PatternFaceTypes.C01, false, true, false, false, true, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C02) { return new PatternFaceBitModel(PatternFaceTypes.C02, false, true, false, false, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C03) { return new PatternFaceBitModel(PatternFaceTypes.C03, true, false, true, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C04) { return new PatternFaceBitModel(PatternFaceTypes.C04, true, false, false, false, true, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C05) { return new PatternFaceBitModel(PatternFaceTypes.C05, true, true, false, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X O O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C06) { return new PatternFaceBitModel(PatternFaceTypes.C06, true, false, false, false, true, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C07) { return new PatternFaceBitModel(PatternFaceTypes.C07, false, true, false, false, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X X X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C08) { return new PatternFaceBitModel(PatternFaceTypes.C08, true, false, true, false, false, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C09) { return new PatternFaceBitModel(PatternFaceTypes.C09, true, true, false, false, false, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | X O O |                                                                      
+            /// | X X O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C10) { return new PatternFaceBitModel(PatternFaceTypes.C10, false, true, true, false, false, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C11) { return new PatternFaceBitModel(PatternFaceTypes.C11, true, true, false, false, false, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C12) { return new PatternFaceBitModel(PatternFaceTypes.C12, true, true, true, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C13) { return new PatternFaceBitModel(PatternFaceTypes.C13, true, false, true, false, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C14) { return new PatternFaceBitModel(PatternFaceTypes.C14, true, false, false, false, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C15) { return new PatternFaceBitModel(PatternFaceTypes.C15, true, true, false, false, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.C16) { return new PatternFaceBitModel(PatternFaceTypes.C16, true, true, false, false, false, false, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D01) { return new PatternFaceBitModel(PatternFaceTypes.D01, true, true, true, true, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D02) { return new PatternFaceBitModel(PatternFaceTypes.D02, true, true, true, false, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D03) { return new PatternFaceBitModel(PatternFaceTypes.D03, true, true, true, false, false, false, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D04) { return new PatternFaceBitModel(PatternFaceTypes.D04, true, true, true, false, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D05) { return new PatternFaceBitModel(PatternFaceTypes.D05, true, true, false, true, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D06) { return new PatternFaceBitModel(PatternFaceTypes.D06, true, true, false, false, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D07) { return new PatternFaceBitModel(PatternFaceTypes.D07, true, true, false, false, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | O O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D08) { return new PatternFaceBitModel(PatternFaceTypes.D08, true, true, false, false, false, false, true, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D09) { return new PatternFaceBitModel(PatternFaceTypes.D09, true, true, false, false, false, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D10) { return new PatternFaceBitModel(PatternFaceTypes.D10, true, true, false, true, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X X X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D11) { return new PatternFaceBitModel(PatternFaceTypes.D11, true, false, true, false, false, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D12) { return new PatternFaceBitModel(PatternFaceTypes.D12, false, true, false, true, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D13) { return new PatternFaceBitModel(PatternFaceTypes.D13, false, true, false, true, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D14) { return new PatternFaceBitModel(PatternFaceTypes.D14, true, false, true, false, true, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O X X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D15) { return new PatternFaceBitModel(PatternFaceTypes.D15, true, true, false, true, false, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D16) { return new PatternFaceBitModel(PatternFaceTypes.D16, true, true, false, false, false, true, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D17) { return new PatternFaceBitModel(PatternFaceTypes.D17, true, true, false, false, true, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D18) { return new PatternFaceBitModel(PatternFaceTypes.D18, true, true, false, false, true, false, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X X O |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D19) { return new PatternFaceBitModel(PatternFaceTypes.D19, true, false, false, false, false, true, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X X O |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D20) { return new PatternFaceBitModel(PatternFaceTypes.D20, true, false, true, false, false, true, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D21) { return new PatternFaceBitModel(PatternFaceTypes.D21, true, true, false, false, false, true, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D22) { return new PatternFaceBitModel(PatternFaceTypes.D22, true, false, true, false, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X X |                                                                      
+            /// | X O O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.D23) { return new PatternFaceBitModel(PatternFaceTypes.D23, false, false, false, false, false, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E01) { return new PatternFaceBitModel(PatternFaceTypes.E01, true, true, true, true, true, false, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E02) { return new PatternFaceBitModel(PatternFaceTypes.E02, true, true, true, true, false, false, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E03) { return new PatternFaceBitModel(PatternFaceTypes.E03, true, true, false, true, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E04) { return new PatternFaceBitModel(PatternFaceTypes.E04, true, true, true, true, false, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E05) { return new PatternFaceBitModel(PatternFaceTypes.E05, true, true, true, true, false, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E06) { return new PatternFaceBitModel(PatternFaceTypes.E06, true, true, true, false, true, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | O O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E07) { return new PatternFaceBitModel(PatternFaceTypes.E07, true, true, false, false, false, true, true, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E08) { return new PatternFaceBitModel(PatternFaceTypes.E08, true, true, true, false, false, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E09) { return new PatternFaceBitModel(PatternFaceTypes.E09, true, true, true, false, false, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O X X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E10) { return new PatternFaceBitModel(PatternFaceTypes.E10, true, true, false, true, false, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E11) { return new PatternFaceBitModel(PatternFaceTypes.E11, true, true, false, false, true, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E12) { return new PatternFaceBitModel(PatternFaceTypes.E12, true, true, false, false, true, true, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E13) { return new PatternFaceBitModel(PatternFaceTypes.E13, true, true, true, false, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E14) { return new PatternFaceBitModel(PatternFaceTypes.E14, true, false, true, false, true, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | X O X |                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E15) { return new PatternFaceBitModel(PatternFaceTypes.E15, false, true, false, true, true, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E16) { return new PatternFaceBitModel(PatternFaceTypes.E16, true, true, false, true, true, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E17) { return new PatternFaceBitModel(PatternFaceTypes.E17, true, true, true, true, false, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E18) { return new PatternFaceBitModel(PatternFaceTypes.E18, true, false, true, false, true, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | X O O |                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E19) { return new PatternFaceBitModel(PatternFaceTypes.E19, false, true, true, true, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O X O |                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E20) { return new PatternFaceBitModel(PatternFaceTypes.E20, true, false, true, true, true, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// | O X O |                                                                      
+            /// </summarytrue                                                                  
+            else if (patternFaceType == PatternFaceTypes.E21) { return new PatternFaceBitModel(PatternFaceTypes.E21, true, true, false, false, false, true, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E22) { return new PatternFaceBitModel(PatternFaceTypes.E22, true, true, false, false, true, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.E23) { return new PatternFaceBitModel(PatternFaceTypes.E23, true, true, false, false, true, true, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F01) { return new PatternFaceBitModel(PatternFaceTypes.F01, true, true, true, true, true, true, false, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F02) { return new PatternFaceBitModel(PatternFaceTypes.F02, true, true, true, true, true, false, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F03) { return new PatternFaceBitModel(PatternFaceTypes.F03, true, true, true, true, true, false, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F04) { return new PatternFaceBitModel(PatternFaceTypes.F04, true, true, true, true, true, false, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// | X X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F05) { return new PatternFaceBitModel(PatternFaceTypes.F05, true, true, true, true, false, true, false, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F06) { return new PatternFaceBitModel(PatternFaceTypes.F06, true, true, true, true, false, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F07) { return new PatternFaceBitModel(PatternFaceTypes.F07, true, true, true, true, false, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F08) { return new PatternFaceBitModel(PatternFaceTypes.F08, true, true, true, false, true, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F09) { return new PatternFaceBitModel(PatternFaceTypes.F09, true, true, false, true, true, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X X X |                                                                      
+            /// | O O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F10) { return new PatternFaceBitModel(PatternFaceTypes.F10, true, true, true, false, false, false, true, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O X O |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F11) { return new PatternFaceBitModel(PatternFaceTypes.F11, true, true, false, true, false, true, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F12) { return new PatternFaceBitModel(PatternFaceTypes.F12, true, true, true, false, true, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F13) { return new PatternFaceBitModel(PatternFaceTypes.F13, true, true, true, true, false, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F14) { return new PatternFaceBitModel(PatternFaceTypes.F14, true, true, false, true, true, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// | O O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F15) { return new PatternFaceBitModel(PatternFaceTypes.F15, true, true, false, false, true, true, true, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.F16) { return new PatternFaceBitModel(PatternFaceTypes.F16, true, true, false, false, true, true, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G01) { return new PatternFaceBitModel(PatternFaceTypes.G01, true, true, true, true, true, true, true, false, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G02) { return new PatternFaceBitModel(PatternFaceTypes.G02, true, true, true, true, true, true, false, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | X O X |                                                                      
+            /// | O O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G03) { return new PatternFaceBitModel(PatternFaceTypes.G03, true, true, true, false, true, false, true, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G04) { return new PatternFaceBitModel(PatternFaceTypes.G04, true, true, true, true, true, false, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G05) { return new PatternFaceBitModel(PatternFaceTypes.G05, true, true, true, true, true, false, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G06) { return new PatternFaceBitModel(PatternFaceTypes.G06, true, true, true, true, false, true, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X X |                                                                      
+            /// | O O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G07) { return new PatternFaceBitModel(PatternFaceTypes.G07, true, true, true, true, false, false, true, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O X |                                                                      
+            /// | O O O |                                                                      
+            /// | X O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.G08) { return new PatternFaceBitModel(PatternFaceTypes.G08, true, true, false, true, true, true, false, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | O O X |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.H01) { return new PatternFaceBitModel(PatternFaceTypes.H01, true, true, true, true, true, true, true, true, false); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.H02) { return new PatternFaceBitModel(PatternFaceTypes.H02, true, true, true, true, true, true, true, false, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O X O |                                                                      
+            /// | O O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.H03) { return new PatternFaceBitModel(PatternFaceTypes.H03, true, true, true, true, false, true, true, true, true); }
+
+            /// <summary>                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// | O O O |                                                                      
+            /// </summary>                                                                     
+            else if (patternFaceType == PatternFaceTypes.I01) { return new PatternFaceBitModel(PatternFaceTypes.I01, true, true, true, true, true, true, true, true, true); }
 
             /// <summary>
             /// | ? ? ? |
@@ -1987,11 +2088,7 @@ namespace RC.Logic
             else { throw new Exception("Convert PatternFaceTypes Failed"); }
         }
 
-        public ( /*             */Boolean n,
-            /*            */Boolean nw, Boolean ne,
-            /* */Boolean wm, Boolean w, Boolean e, Boolean em,
-            /*            */Boolean sw, Boolean se,
-            /*                   */Boolean s) Convert(PatternAdjacentTypes patternAdjacentType)
+        protected PatternAdjacentBitModel Convert(PatternAdjacentTypes patternAdjacentType)
         {
 
 
@@ -2003,7 +2100,7 @@ namespace RC.Logic
             /// [ - X | X - ]
             /// [ - - X - - ]
             ///  </summary>
-            if (patternAdjacentType == PatternAdjacentTypes.None) { return (false, false, false, false, false, false, false, false, false, false); }
+            if (patternAdjacentType == PatternAdjacentTypes.None) { return new PatternAdjacentBitModel(PatternAdjacentTypes.None, false, false, false, false, false, false, false, false, false, false); }
 
             ///  <summary>
             /// [ - - O - - ]
@@ -2012,414 +2109,414 @@ namespace RC.Logic
             /// [ - X | X - ]
             /// [ - - X - - ]
             ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.A01) { return (true, false, false, false, false, false, false, false, false, false); }
+            else if (patternAdjacentType == PatternAdjacentTypes.A01) { return new PatternAdjacentBitModel(PatternAdjacentTypes.A01, true, false, false, false, false, false, false, false, false, false); }
 
-            ///  <summary>  
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.A02) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.A02) { return new PatternAdjacentBitModel(PatternAdjacentTypes.A02, false, true, false, false, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - X | X - ]
-            /// [ X O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.A03) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.A03) { return new PatternAdjacentBitModel(PatternAdjacentTypes.A03, false, false, false, false, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - X | X - ]
-            /// [ O X | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.A04) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.A04) { return new PatternAdjacentBitModel(PatternAdjacentTypes.A04, false, false, false, true, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B01) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B01) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B01, true, false, false, true, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B02) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B02) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B02, true, false, false, false, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X X | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B03) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X X | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B03) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B03, true, false, false, false, false, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X X | X X ]
-            /// [ - X | X - ]
-            /// [ - - O - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B04) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - O - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B04) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B04, true, false, false, false, false, false, false, false, false, true); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O X | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B05) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B05) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B05, false, true, false, true, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B06) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B06) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B06, false, true, false, false, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | O X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B07) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | O X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B07) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B07, false, true, false, false, false, true, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | X O ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B08) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X O ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B08) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B08, false, true, false, false, false, false, true, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B09) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B09) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B09, false, true, false, false, false, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - O | X - ]
-            /// [ X X | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B10) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B10) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B10, true, true, false, false, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - X | X - ]
-            /// [ O O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B11) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B11) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B11, false, false, false, true, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - X | X - ]
-            /// [ O X | O X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.B12) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.B12) { return new PatternAdjacentBitModel(PatternAdjacentTypes.B12, false, false, false, true, false, true, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C01) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C01) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C01, true, false, false, true, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C02) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C02) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C02, true, false, false, true, false, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | X X ]
-            /// [ - X | X - ]
-            /// [ - - O - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C03) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - O - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C03) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C03, true, false, false, true, false, false, false, false, false, true); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X O | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C04) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C04) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C04, true, false, false, false, true, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X O | X X ]
-            /// [ - X | X - ]
-            /// [ - - O - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C05) { return (false, false, false, false, false, false, false, false, false, false); }
-
-
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O O | X X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C06) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - O - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C05) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C05, true, false, false, false, true, false, false, false, false, true); }
 
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O X | O X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C07) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C06) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C06, false, true, false, true, true, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O X | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C08) { return (false, false, false, false, false, false, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X O | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C09) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C07) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C07, false, true, false, true, false, true, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | O O ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C10) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C08) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C08, false, true, false, true, false, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X O | X O ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C11) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C09) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C09, false, true, false, false, true, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | O X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C12) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | O O ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C10) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C10, false, true, false, false, false, true, true, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | X O ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C13) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X O | X O ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C11) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C11, false, true, false, false, true, false, true, false, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | X O ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C14) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | O X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C12) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C12, false, true, false, false, false, true, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | O X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C15) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X O ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C13) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C13, false, true, false, false, false, false, true, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | X X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C16) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | X O ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C14) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C14, false, true, false, false, false, false, true, false, true, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | O X ]
-            /// [ - X | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C17) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | O X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C15) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C15, false, true, false, false, false, true, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ X O | X X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.C18) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | X X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C16) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C16, true, false, false, true, false, false, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O O | X X ]
-            /// [ - X | X - ]
-            /// [ - - O - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D01) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C17) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C17, true, false, false, true, false, true, false, false, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | O X ]
-            /// [ - X | X - ]
-            /// [ - - O - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D02) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ X O | X X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.C18) { return new PatternAdjacentBitModel(PatternAdjacentTypes.C18, true, false, false, false, true, false, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O O | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D03) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - O - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D01) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D01, true, false, false, true, true, false, false, false, false, true); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O O | X X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D04) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ - - O - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D02) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D02, true, false, false, true, false, true, false, false, false, true); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | O X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D05) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D03) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D03, true, false, false, true, true, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O O | X X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D06) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D04) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D04, true, false, false, true, true, false, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X X | O O ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D07) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D05) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D05, true, false, false, true, false, true, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ X O | X O ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D08) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D06) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D06, false, true, false, true, true, false, false, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O O | X X ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D09) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X X | O O ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D07) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D07, false, true, false, false, false, true, true, true, false, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - X | X - ]
-            /// [ O X | O X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D10) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X O | X O ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D08) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D08, false, true, false, false, true, false, true, true, false, false); }
 
-            ///  <summary>
-            /// [ - - X - - ]
-            /// [ - O | X - ]
-            /// [ O X | O X ]
-            /// [ - O | X - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D11) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O O | X X ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D09) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D09, false, true, false, true, true, false, false, false, true, false); }
 
-            ///  <summary>
-            /// [ - - O - - ]
-            /// [ - O | X - ]
-            /// [ X O | X O ]
-            /// [ - X | O - ]
-            /// [ - - X - - ]
-            ///  </summary>
-            else if (patternAdjacentType == PatternAdjacentTypes.D12) { return (false, false, false, false, false, false, false, false, false, false); }
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - X | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D10) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D10, true, false, false, true, false, true, false, true, false, false); }
+
+            ///  <summary>                                                                                
+            /// [ - - X - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ O X | O X ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D11) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D11, false, true, false, true, false, true, false, true, false, false); }
+
+            ///  <summary>                                                                                
+            /// [ - - O - - ]                                                                             
+            /// [ - O | X - ]                                                                             
+            /// [ X O | X O ]                                                                             
+            /// [ - X | O - ]                                                                             
+            /// [ - - X - - ]                                                                             
+            ///  </summary>                                                                               
+            else if (patternAdjacentType == PatternAdjacentTypes.D12) { return new PatternAdjacentBitModel(PatternAdjacentTypes.D12, true, true, false, false, true, false, true, false, true, false); }
 
             ///  <summary>
             /// [ - - ? - - ]
@@ -2428,7 +2525,9 @@ namespace RC.Logic
             /// [ - ? | ? - ]
             /// [ - - ? - - ]
             ///  </summary>
-            else { return (false, false, false, false, false, false, false, false, false, false); }
+            else { throw new Exception("Convert PatternAdjacentTypes Failed"); }
         }
+        
+        #endregion
     }
 }

@@ -9,13 +9,21 @@ namespace RC.Model.Patterns
 {
     public class PatternFaceWithAdjacentsModel
     {
+        public PatternAdjacentModel Middle { get; set; }
 
-        PatternAdjacentModel PatternFaceType { get; set; }
+        public PatternAdjacentModel North { get; set; }
+        public PatternAdjacentModel East { get; set; }
+        public PatternAdjacentModel South { get; set; }
+        public PatternAdjacentModel West { get; set; }
 
-        PatternAdjacentModel North { get; set; }
-        PatternAdjacentModel East { get; set; }
-        PatternAdjacentModel South { get; set; }
-        PatternAdjacentModel West { get; set; }
-
+        public override string ToString()
+        {
+            return $@"
+           [North: {North}]
+[West: {West} ][Middle: {Middle}][East: {East}]
+           [South: {South} ]
+";
+                   
+        }
     }
 }
