@@ -1221,7 +1221,7 @@ namespace RC.Logic
 
             foreach (var patternAdjacentBitModel in patternAdjacentModels)
             {
-                if (patternFaceBitModel.T00 == patternAdjacentBitModel.EM)
+                if (patternFaceBitModel.T00 && patternAdjacentBitModel.EM)
                 {
                     foreach (RotationTypes rotationType in (RotationTypes[])Enum.GetValues(typeof(RotationTypes)))
                     {
@@ -1275,7 +1275,7 @@ namespace RC.Logic
                         }
                     }
                 }
-                else if (patternFaceBitModel.T00 == patternAdjacentBitModel.NW)
+                else if (patternFaceBitModel.T00 && patternAdjacentBitModel.NW)
                 {
                     foreach (RotationTypes rotationType in (RotationTypes[])Enum.GetValues(typeof(RotationTypes)))
                     {
