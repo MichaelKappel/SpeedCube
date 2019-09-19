@@ -2,12 +2,12 @@
 {
     public enum StickerColorTypes
     {
-        None,
-        White,
-        Yellow,
-        Green,
-        Red,
-        Blue,
-        Orange
+        None=0,
+        White=1,
+        Yellow=2,
+        Green=3,
+        Red=4,
+        Blue=5,
+        Orange=6
     }
 }

@@ -73,63 +73,6 @@ namespace RC.Logic
 
         }
 
-        public String Visualize(String pattern)
-        {
-
-            var s = pattern.ToCharArray();
-
-
-            String result = $@" 
-
-                    [0:{s[0]}|1:{s[1]}|2:{s[2]}]
-                    [3:{s[3]}|4:{s[4]}|5:{s[5]}]
-                    [6:{s[6]}|7:{s[7]}|8:{s[8]}]
-    
-[36:{s[36]}|37:{s[37]}|38:{s[38]}]    [18:{s[18]}|19:{s[19]}|20:{s[20]}]  [45:{s[45]}|46:{s[46]}|47:{s[47]}]    [27:{s[27]}|28:{s[28]}|29:{s[29]}]     
-[39:{s[39]}|40:{s[40]}|41:{s[41]}]    [21:{s[21]}|22:{s[22]}|23:{s[23]}]  [48:{s[48]}|49:{s[49]}|50:{s[50]}]    [30:{s[30]}|31:{s[31]}|32:{s[32]}]     
-[42:{s[42]}|43:{s[43]}|44:{s[44]}]    [24:{s[24]}|25:{s[25]}|26:{s[26]}]  [51:{s[51]}|52:{s[52]}|53:{s[53]}]    [33:{s[33]}|34:{s[34]}|35:{s[35]}]     
-            
-                    [9:{s[9]}|10:{s[10]}|ll:{s[11]}]
-                    [12:{s[12]}|13:{s[13]}|14:{s[14]}]
-                    [15:{s[15]}|16:{s[16]}|17:{s[17]}]
-";
-
-            return result;
-
-        }
-
-        public String GetCubePatternDetail(String stickers)
-        {
-
-            Char[] originalStickers = stickers.ToCharArray();
-
-            String north = $"BNW:{ GetStickerAbbreviation(originalStickers[0])}|BN:{ GetStickerAbbreviation(originalStickers[1])}|BNE:{ GetStickerAbbreviation(originalStickers[2])}|NW:{ GetStickerAbbreviation(originalStickers[3])}|N:{ GetStickerAbbreviation(originalStickers[4])}|NE:{ GetStickerAbbreviation(originalStickers[5])}|FNW:{ GetStickerAbbreviation(originalStickers[6])}|FN:{ GetStickerAbbreviation(originalStickers[7])}|FNE:{ GetStickerAbbreviation(originalStickers[8])}";
-            String south = $"FSW:{ GetStickerAbbreviation(originalStickers[9])}|FS:{ GetStickerAbbreviation(originalStickers[10])}|FSE:{ GetStickerAbbreviation(originalStickers[11])}|SW:{ GetStickerAbbreviation(originalStickers[12])}|S:{ GetStickerAbbreviation(originalStickers[13])}|SE:{ GetStickerAbbreviation(originalStickers[14])}|BSW:{ GetStickerAbbreviation(originalStickers[15])}|BS:{ GetStickerAbbreviation(originalStickers[16])}|BSE:{ GetStickerAbbreviation(originalStickers[17])}";
-            String front = $"FNW:{ GetStickerAbbreviation(originalStickers[18])}|FN:{ GetStickerAbbreviation(originalStickers[19])}|FNE:{ GetStickerAbbreviation(originalStickers[20])}|FW:{ GetStickerAbbreviation(originalStickers[21])}|F:{ GetStickerAbbreviation(originalStickers[22])}|FE:{ GetStickerAbbreviation(originalStickers[23])}|FSW:{ GetStickerAbbreviation(originalStickers[24])}|FS:{ GetStickerAbbreviation(originalStickers[25])}|FSE:{ GetStickerAbbreviation(originalStickers[26])}";
-            String back = $"BNW:{ GetStickerAbbreviation(originalStickers[27])}|BN:{ GetStickerAbbreviation(originalStickers[28])}|BNE:{ GetStickerAbbreviation(originalStickers[29])}|BW:{ GetStickerAbbreviation(originalStickers[30])}|B:{ GetStickerAbbreviation(originalStickers[31])}|BE:{ GetStickerAbbreviation(originalStickers[32])}|BSW:{ GetStickerAbbreviation(originalStickers[33])}|BS:{ GetStickerAbbreviation(originalStickers[34])}|BSE:{ GetStickerAbbreviation(originalStickers[35])}";
-            String west = $"BNW:{ GetStickerAbbreviation(originalStickers[36])}|NW:{ GetStickerAbbreviation(originalStickers[37])}|FNW:{ GetStickerAbbreviation(originalStickers[38])}|BW:{ GetStickerAbbreviation(originalStickers[39])}|W:{ GetStickerAbbreviation(originalStickers[40])}|FW:{ GetStickerAbbreviation(originalStickers[41])}|BSW:{ GetStickerAbbreviation(originalStickers[42])}|SW:{ GetStickerAbbreviation(originalStickers[43])}|FSW:{ GetStickerAbbreviation(originalStickers[44])}";
-            String east = $"FNE:{ GetStickerAbbreviation(originalStickers[45])}|NE:{ GetStickerAbbreviation(originalStickers[46])}|BNE:{ GetStickerAbbreviation(originalStickers[47])}|FE:{ GetStickerAbbreviation(originalStickers[48])}|E:{ GetStickerAbbreviation(originalStickers[49])}|BE:{ GetStickerAbbreviation(originalStickers[50])}|FSE:{ GetStickerAbbreviation(originalStickers[51])}|SE:{ GetStickerAbbreviation(originalStickers[52])}|BSE:{ GetStickerAbbreviation(originalStickers[53])}";
-
-            return $"{north},{south},{front},{back},{west},{east}";
-
-        }
-        public String GetCubePattern(CubeModel cube)
-        {
-            XyzCubeTypes xyzCubeType = GetXyzCubeType(cube);
-            String north = $"{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackNorth.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthEast.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.NorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.North.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.NorthEast.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthWest.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorth.StickerNorth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthEast.StickerNorth.StickerColorType)}";
-            String south = $"{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthWest.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouth.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthEast.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.SouthWest.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.South.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.SouthEast.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthWest.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouth.StickerSouth.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthEast.StickerSouth.StickerColorType)}";
-            String front = $"{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthWest.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorth.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthEast.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontWest.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.Front.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontEast.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthWest.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouth.StickerFront.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthEast.StickerFront.StickerColorType)}";
-            String back = $"{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthWest.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackNorth.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthEast.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackWest.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.Back.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackEast.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthWest.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouth.StickerBack.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthEast.StickerBack.StickerColorType)}";
-            String west = $"{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.NorthWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.West.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.SouthWest.StickerWest.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthWest.StickerWest.StickerColorType)}";
-            String east = $"{ GetStickerAbbreviation(xyzCubeType, cube.FrontNorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.NorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackNorthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.East.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.FrontSouthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.SouthEast.StickerEast.StickerColorType)}{ GetStickerAbbreviation(xyzCubeType, cube.BackSouthEast.StickerEast.StickerColorType)}";
-
-            var result = $"{north}{south}{front}{back}{west}{east}";
-
-            this.ValidateCube(result);
-
-            return result;
-        }
-
 
         public String[] GetAllCubePatterns(String original)
         {
@@ -149,7 +92,7 @@ namespace RC.Logic
             var normalizeRresultWithDups = new List<String>();
             foreach (var resultUnnormalized in resultWithDups.Distinct())
             {
-                normalizeRresultWithDups.Add(this.Normalize(original));
+                normalizeRresultWithDups.Add(this.Normalize(resultUnnormalized));
             }
 
             String[] results = normalizeRresultWithDups.Distinct().ToArray();

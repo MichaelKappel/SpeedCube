@@ -396,5 +396,316 @@ namespace RC.Logic
             }
         }
 
+
+        public String FromDatabase(String move)
+        {
+            return move.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
+        }
+
+        public String ToDatabase(String move)
+        {
+            if (move.Contains(','))
+            {
+                return move;
+            }
+            else
+            {
+                String s1 = move.Replace('a', 'Z').Replace('b', 'Y').Replace('c', 'X');
+                if (s1.Length < 10)
+                {
+                    return s1;
+                }
+                else
+                {
+                    String s2 = String.Format("{0},{1},{2},{3},{4},{5}",
+                        s1.Substring(0, 9),
+                        s1.Substring(9, 9),
+                        s1.Substring(18, 9),
+                        s1.Substring(27, 9),
+                        s1.Substring(36, 9),
+                        s1.Substring(45, 9));
+
+                    return s2;
+                }
+            }
+        }
+
+        public String Convert(MoveTypes move)
+        {
+            String result;
+
+            switch (move)
+            {
+                case MoveTypes.Up:
+                    result = "U";
+                    break;
+                case MoveTypes.Equator:
+                    result = "E";
+                    break;
+                case MoveTypes.Down:
+                    result = "D";
+                    break;
+                case MoveTypes.Right:
+                    result = "R";
+                    break;
+                case MoveTypes.MeridianPrime:
+                    result = "M";
+                    break;
+                case MoveTypes.Left:
+                    result = "L";
+                    break;
+                case MoveTypes.Front:
+                    result = "F";
+                    break;
+                case MoveTypes.Meridian90th:
+                    result = "S";
+                    break;
+                case MoveTypes.Back:
+                    result = "B";
+                    break;
+                case MoveTypes.Up2:
+                    result = "U2";
+                    break;
+                case MoveTypes.Equator2:
+                    result = "E2";
+                    break;
+                case MoveTypes.Down2:
+                    result = "D2";
+                    break;
+                case MoveTypes.Right2:
+                    result = "R2";
+                    break;
+                case MoveTypes.MeridianPrime2:
+                    result = "M2";
+                    break;
+                case MoveTypes.Left2:
+                    result = "L2";
+                    break;
+                case MoveTypes.Front2:
+                    result = "F2";
+                    break;
+                case MoveTypes.Meridian90th2:
+                    result = "S2";
+                    break;
+                case MoveTypes.Back2:
+                    result = "B2";
+                    break;
+                case MoveTypes.UpReverse:
+                    result = "U'";
+                    break;
+                case MoveTypes.EquatorReverse:
+                    result = "E'";
+                    break;
+                case MoveTypes.DownReverse:
+                    result = "D'";
+                    break;
+                case MoveTypes.RightReverse:
+                    result = "R'";
+                    break;
+                case MoveTypes.MeridianPrimeReverse:
+                    result = "M'";
+                    break;
+                case MoveTypes.LeftReverse:
+                    result = "L'";
+                    break;
+                case MoveTypes.FrontReverse:
+                    result = "F'";
+                    break;
+                case MoveTypes.Meridian90thReverse:
+                    result = "S'";
+                    break;
+                case MoveTypes.BackReverse:
+                    result = "B'";
+                    break;
+                default:
+                    throw new Exception("Unkown Move");
+            }
+            return result;
+        }
+
+        public MoveTypes Reverse(MoveTypes move)
+        {
+            MoveTypes result;
+            switch (move)
+            {
+                case MoveTypes.UpReverse:
+                    result = MoveTypes.Up;
+                    break;
+                case MoveTypes.EquatorReverse:
+                    result = MoveTypes.Equator;
+                    break;
+                case MoveTypes.DownReverse:
+                    result = MoveTypes.Down;
+                    break;
+                case MoveTypes.RightReverse:
+                    result = MoveTypes.Right;
+                    break;
+                case MoveTypes.MeridianPrimeReverse:
+                    result = MoveTypes.MeridianPrime;
+                    break;
+                case MoveTypes.LeftReverse:
+                    result = MoveTypes.Left;
+                    break;
+                case MoveTypes.FrontReverse:
+                    result = MoveTypes.Front;
+                    break;
+                case MoveTypes.Meridian90thReverse:
+                    result = MoveTypes.Meridian90th;
+                    break;
+                case MoveTypes.BackReverse:
+                    result = MoveTypes.Back;
+                    break;
+                case MoveTypes.Up2:
+                    result = MoveTypes.Up2;
+                    break;
+                case MoveTypes.Equator2:
+                    result = MoveTypes.Equator2;
+                    break;
+                case MoveTypes.Down2:
+                    result = MoveTypes.Down2;
+                    break;
+                case MoveTypes.Right2:
+                    result = MoveTypes.Right2;
+                    break;
+                case MoveTypes.MeridianPrime2:
+                    result = MoveTypes.MeridianPrime2;
+                    break;
+                case MoveTypes.Left2:
+                    result = MoveTypes.Left2;
+                    break;
+                case MoveTypes.Front2:
+                    result = MoveTypes.Front2;
+                    break;
+                case MoveTypes.Meridian90th2:
+                    result = MoveTypes.Meridian90th2;
+                    break;
+                case MoveTypes.Back2:
+                    result = MoveTypes.Back2;
+                    break;
+                case MoveTypes.Up:
+                    result = MoveTypes.UpReverse;
+                    break;
+                case MoveTypes.Equator:
+                    result = MoveTypes.EquatorReverse;
+                    break;
+                case MoveTypes.Down:
+                    result = MoveTypes.DownReverse;
+                    break;
+                case MoveTypes.Right:
+                    result = MoveTypes.RightReverse;
+                    break;
+                case MoveTypes.MeridianPrime:
+                    result = MoveTypes.MeridianPrimeReverse;
+                    break;
+                case MoveTypes.Left:
+                    result = MoveTypes.LeftReverse;
+                    break;
+                case MoveTypes.Front:
+                    result = MoveTypes.FrontReverse;
+                    break;
+                case MoveTypes.Meridian90th:
+                    result = MoveTypes.Meridian90thReverse;
+                    break;
+                case MoveTypes.Back:
+                    result = MoveTypes.BackReverse;
+                    break;
+                default:
+                    throw new Exception("Unkown Move");
+            }
+            return result;
+        }
+
+        public MoveTypes Convert(String move)
+        {
+            MoveTypes result;
+            switch (move)
+            {
+                case "U":
+                    result = MoveTypes.Up;
+                    break;
+                case "E":
+                    result = MoveTypes.Equator;
+                    break;
+                case "D":
+                    result = MoveTypes.Down;
+                    break;
+                case "R":
+                    result = MoveTypes.Right;
+                    break;
+                case "M":
+                    result = MoveTypes.MeridianPrime;
+                    break;
+                case "L":
+                    result = MoveTypes.Left;
+                    break;
+                case "F":
+                    result = MoveTypes.Front;
+                    break;
+                case "S":
+                    result = MoveTypes.Meridian90th;
+                    break;
+                case "B":
+                    result = MoveTypes.Back;
+                    break;
+                case "U2":
+                    result = MoveTypes.Up2;
+                    break;
+                case "E2":
+                    result = MoveTypes.Equator2;
+                    break;
+                case "D2":
+                    result = MoveTypes.Down2;
+                    break;
+                case "R2":
+                    result = MoveTypes.Right2;
+                    break;
+                case "M2":
+                    result = MoveTypes.MeridianPrime2;
+                    break;
+                case "L2":
+                    result = MoveTypes.Left2;
+                    break;
+                case "F2":
+                    result = MoveTypes.Front2;
+                    break;
+                case "S2":
+                    result = MoveTypes.Meridian90th2;
+                    break;
+                case "B2":
+                    result = MoveTypes.Back2;
+                    break;
+                case "U'":
+                    result = MoveTypes.UpReverse;
+                    break;
+                case "E'":
+                    result = MoveTypes.EquatorReverse;
+                    break;
+                case "D'":
+                    result = MoveTypes.DownReverse;
+                    break;
+                case "R'":
+                    result = MoveTypes.RightReverse;
+                    break;
+                case "M'":
+                    result = MoveTypes.MeridianPrimeReverse;
+                    break;
+                case "L'":
+                    result = MoveTypes.LeftReverse;
+                    break;
+                case "F'":
+                    result = MoveTypes.FrontReverse;
+                    break;
+                case "S'":
+                    result = MoveTypes.Meridian90thReverse;
+                    break;
+                case "B'":
+                    result = MoveTypes.BackReverse;
+                    break;
+                default:
+                    throw new Exception("Unkown Move");
+            }
+            return result;
+        }
+
     }
 }

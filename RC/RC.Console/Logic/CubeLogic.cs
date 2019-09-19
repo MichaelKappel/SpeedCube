@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using RC.Enumerations;
 using RC.Model;
 using RC.Model.Pieces;
@@ -504,123 +503,32 @@ namespace RC.Logic
         }
         #endregion
 
-
-        public void Scramble(CubeModel[] cubes, Int32 times)
+        public MoveTypes GetRandomMove()
         {
             using (var rng = new RNGCryptoServiceProvider())
             {
-                for (var i = 0; i < times; i++)
-                {
-                    byte[] buffer = new byte[4];
-                    rng.GetBytes(buffer);
-                    Int32 seedNumber = BitConverter.ToInt32(buffer, 0);
+                byte[] buffer = new byte[4];
+                rng.GetBytes(buffer);
+                Int32 seedNumber = BitConverter.ToInt32(buffer, 0);
 
-                    Int32 randomMove = new Random(seedNumber).Next(0, 11);
+                Int32 randomMove = new Random(seedNumber).Next(0, 27);
 
-                    foreach (CubeModel cube in cubes)
-                    {
-                        switch (randomMove)
-                        {
-                            case 0:
-                                this.TurnBackClockwise(cube);
-                                break;
-                            case 1:
-                                this.TurnBackCounterclockwise(cube);
-                                break;
-                            case 2:
-                                this.TurnDownClockwise(cube);
-                                break;
-                            case 3:
-                                this.TurnDownCounterclockwise(cube);
-                                break;
-                            case 4:
-                                this.TurnFrontClockwise(cube);
-                                break;
-                            case 5:
-                                this.TurnFrontCounterclockwise(cube);
-                                break;
-                            case 6:
-                                this.TurnLeftClockwise(cube);
-                                break;
-                            case 7:
-                                this.TurnLeftCounterclockwise(cube);
-                                break;
-                            case 8:
-                                this.TurnRightClockwise(cube);
-                                break;
-                            case 9:
-                                this.TurnRightCounterclockwise(cube);
-                                break;
-                            case 10:
-                                this.TurnUpClockwise(cube);
-                                break;
-                            case 11:
-                                this.TurnUpCounterclockwise(cube);
-                                break;
-                        }
-                    }
-                }
-            }
-            foreach (CubeModel cube in cubes)
-            {
-                this.VerifyAllPieces(cube);
+                return (MoveTypes)randomMove;
             }
         }
 
-        public void Scramble(CubeModel cube, Int32 times)
+        public MoveTypes[] Scramble(CubeModel cube, Int32 times)
         {
-            using (var rng = new RNGCryptoServiceProvider())
+            var moveTypes = new List<MoveTypes>();
+
+            for (var i = 0; i < times; i++)
             {
-                for (var i = 0; i < times; i++)
-                {
-                    byte[] buffer = new byte[4];
-                    rng.GetBytes(buffer);
-                    Int32 seedNumber = BitConverter.ToInt32(buffer, 0);
-
-                    Int32 randomMove = new Random(seedNumber).Next(0, 11);
-
-                    switch (randomMove)
-                    {
-                        case 0:
-                            this.TurnBackClockwise(cube);
-                            break;
-                        case 1:
-                            this.TurnBackCounterclockwise(cube);
-                            break;
-                        case 2:
-                            this.TurnDownClockwise(cube);
-                            break;
-                        case 3:
-                            this.TurnDownCounterclockwise(cube);
-                            break;
-                        case 4:
-                            this.TurnFrontClockwise(cube);
-                            break;
-                        case 5:
-                            this.TurnFrontCounterclockwise(cube);
-                            break;
-                        case 6:
-                            this.TurnLeftClockwise(cube);
-                            break;
-                        case 7:
-                            this.TurnLeftCounterclockwise(cube);
-                            break;
-                        case 8:
-                            this.TurnRightClockwise(cube);
-                            break;
-                        case 9:
-                            this.TurnRightCounterclockwise(cube);
-                            break;
-                        case 10:
-                            this.TurnUpClockwise(cube);
-                            break;
-                        case 11:
-                            this.TurnUpCounterclockwise(cube);
-                            break;
-                    }
-                }
+                MoveTypes moveType = this.GetRandomMove();
+                this.RunMove(cube, moveType);
+                moveTypes.Add(moveType);
             }
-            this.VerifyAllPieces(cube);
+
+            return moveTypes.ToArray();
         }
 
 
@@ -709,139 +617,113 @@ namespace RC.Logic
 
         }
 
-        public void RunMove(CubeModel cube, String move)
+        public void RunMove(CubeModel cube, MoveTypes move)
         {
-            if (move == "U")
+            switch (move)
             {
-                this.TurnUpClockwise(cube);
-            }
-            else if (move == "E")
-            {
-                this.TurnUpClockwise(cube);
-                this.TurnDownCounterclockwise(cube);
-            }
-            else if (move == "D")
-            {
-                this.TurnDownClockwise(cube);
-            }
-            else if (move == "R")
-            {
-                this.TurnRightClockwise(cube);
-            }
-            else if (move == "M")
-            {
-                this.TurnLeftCounterclockwise(cube);
-                this.TurnRightClockwise(cube);
-            }
-            else if (move == "L")
-            {
-                this.TurnLeftClockwise(cube);
-            }
-            else if (move == "F")
-            {
-                this.TurnFrontClockwise(cube);
-            }
-            else if (move == "S")
-            {
-                this.TurnFrontCounterclockwise(cube);
-                this.TurnBackClockwise(cube);
-            }
-            else if (move == "B")
-            {
-                this.TurnBackClockwise(cube);
-            }
-            else if (move == "U2")
-            {
-                this.TurnUpClockwise(cube);
-                this.TurnUpClockwise(cube);
-            }
-            else if (move == "E2")
-            {
-                this.TurnUpClockwise(cube);
-                this.TurnDownCounterclockwise(cube);
+                case MoveTypes.Up:
+                    this.TurnUpClockwise(cube);
+                    break;
+                case MoveTypes.Equator:
+                    this.TurnUpClockwise(cube);
+                    this.TurnDownCounterclockwise(cube);
+                    break;
+                case MoveTypes.Down:
+                    this.TurnDownClockwise(cube);
+                    break;
+                case MoveTypes.Right:
+                    this.TurnRightClockwise(cube);
+                    break;
+                case MoveTypes.MeridianPrime:
+                    this.TurnLeftCounterclockwise(cube);
+                    this.TurnRightClockwise(cube);
+                    break;
+                case MoveTypes.Left:
+                    this.TurnLeftClockwise(cube);
+                    break;
+                case MoveTypes.Front:
+                    this.TurnFrontClockwise(cube);
+                    break;
+                case MoveTypes.Meridian90th:
+                    this.TurnFrontCounterclockwise(cube);
+                    this.TurnBackClockwise(cube);
+                    break;
+                case MoveTypes.Back:
+                    this.TurnBackClockwise(cube);
+                    break;
+                case MoveTypes.Up2:
+                    this.TurnUpClockwise(cube);
+                    this.TurnUpClockwise(cube);
+                    break;
+                case MoveTypes.Equator2:
+                    this.TurnUpClockwise(cube);
+                    this.TurnDownCounterclockwise(cube);
+                    this.TurnUpClockwise(cube);
+                    this.TurnDownCounterclockwise(cube);
+                    break;
+                case MoveTypes.Down2:
+                    this.TurnDownClockwise(cube);
+                    this.TurnDownClockwise(cube);
+                    break;
+                case MoveTypes.Right2:
+                    this.TurnRightClockwise(cube);
+                    this.TurnRightClockwise(cube);
+                    break;
+                case MoveTypes.MeridianPrime2:
+                    this.TurnLeftCounterclockwise(cube);
+                    this.TurnRightClockwise(cube);
+                    this.TurnLeftCounterclockwise(cube);
+                    this.TurnRightClockwise(cube);
+                    break;
+                case MoveTypes.Left2:
+                    this.TurnLeftClockwise(cube);
+                    this.TurnLeftClockwise(cube);
+                    break;
+                case MoveTypes.Front2:
+                    this.TurnFrontClockwise(cube);
+                    this.TurnFrontClockwise(cube);
+                    break;
+                case MoveTypes.Meridian90th2:
+                    this.TurnFrontCounterclockwise(cube);
+                    this.TurnBackClockwise(cube);
+                    this.TurnFrontCounterclockwise(cube);
+                    this.TurnBackClockwise(cube);
+                    break;
+                case MoveTypes.Back2:
+                    this.TurnBackClockwise(cube);
+                    this.TurnBackClockwise(cube);
+                    break;
+                case MoveTypes.UpReverse:
+                    this.TurnUpCounterclockwise(cube);
+                    break;
+                case MoveTypes.EquatorReverse:
+                    this.TurnUpCounterclockwise(cube);
+                    this.TurnDownClockwise(cube);
+                    break;
+                case MoveTypes.DownReverse:
+                    this.TurnDownCounterclockwise(cube);
+                    break;
+                case MoveTypes.RightReverse:
+                    this.TurnRightCounterclockwise(cube);
+                    break;
+                case MoveTypes.MeridianPrimeReverse:
+                    this.TurnLeftClockwise(cube);
+                    this.TurnRightCounterclockwise(cube);
+                    break;
+                case MoveTypes.LeftReverse:
+                    this.TurnLeftCounterclockwise(cube);
+                    break;
+                case MoveTypes.FrontReverse:
+                    this.TurnFrontCounterclockwise(cube);
+                    break;
+                case MoveTypes.Meridian90thReverse:
+                    this.TurnFrontClockwise(cube);
+                    this.TurnBackCounterclockwise(cube);
+                    break;
+                case MoveTypes.BackReverse:
+                    this.TurnBackCounterclockwise(cube);
+                    break;
 
-                this.TurnUpClockwise(cube);
-                this.TurnDownCounterclockwise(cube);
-            }
-            else if (move == "D2")
-            {
-                this.TurnDownClockwise(cube);
-                this.TurnDownClockwise(cube);
-            }
-            else if (move == "R2")
-            {
-                this.TurnRightClockwise(cube);
-                this.TurnRightClockwise(cube);
-            }
-            else if (move == "M2")
-            {
-                this.TurnLeftCounterclockwise(cube);
-                this.TurnRightClockwise(cube);
-
-                this.TurnLeftCounterclockwise(cube);
-                this.TurnRightClockwise(cube);
-            }
-            else if (move == "L2")
-            {
-                this.TurnLeftClockwise(cube);
-                this.TurnLeftClockwise(cube);
-            }
-            else if (move == "F2")
-            {
-                this.TurnFrontClockwise(cube);
-                this.TurnFrontClockwise(cube);
-            }
-            else if (move == "S2")
-            {
-                this.TurnFrontCounterclockwise(cube);
-                this.TurnBackClockwise(cube);
-
-                this.TurnFrontCounterclockwise(cube);
-                this.TurnBackClockwise(cube);
-            }
-            else if (move == "B2")
-            {
-                this.TurnBackClockwise(cube);
-                this.TurnBackClockwise(cube);
-            }
-            else if (move == "U'")
-            {
-                this.TurnUpCounterclockwise(cube);
-            }
-            else if (move == "E'")
-            {
-                this.TurnUpCounterclockwise(cube);
-                this.TurnDownClockwise(cube);
-            }
-            else if (move == "D'")
-            {
-                this.TurnDownCounterclockwise(cube);
-            }
-            else if (move == "R'")
-            {
-                this.TurnRightCounterclockwise(cube);
-            }
-            else if (move == "M'")
-            {
-                this.TurnLeftClockwise(cube);
-                this.TurnRightCounterclockwise(cube);
-            }
-            else if (move == "L'")
-            {
-                this.TurnLeftCounterclockwise(cube);
-            }
-            else if (move == "F'")
-            {
-                this.TurnFrontCounterclockwise(cube);
-            }
-            else if (move == "S'")
-            {
-                this.TurnFrontClockwise(cube);
-                this.TurnBackCounterclockwise(cube);
-            }
-            else if (move == "B'")
-            {
-                this.TurnBackCounterclockwise(cube);
             }
         }
 
@@ -853,27 +735,18 @@ namespace RC.Logic
             }
         }
 
-        public void RunMoves(CubeModel cube, String moves, Int32 times)
-        {
-            for (var i = 0; i < times; i++)
-            {
-                RunMoves(cube, moves);
-            }
-        }
         public void RunMoves(CubeModel cube, String moves)
         {
-            MatchCollection matches = Regex.Matches(moves, @"(?<times>[0-9])\((?<algorithm>[0-9a-zA-Z',].+)\)|(?<prime>[a-zA-Z])'|(?<move>[a-zA-Z])");
-            foreach (Match match in matches)
+            if (moves.Contains(","))
             {
-                if (String.IsNullOrWhiteSpace(match.Groups["algorithm"].Value))
+                foreach (String move in moves.Split(','))
                 {
-                    this.RunMove(cube, match.Value);
+                    this.RunMove(cube, this.Convert(move));
                 }
-                else
-                {
-                    Int32 times = Int32.Parse(match.Groups["times"].Value);
-                    this.RunMoves(cube, match.Groups["algorithm"].Value, times);
-                }
+            }
+            else
+            {
+                this.RunMove(cube, this.Convert(moves));
             }
             this.VerifyAllPieces(cube);
         }

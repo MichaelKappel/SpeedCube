@@ -5,3 +5,8 @@ D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.Console.csprojAssemblyReference.ca
 D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.Console.csproj.CoreCompileInputs.cache
 D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.exe
 D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.pdb
+D:\git\SpeedCube\RC\RC.Console\bin\Release\EntityFramework.dll
+D:\git\SpeedCube\RC\RC.Console\bin\Release\EntityFramework.SqlServer.dll
+D:\git\SpeedCube\RC\RC.Console\bin\Release\EntityFramework.xml
+D:\git\SpeedCube\RC\RC.Console\bin\Release\EntityFramework.SqlServer.xml
+D:\git\SpeedCube\RC\RC.Console\obj\Release\RC.Console.csproj.CopyComplete
