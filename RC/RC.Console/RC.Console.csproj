@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>RC</RootNamespace>
     <AssemblyName>RC</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -73,6 +73,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -83,118 +84,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enumerations\MoveTypes.cs" />
-    <Compile Include="Enumerations\PaternStickerTypes.cs" />
-    <Compile Include="Enumerations\PatternAdjacentFlipTypes.cs" />
-    <Compile Include="Enumerations\PatternAdjacentStickerTypes.cs" />
-    <Compile Include="Enumerations\PatternAdjacentTypes.cs" />
-    <Compile Include="Enumerations\PatternCubeTypes.cs" />
-    <Compile Include="Enumerations\PatternFaceRotationTypes.cs" />
-    <Compile Include="Enumerations\PatternFaceTypes.cs" />
-    <Compile Include="Enumerations\PositionCornerTypes.cs" />
-    <Compile Include="Enumerations\PositionMiddleTypes.cs" />
-    <Compile Include="Enumerations\PositionSideTypes.cs" />
-    <Compile Include="Enumerations\RotationTypes.cs" />
-    <Compile Include="Extensions\CubePatternExtensions.cs" />
-    <Compile Include="Interfaces\ICopySidePieceModel.cs" />
-    <Compile Include="Interfaces\ICopyCornerPieceModel.cs" />
-    <Compile Include="Interfaces\IGetStickers.cs" />
-    <Compile Include="Interfaces\IStickerBack.cs" />
-    <Compile Include="Interfaces\IStickerEast.cs" />
-    <Compile Include="Interfaces\IStickerFront.cs" />
-    <Compile Include="Interfaces\IStickerNorth.cs" />
-    <Compile Include="Interfaces\IStickerSouth.cs" />
-    <Compile Include="Interfaces\IStickerWest.cs" />
-    <Compile Include="Logic\CubeFacePatternLogic.cs" />
-    <Compile Include="Logic\CubePatternLogic.cs" />
-    <Compile Include="Logic\LogicBase.cs" />
-    <Compile Include="Logic\PatternLogicBase.cs" />
-    <Compile Include="Logic\PatternRecognitionLogic.cs" />
-    <Compile Include="Model\Base\SlotMiddleModelBase.cs" />
-    <Compile Include="Model\CubePatternSegments.cs" />
-    <Compile Include="Model\Patterns\PatternAdjacentBitModel.cs" />
-    <Compile Include="Model\Patterns\PatternAdjacentModel.cs" />
-    <Compile Include="Model\Patterns\PatternFaceBitModel.cs" />
-    <Compile Include="Model\Patterns\PatternFaceWithAdjacentsModel.cs" />
-    <Compile Include="Model\Stickers\StickerFrontModel.cs" />
-    <Compile Include="Model\Stickers\StickerBackModel.cs" />
-    <Compile Include="Model\Base\StickerModelBase.cs" />
-    <Compile Include="Enumerations\StickerColorTypes.cs" />
-    <Compile Include="Logic\CubeLogic.cs" />
-    <Compile Include="Model\Base\PieceModelBase.cs" />
-    <Compile Include="Model\Base\SlotModelBase.cs" />
-    <Compile Include="Model\Base\PieceSideModelBase.cs" />
-    <Compile Include="Model\Base\SlotModelBase_T.cs" />
-    <Compile Include="Model\Base\SlotSideModelBase.cs" />
-    <Compile Include="Model\Stickers\StickerEastModel.cs" />
-    <Compile Include="Model\Stickers\StickerWestModel.cs" />
-    <Compile Include="Model\Stickers\StickerNorthModel.cs" />
-    <Compile Include="Model\Stickers\StickerSouthModel.cs" />
-    <Compile Include="Model\CubeModel.cs" />
-    <Compile Include="Model\Base\SlotCornerModelBase.cs" />
-    <Compile Include="Model\Base\PieceCornerModelBase.cs" />
-    <Compile Include="Model\Base\PieceMiddleModelBase.cs" />
-    <Compile Include="Model\CubePatternFaceModel.cs" />
-    <Compile Include="Model\CubeAbstractorModel.cs" />
-    <Compile Include="Model\CubePatternModel.cs" />
-    <Compile Include="Model\Patterns\PatternAdjacentResultModel.cs" />
-    <Compile Include="Model\Patterns\PatternStatisticModel.cs" />
-    <Compile Include="Model\Patterns\PatternFaceResultModel.cs" />
-    <Compile Include="Model\Patterns\PatternModel.cs" />
-    <Compile Include="Model\Patterns\PatternResultModel.cs" />
-    <Compile Include="Model\Patterns\PatternResultModelBase.cs" />
-    <Compile Include="Model\Pieces\PieceBackEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackNorthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackNorthModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackNothWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackSouthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackSouthModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackSouthWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceBackWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontNorthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontNorthModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontNorthWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontSouthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontSouthModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontSouthWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceFrontWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceNorthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceNorthModel.cs" />
-    <Compile Include="Model\Pieces\PieceNorthWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceSouthEastModel.cs" />
-    <Compile Include="Model\Pieces\PieceSouthModel.cs" />
-    <Compile Include="Model\Pieces\PieceSouthWestModel.cs" />
-    <Compile Include="Model\Pieces\PieceWestModel.cs" />
-    <Compile Include="Model\Sots\SlotBackEastModel.cs" />
-    <Compile Include="Model\Sots\SlotBackModel.cs" />
-    <Compile Include="Model\Sots\SlotBackNorthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotBackNorthModel.cs" />
-    <Compile Include="Model\Sots\SlotBackNothWestModel.cs" />
-    <Compile Include="Model\Sots\SlotBackSouthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotBackSouthModel.cs" />
-    <Compile Include="Model\Sots\SlotBackSouthWestModel.cs" />
-    <Compile Include="Model\Sots\SlotEastModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontModel.cs" />
-    <Compile Include="Model\Sots\SlotNorthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotNorthModel.cs" />
-    <Compile Include="Model\Sots\SlotSouthModel.cs" />
-    <Compile Include="Model\Sots\SlotSouthWestModel.cs" />
-    <Compile Include="Model\Sots\SlotSouthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotNorthWestModel.cs" />
-    <Compile Include="Model\Sots\SlotBackWestModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontEastModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontNorthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontNorthModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontNothWestModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontSouthEastModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontSouthModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontSouthWestModel.cs" />
-    <Compile Include="Model\Sots\SlotFrontWestModel.cs" />
-    <Compile Include="Model\Sots\SlotWestModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -216,6 +105,15 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RC.Common\RC.Common.csproj">
+      <Project>{bfa80f13-d1a6-4cad-91e3-fd8ce0b1f77c}</Project>
+      <Name>RC.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RC.Logic\RC.Logic.csproj">
+      <Project>{cfb4dd37-65cc-441d-95fe-45613cce651c}</Project>
+      <Name>RC.Logic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

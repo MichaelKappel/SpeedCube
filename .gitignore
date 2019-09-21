@@ -12,3 +12,10 @@
 /RC/.vs/RC/v15/.suo
 /RC/RC.Console/bin/Release
 /RC/RC.Console/bin/x64
+/RC/RC.Bowser/bin/Debug/netcoreapp3.0
+/RC/RC.Bowser/obj
+/RC/RC.Common/bin/Debug
+/RC/RC.Common/obj
+/RC/RC.Console/obj/x64/Debug
+/RC/RC.Logic/bin/Debug
+/RC/RC.Logic/obj
