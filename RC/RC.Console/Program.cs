@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ namespace RC
                                 Value = stepSize
                             });
 
-                            Debug.WriteLine($@"Started  EXEC {commandName} @Step={iStep}, @MaxRecords={stepSize}");
+                            Console.WriteLine($@"Started  EXEC {commandName} @Step={iStep}, @MaxRecords={stepSize}");
 
                             using (SqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -70,7 +71,7 @@ namespace RC
                                 }
                             }
 
-                            Debug.WriteLine($@"Result: {patternRelationStepDetails.Count}");
+                            Console.WriteLine($@"Result: {patternRelationStepDetails.Count}");
 
                         }
                         connection.Close();
@@ -87,7 +88,8 @@ namespace RC
             }
         }
 
-        public class NextStepInfo {
+        public class NextStepInfo
+        {
             public NextStepInfo(Int32 parentPatternId, Int32 parentPatternStepId, String relationship, String reverseRelationship, String connectedPattern)
             {
                 this.ParentPatternId = parentPatternId;
@@ -208,23 +210,60 @@ namespace RC
             }
         }
 
-        static void DoPatterns()
+        private static RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
+
+        static Int32 RandomInteger(Int32 min, Int32 max)
         {
-            String sqlCommand = "[dbo].[wsp_PatternsGet]";
-            Int32 pageSize = 100;
-
-
-            Parallel.For(1, 238900, (Int32 pageNumber) =>
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
             {
-                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+                // Get four random bytes.
+                byte[] four_bytes = new byte[4];
+                Rand.GetBytes(four_bytes);
 
-                var patterns = new List<(Int32 PatternId, String PatternContent)>(pageSize);
+                // Convert that into an uint.
+                scale = BitConverter.ToUInt32(four_bytes, 0);
+            }
 
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+            // Add min to the scaled difference between max and min.
+            return (int)(min + (max - min) *
+                (scale / (double)uint.MaxValue));
+        }
+
+        static void FindAdjacentPatternTypes()
+        {
+            String sqlSelectCommand = "[dbo].[wsp_PatternsWithoutAdjacentRecognitionGet]";
+            String sqlUpdateCommand = "[dbo].[wsp_PatternRecognitionAdjacentInsert]";
+            Int32 pageSize = 1000000;
+
+            FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
+        }
+
+        static void FindFacePatternTypes()
+        {
+            String sqlSelectCommand = "[dbo].[wsp_PatternsWithoutFaceRecognitionGet]";
+            String sqlUpdateCommand = "[dbo].[wsp_PatternRecognitionFaceInsert]";
+            Int32 pageSize = 200000;
+
+            FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
+        }
+
+        static void FindPatternTypes(String sqlSelectCommand, String sqlUpdateCommand, Int32 pageSize)
+        {
+            CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+
+            var patternTypes = new DataTable();
+            patternTypes.Columns.Add("PatternId");
+            patternTypes.Columns.Add("PatternTypeId");
+            patternTypes.Columns.Add("Color");
+
+            using (SqlConnection queryConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+            {
+                try
                 {
-                    connection.Open();
+                    queryConnection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand(sqlCommand, connection))
+                    using (SqlCommand cmd = new SqlCommand(sqlSelectCommand, queryConnection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 0;
@@ -234,12 +273,10 @@ namespace RC
                             Value = pageSize
                         });
 
-                        cmd.Parameters.Add(new SqlParameter("@PageNumber", SqlDbType.Int)
-                        {
-                            Value = pageNumber
-                        });
+                        Console.WriteLine($@"Started  EXEC {sqlSelectCommand} @PageSize={pageSize}");
 
-                        Debug.WriteLine($@"Started  EXEC {sqlCommand} @PageSize={pageSize}, @PageNumber={pageNumber}");
+                        Int32 count = 0;
+                        int top = Console.CursorTop;
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -247,93 +284,84 @@ namespace RC
                             {
                                 while (reader.Read())
                                 {
-                                    Int32 patternId = reader.GetInt32(0);
-                                    String pattern = PatternLogic.FromDatabase(reader.GetString(1));
 
-                                    patterns.Add((patternId, pattern));
+                                    Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(reader.GetString(1)));
+
+                                    (StickerColorTypes Color, PatternFaceTypes PatternFaceType)[] typesForpattern = PatternRecognition.GetCubeFacePatterns(cubeStartingPoint);
+                                    foreach (var item in typesForpattern)
+                                    {
+                                        DataRow row = patternTypes.NewRow();
+                                        row["PatternId"] = reader.GetInt32(0);
+                                        row["PatternTypeId"] = (Int32)item.PatternFaceType;
+                                        row["Color"] = Logic.GetStickerAbbreviation(item.Color);
+
+                                        patternTypes.Rows.Add(row);
+                                    }
+
+                                    if (count % 1000 == 0)
+                                    {
+                                        Console.SetCursorPosition(0, top);
+                                        Console.WriteLine($@" {count} of {pageSize}");
+                                    }
+
+                                    count++;
                                 }
                             }
                         }
-                        Debug.WriteLine($@"Result: {patterns.Count}");
+
+                        Console.WriteLine($@"Completed EXEC {sqlSelectCommand} Result: {patternTypes.Rows.Count}");
                     }
 
-                    connection.Close();
+                }
+                catch (Exception ex)
+                {
 
-                    var adjacentPatternTypes = new DataTable();
-                    adjacentPatternTypes.Columns.Add("PatternId");
-                    adjacentPatternTypes.Columns.Add("PatternTypeId");
-                    adjacentPatternTypes.Columns.Add("Color");
-
-                    var facePatternTypes = new DataTable();
-                    facePatternTypes.Columns.Add("PatternId");
-                    facePatternTypes.Columns.Add("PatternTypeId");
-                    facePatternTypes.Columns.Add("Color");
-
-                    foreach (var pattern in patterns) {
-
-                        Logic.SetCubeState(cubeStartingPoint, pattern.PatternContent);
-
-                        (StickerColorTypes Color, PatternAdjacentTypes PatternAdjacentType)[] adjacentPatterns = PatternRecognition.GetCubeAdjacentPatterns(cubeStartingPoint);
-                        foreach(var item in adjacentPatterns)
-                        {
-                            DataRow row = adjacentPatternTypes.NewRow();
-                            row["PatternId"] = pattern.PatternId;
-                            row["PatternTypeId"] = (Int32)item.PatternAdjacentType;
-                            row["Color"] = Logic.GetStickerAbbreviation(item.Color);
-
-                            adjacentPatternTypes.Rows.Add(row);
-                        }
-
-                        (StickerColorTypes Color, PatternFaceTypes PatternFaceType)[] facePatterns = PatternRecognition.GetCubeFacePatterns(cubeStartingPoint);
-                        foreach (var item in facePatterns)
-                        {
-                            DataRow row = facePatternTypes.NewRow();
-                            row["PatternId"] = pattern.PatternId;
-                            row["PatternTypeId"] = (Int32)item.PatternFaceType;
-                            row["Color"] = Logic.GetStickerAbbreviation(item.Color);
-
-                            facePatternTypes.Rows.Add(row);
-                        }
-                    }
-
-
-                    connection.Open();
-                    using (SqlCommand cmdUpsert = new SqlCommand("[dbo].[wsp_PatternRecognitionAdjacentUpsert]", connection))
-                    {
-                        cmdUpsert.CommandType = CommandType.StoredProcedure;
-                        cmdUpsert.CommandTimeout = 0;
-
-                        cmdUpsert.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
-                        {
-                            TypeName = "dbo.[PatternRecognitionStateType]",
-                            Value = adjacentPatternTypes
-                        });
-
-                        cmdUpsert.ExecuteNonQuery();
-                    }
-
-                    using (SqlCommand cmdUpsert = new SqlCommand("[dbo].[wsp_PatternRecognitionFaceUpsert]", connection))
-                    {
-                        cmdUpsert.CommandType = CommandType.StoredProcedure;
-                        cmdUpsert.CommandTimeout = 0;
-
-                        cmdUpsert.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
-                        {
-                            TypeName = "dbo.[PatternRecognitionStateType]",
-                            Value = facePatternTypes
-                        });
-
-                        cmdUpsert.ExecuteNonQuery();
-                    }
-
-
-                    connection.Close();
+                    Console.WriteLine($@"Query ERROR EXEC {sqlSelectCommand} @PageSize={pageSize} {ex.Message} ");
+                }
+                finally
+                {
+                    queryConnection.Close();
                 }
 
-            });
+                Console.WriteLine($@"Started  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
+
+                using (SqlConnection mergeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+                {
+                    try
+                    {
+                        mergeConnection.Open();
+
+                        using (SqlCommand cmdUpdate = new SqlCommand(sqlUpdateCommand, mergeConnection))
+                        {
+                            cmdUpdate.CommandType = CommandType.StoredProcedure;
+                            cmdUpdate.CommandTimeout = 0;
+
+                            cmdUpdate.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
+                            {
+                                TypeName = "dbo.[PatternRecognitionStateType]",
+                                Value = patternTypes
+                            });
+
+                            cmdUpdate.ExecuteNonQuery();
+                        }
+
+                        mergeConnection.Close();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine($@"ERROR  EXEC {sqlUpdateCommand} @PageSize={pageSize} {ex.Message} ");
+                    }
+                    finally
+                    {
+                        mergeConnection.Close();
+                    }
+                }
+
+                Console.WriteLine($@"Completed  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
+            }
         }
-
-
 
         static void Main(string[] args)
         {
@@ -348,7 +376,14 @@ namespace RC
             //    DoSteps(i);
             //}
 
-            DoPatterns();
+
+            for (var i = 0; i < 100000; i++)
+            {
+                FindFacePatternTypes();
+                FindAdjacentPatternTypes();
+
+                GC.Collect();
+            }
 
             Console.WriteLine("Done");
             Console.ReadLine();
@@ -356,6 +391,6 @@ namespace RC
             Main(null);
         }
 
-    
+
     }
 }

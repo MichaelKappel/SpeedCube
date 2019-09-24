@@ -107,11 +107,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RC.Common\RC.Common.csproj">
-      <Project>{bfa80f13-d1a6-4cad-91e3-fd8ce0b1f77c}</Project>
+      <Project>{f528afcd-08ee-4c85-b805-3297f0b960b9}</Project>
       <Name>RC.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\RC.Logic\RC.Logic.csproj">
-      <Project>{cfb4dd37-65cc-441d-95fe-45613cce651c}</Project>
+      <Project>{eea98861-fd91-4846-9f20-f1c7845da8a9}</Project>
       <Name>RC.Logic</Name>
     </ProjectReference>
   </ItemGroup>
