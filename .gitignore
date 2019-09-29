@@ -19,3 +19,5 @@
 /RC/RC.Console/obj/x64/Debug
 /RC/RC.Logic/bin/Debug
 /RC/RC.Logic/obj
+/RC/RC.Common/bin/Release
+/RC/RC.Logic/bin/Release

@@ -73,8 +73,12 @@ namespace RC.Logic
 
         }
 
+        public String GetFirstPatternAlphabetically(String original)
+        {
+            return this.GetAllPatterns(original).OrderBy(x => x).First();
+        }
 
-        public String[] GetAllCubePatterns(String original)
+        public String[] GetAllPatterns(String original)
         {
             var resultWithDups = new List<String>() { original };
 

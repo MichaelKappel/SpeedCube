@@ -74,7 +74,6 @@
     <Build Include="dbo\Views\wvw_PatternRelationDetails.sql" />
     <Build Include="dbo\Stored Procedures\wsp_PatternsWithoutFaceRecognitionGet.sql" />
     <Build Include="dbo\Stored Procedures\wsp_PatternsWithoutAdjacentRecognitionGet.sql" />
-    <Build Include="dbo\Stored Procedures\wsp_PatternsGet.sql" />
     <Build Include="dbo\Stored Procedures\wsp_PatternRemainingAndCompleted.sql" />
     <Build Include="dbo\Stored Procedures\wsp_PatternRelationStepUpsert.sql" />
     <Build Include="dbo\Stored Procedures\wsp_PatternRelationStepRemainingDetailsRandomGet.sql" />
@@ -86,5 +85,6 @@
     <Build Include="dbo\Stored Procedures\wsp_PatternGet.sql" />
     <Build Include="dbo\User Defined Types\PrimaryPatternIdRelationToConnectedPatternType.sql" />
     <Build Include="dbo\User Defined Types\PatternRecognitionStateType.sql" />
+    <Build Include="dbo\Stored Procedures\wsp_SolutionGet.sql" />
   </ItemGroup>
 </Project>

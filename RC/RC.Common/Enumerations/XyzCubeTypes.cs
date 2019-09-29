@@ -169,7 +169,7 @@ namespace RC.Common.Enumerations
         /// Z=Blue
         /// </summary>
         WhiteRedBlue,
-        
+
         /// <summary>
         /// X=Green
         /// Y=Red

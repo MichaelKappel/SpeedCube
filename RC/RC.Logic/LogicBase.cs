@@ -402,33 +402,33 @@ namespace RC.Logic
         }
 
 
-        public String FromDatabase(String move)
+        public String FromDatabase(String databaseFormat)
         {
-            return move.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
+            return databaseFormat.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
         }
 
-        public String ToDatabase(String move)
+        public String ToDatabase(String cSharpFormat)
         {
-            if (move.Contains(','))
+            if (cSharpFormat.Contains(','))
             {
-                return move;
+                return cSharpFormat;
             }
             else
             {
-                String s1 = move.Replace('a', 'Z').Replace('b', 'Y').Replace('c', 'X');
-                if (s1.Length < 10)
+                String databaseFormat = cSharpFormat.Replace('a', 'Z').Replace('b', 'Y').Replace('c', 'X');
+                if (databaseFormat.Length < 10)
                 {
-                    return s1;
+                    return databaseFormat;
                 }
                 else
                 {
                     String s2 = String.Format("{0},{1},{2},{3},{4},{5}",
-                        s1.Substring(0, 9),
-                        s1.Substring(9, 9),
-                        s1.Substring(18, 9),
-                        s1.Substring(27, 9),
-                        s1.Substring(36, 9),
-                        s1.Substring(45, 9));
+                        databaseFormat.Substring(0, 9),
+                        databaseFormat.Substring(9, 9),
+                        databaseFormat.Substring(18, 9),
+                        databaseFormat.Substring(27, 9),
+                        databaseFormat.Substring(36, 9),
+                        databaseFormat.Substring(45, 9));
 
                     return s2;
                 }

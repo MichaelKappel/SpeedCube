@@ -2,6 +2,10 @@ D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.exe.config
 D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.exe
 D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.pdb
 D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.Console.csprojAssemblyReference.cache
-D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.Console.csproj.CoreCompileInputs.cache
 D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.exe
 D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.pdb
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Common.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Logic.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Common.pdb
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Logic.pdb
+D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.Console.csproj.CopyComplete
