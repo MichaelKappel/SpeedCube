@@ -404,7 +404,14 @@ namespace RC.Logic
 
         public String FromDatabase(String databaseFormat)
         {
-            return databaseFormat.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
+            if (databaseFormat.Contains("Z"))
+            {
+                return databaseFormat.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
+            }
+            else
+            {
+                return databaseFormat;
+            }
         }
 
         public String ToDatabase(String cSharpFormat)

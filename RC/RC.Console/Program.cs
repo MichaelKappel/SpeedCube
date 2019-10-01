@@ -23,7 +23,7 @@ namespace RC
         public static PatternRecognitionLogic PatternRecognition = new PatternRecognitionLogic();
 
 
-        public static CubeModel Cube = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+        public static CubeModel Cube = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
 
         [DebuggerDisplay("{MoveOrder} {PatternFrom} {PatternTo}", Name = "{MoveOptions}")]
         public class SolutionMoveModel
@@ -149,7 +149,7 @@ namespace RC
         {
             if (iStep == 1)
             {
-                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
                 DoStep(iStep, new[] { (1, 0, PatternLogic.GetCubePattern(cubeStartingPoint)) });
             }
             else
@@ -239,7 +239,7 @@ namespace RC
             {
                 Console.WriteLine("\tStep {0} {1} of {2}", step, isd + 1, nextStepPrimaries.Count());
 
-                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
                 Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(nextStepPrimaries[isd].Pattern));
                 String normalizedPattern = PatternLogic.GetCubePattern(cubeStartingPoint);
 
@@ -373,7 +373,7 @@ namespace RC
 
         static void FindPatternTypes(String sqlSelectCommand, String sqlUpdateCommand, Int32 pageSize)
         {
-            CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
+            CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
 
             var patternTypes = new DataTable();
             patternTypes.Columns.Add("PatternId");
@@ -508,46 +508,46 @@ namespace RC
                     GC.Collect();
                 }
             }
-            else if (command.ToUpper() == "SOLVE")
-            {
-                var sides = new List<String>();
-
-                String sidePattern = " [1] [2] [3] \n [4] [5] [6] \n [7] [8] [9]";
-
-                Console.WriteLine(sidePattern);
-                String side = Console.ReadLine().ToUpper();
-
-                while (!String.IsNullOrEmpty(side))
-                {
-                    sides.Add(side);
-                    Console.WriteLine(sidePattern);
-                    side = Console.ReadLine().ToUpper(); 
-                }
-
-                CubeModel cube = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
-                Logic.SetCubeState(cube, sides.ToArray());
-
-                OutputCube(cube);
-
-                String normalizedPattern = PatternLogic.GetCubePattern(cube);
-
-                Console.WriteLine(normalizedPattern);
-            }
             else
             {
-                if (!String.IsNullOrEmpty(command))
+
+                if (command.Length == 9)
+                {
+                    var sides = new List<String>();
+
+                    String sidePattern = " [1] [2] [3] \n [4] [5] [6] \n [7] [8] [9]";
+                    String side = command.ToUpper();
+
+                    while (!String.IsNullOrEmpty(side))
+                    {
+                        sides.Add(side);
+                        Console.WriteLine(sidePattern);
+                        side = Console.ReadLine().ToUpper();
+                    }
+
+                    Logic.SetCubeState(Cube, sides.ToArray());
+                }
+                else if (command.Length == 54)
                 {
                     Logic.SetCubeState(Cube, Logic.FromDatabase(command));
                 }
+
 
                 OutputCube(Cube);
 
                 Console.WriteLine(PatternLogic.GetCubePattern(Cube));
 
                 SolutionMoveModel[] moves = FindSolution(Cube, Logic.Create(Logic.GetXyzCubeType(Cube)));
-                foreach (var move in moves) 
+                if (moves.Count() > 0)
                 {
-                    Console.WriteLine("{0} => {1} {2}", move.LessSolvedPattern, move.MoreSolvedPattern, String.Join(" or ", move.MoveOptions));
+                    foreach (var move in moves)
+                    {
+                        Console.WriteLine("{0} => {1} {2}", move.LessSolvedPattern, move.MoreSolvedPattern, String.Join(" or ", move.MoveOptions));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Unknown Pattern");
                 }
 
                 //Logic.Scramble(Cube, 1);
