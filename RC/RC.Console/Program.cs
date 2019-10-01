@@ -82,14 +82,11 @@ namespace RC
 
         public static SolutionMoveModel[] FindSolution(CubeModel unsolved, CubeModel solved)
         {
-
             String unsolvedNormalized = PatternLogic.GetFirstPatternAlphabetically(PatternLogic.GetCubePattern(unsolved));
             String solvedNormalized = PatternLogic.GetFirstPatternAlphabetically(PatternLogic.GetCubePattern(solved));
 
 
             var results = new List<SolutionMoveModel>();
-
-            var patternSolutionDetails = new List<SolutionMoveModel>();
 
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
             {
@@ -123,17 +120,17 @@ namespace RC
 
                             Int32 stepOrdinal = reader.GetOrdinal("Step");
                             Int32 relationshipOrdinal = reader.GetOrdinal("Relationship");
-                            Int32 lessSolvedPatternOrdinal = reader.GetOrdinal("PrimaryPattern");
-                            Int32 moreConnectedPatternOrdinal = reader.GetOrdinal("ConnectedPattern");
+                            Int32 lessSolvedPatternOrdinal = reader.GetOrdinal("ConnectedPattern");
+                            Int32 moreSolvedPatternOrdinal = reader.GetOrdinal("PrimaryPattern");
 
                             while (reader.Read())
                             {
                                 Int32 step = reader.GetInt32(stepOrdinal);
                                 MoveTypes[] relationships = GetRelationships(reader.GetString(relationshipOrdinal));
                                 String lessSolvedPattern = Logic.FromDatabase(reader.GetString(lessSolvedPatternOrdinal));
-                                String moreSolvedPatternContent = Logic.FromDatabase(reader.GetString(lessSolvedPatternOrdinal));
+                                String moreSolvedPatternContent = Logic.FromDatabase(reader.GetString(moreSolvedPatternOrdinal));
 
-                                patternSolutionDetails.Add(new SolutionMoveModel(step, lessSolvedPattern, moreSolvedPatternContent, relationships));
+                                results.Add(new SolutionMoveModel(step, lessSolvedPattern, moreSolvedPatternContent, relationships));
                             }
                         }
                     }
@@ -141,7 +138,7 @@ namespace RC
                 connection.Close();
             }
 
-            Console.WriteLine($@"Result: {patternSolutionDetails.Count}");
+            Console.WriteLine($@"Result: {results.Count}");
 
 
             return results.ToArray();
@@ -494,7 +491,7 @@ namespace RC
 
             var command = Console.ReadLine();
    
-             if (command.ToUpper() == "GO")
+            if (command.ToUpper() == "GO")
             {
 
                 for (var i = 1; i <= 9; i++)
@@ -513,45 +510,22 @@ namespace RC
             }
             else if (command.ToUpper() == "SOLVE")
             {
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  B  [5]");
-                Console.WriteLine("[6] [7] [8]");
+                var sides = new List<String>();
 
-                var blueCommand = Console.ReadLine();
+                String sidePattern = " [1] [2] [3] \n [4] [5] [6] \n [7] [8] [9]";
 
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  W  [5]");
-                Console.WriteLine("[6] [7] [8]");
+                Console.WriteLine(sidePattern);
+                String side = Console.ReadLine().ToUpper();
 
-                var whiteCommand = Console.ReadLine();
-
-
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  O  [5]");
-                Console.WriteLine("[6] [7] [8]");
-
-                var orangeCommand = Console.ReadLine();
-
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  G  [5]");
-                Console.WriteLine("[6] [7] [8]");
-
-                var greenCommand = Console.ReadLine();
-
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  Y  [5]");
-                Console.WriteLine("[6] [7] [8]");
-
-                var yellowCommand = Console.ReadLine();
-
-                Console.WriteLine("[1] [2] [3]");
-                Console.WriteLine("[4]  R  [5]");
-                Console.WriteLine("[6] [7] [8]");
-
-                var redCommand = Console.ReadLine();
+                while (!String.IsNullOrEmpty(side))
+                {
+                    sides.Add(side);
+                    Console.WriteLine(sidePattern);
+                    side = Console.ReadLine().ToUpper(); 
+                }
 
                 CubeModel cube = Logic.Create(XyzCubeTypes.BlueOrangeWhite);
-                Logic.SetDetailedCubeState(cube, whiteCommand + ":" + yellowCommand + ":" + blueCommand + ":" + greenCommand + ":" + redCommand + ":" + orangeCommand);
+                Logic.SetCubeState(cube, sides.ToArray());
 
                 OutputCube(cube);
 
@@ -573,11 +547,11 @@ namespace RC
                 SolutionMoveModel[] moves = FindSolution(Cube, Logic.Create(Logic.GetXyzCubeType(Cube)));
                 foreach (var move in moves) 
                 {
-                    Console.WriteLine(move.MoveOptions);
+                    Console.WriteLine("{0} => {1} {2}", move.LessSolvedPattern, move.MoreSolvedPattern, String.Join(" or ", move.MoveOptions));
                 }
 
                 //Logic.Scramble(Cube, 1);
-
+                
                 //SolutionMoveModel[] moves = FindSolution(Cube, Logic.Create(Logic.GetXyzCubeType(Cube)));
 
                 //foreach (var move in moves) 
@@ -585,7 +559,7 @@ namespace RC
                 //    Console.WriteLine(move.MoveOptions);
                 //}
 
-                Console.WriteLine(PatternLogic.GetCubePattern(Cube));
+                //Console.WriteLine(PatternLogic.GetCubePattern(Cube));
 
                 //Logic.Scramble(Cube, 1);
 

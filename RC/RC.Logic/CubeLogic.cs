@@ -532,13 +532,59 @@ namespace RC.Logic
         }
 
 
+        public void SetCubeState(CubeModel cube, String[] sides)
+        {
+            String whiteCommand = String.Empty;
+            String yellowCommand = String.Empty;
+            String blueCommand = String.Empty;
+            String greenCommand = String.Empty;
+            String redCommand = String.Empty;
+            String orangeCommand = String.Empty;
+
+            foreach (var side in sides)
+            {
+                switch (side[4])
+                {
+                    case 'W':
+                        whiteCommand = side;
+                        break;
+                    case 'Y':
+                        yellowCommand = side;
+                        break;
+                    case 'B':
+                        blueCommand = side;
+                        break;
+                    case 'G':
+                        greenCommand = side;
+                        break;
+                    case 'R':
+                        redCommand = side;
+                        break;
+                    case 'O':
+                        orangeCommand = side;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            this.SetCubeState(cube, whiteCommand + yellowCommand + blueCommand + greenCommand + redCommand + orangeCommand);
+        }
         public void SetCubeState(CubeModel cube, String pattern)
         {
             var patternWithColor = String.Empty;
-            Char[] patternArray = pattern.ToCharArray();
-            foreach (var item in patternArray)
+
+            if (pattern.Contains("A"))
             {
-                patternWithColor += this.GetStickerAbbreviation(item);
+                Char[] patternArray = pattern.ToCharArray();
+                foreach (var item in patternArray)
+                {
+                    patternWithColor += this.GetStickerAbbreviation(item);
+                }
+            }
+            else
+            {
+                patternWithColor = pattern;
             }
 
             String north = $"BNW:{ patternWithColor[0]}|BN:{patternWithColor[1]}|BNE:{ patternWithColor[2]}|NW:{ patternWithColor[3]}|N:{ patternWithColor[4]}|NE:{ patternWithColor[5]}|FNW:{ patternWithColor[6]}|FN:{ patternWithColor[7]}|FNE:{ patternWithColor[8]}";

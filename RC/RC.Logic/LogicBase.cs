@@ -54,7 +54,7 @@ namespace RC.Logic
                 case 'c':
                     return "G";
                 default:
-                    return "#";
+                    return sticker.ToString();
             }
         }
 
