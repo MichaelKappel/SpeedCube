@@ -615,15 +615,15 @@ namespace RC.Logic
         {
             this.ValidateStickerCount(pattern);
             this.ValidateMiddleStickers(pattern);
-            this.ValidateAdjacentStickers(pattern);
+            this.ValidateAdjacentStickersAreValid(pattern);
         }
 
         public Boolean IsCubeValid(String pattern)
         {
             if (!this.IsStickerCountValid(pattern)
-                ||this.AreMiddleStickersValid(pattern)
-                && this.AreAdjacentStickersValid(pattern))
+                ||this.AreMiddleStickersValid(pattern))
             {
+                this.ValidateAdjacentStickersAreValid(pattern);
                 return true;
             }
             else
@@ -681,179 +681,170 @@ namespace RC.Logic
 
             return true;
         }
-        public void ValidateAdjacentStickers(String pattern)
-        {
-            if (!this.AreAdjacentStickersValid(pattern))
-            {
-                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
-            }
-        }
-
-        public Boolean AreAdjacentStickersValid(String pattern)
+      
+        public void ValidateAdjacentStickersAreValid(String pattern)
         {
             String[] upperPattern = pattern.ToCharArray().Select(x => x.ToString().ToUpper()).ToArray();
             if (upperPattern[0] == upperPattern[27])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[1] == upperPattern[28])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[2] == upperPattern[29])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
 
             if (upperPattern[2] == upperPattern[47])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[5] == upperPattern[46])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[8] == upperPattern[45])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
 
             if (upperPattern[6] == upperPattern[18])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[7] == upperPattern[19])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[8] == upperPattern[20])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
 
             if (upperPattern[0] == upperPattern[36])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[3] == upperPattern[37])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[6] == upperPattern[38])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
 
             if (upperPattern[20] == upperPattern[45])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[23] == upperPattern[48])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[26] == upperPattern[51])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[24] == upperPattern[9])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[25] == upperPattern[10])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[26] == upperPattern[11])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[18] == upperPattern[38])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[21] == upperPattern[41])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[24] == upperPattern[44])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[47] == upperPattern[29])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[50] == upperPattern[32])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[53] == upperPattern[35])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[51] == upperPattern[11])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[52] == upperPattern[14])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[53] == upperPattern[17])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
 
             if (upperPattern[27] == upperPattern[36])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[30] == upperPattern[39])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[33] == upperPattern[42])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[33] == upperPattern[15])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[34] == upperPattern[16])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[35] == upperPattern[17])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
 
             if (upperPattern[42] == upperPattern[15])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[43] == upperPattern[12])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
             else if (upperPattern[44] == upperPattern[9])
             {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");  return false;
+               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
             }
-
-            return true;
         }
 
         #endregion

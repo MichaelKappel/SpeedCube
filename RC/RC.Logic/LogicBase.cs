@@ -39,6 +39,7 @@ namespace RC.Logic
 
         public String GetStickerAbbreviation(Char sticker)
         {
+            //TODO: This needs to take current colors into account
             switch (sticker)
             {
                 case 'A':
@@ -380,21 +381,26 @@ namespace RC.Logic
             }
         }
 
-        public StickerColorTypes GetStickerColorType(String stickerColorType)
+        public StickerColorTypes GetStickerColorType(String rawStickerColor)
         {
-            switch (stickerColorType)
+            return this.GetStickerColorType(rawStickerColor.ToCharArray()[0]);
+        }
+
+        public StickerColorTypes GetStickerColorType(Char rawStickerColor)
+        {
+            switch (rawStickerColor)
             {
-                case "B":
+                case 'B':
                     return StickerColorTypes.Blue;
-                case "G":
+                case 'G':
                     return StickerColorTypes.Green;
-                case "O":
+                case 'O':
                     return StickerColorTypes.Orange;
-                case "R":
+                case 'R':
                     return StickerColorTypes.Red;
-                case "W":
+                case 'W':
                     return StickerColorTypes.White;
-                case "Y":
+                case 'Y':
                     return StickerColorTypes.Yellow;
                 default:
                     return StickerColorTypes.None;

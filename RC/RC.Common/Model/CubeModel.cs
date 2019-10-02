@@ -1,4 +1,5 @@
 ﻿using RC.Common.Enumerations;
+using RC.Common.Model.Pieces;
 using RC.Common.Model.Slots;
 using RC.Common.Model.Sots;
 
@@ -6,8 +7,42 @@ namespace RC.Common.Model
 {
     public class CubeModel
     {
-        public CubeModel(XyzCubeTypes xyzCubeType)
+        public CubeModel(CubePeiceBagModel cubePeiceBag)
         {
+            this.Front.Piece = cubePeiceBag.FrontPiece;
+            this.Back.Piece = cubePeiceBag.BackPiece;
+            this.North.Piece = cubePeiceBag.NorthPiece;
+            this.East.Piece = cubePeiceBag.EastPiece;
+            this.South.Piece = cubePeiceBag.SouthPiece;
+            this.West.Piece = cubePeiceBag.WestPiece;
+
+            this.FrontNorth.Piece = cubePeiceBag.FrontNorthPiece;
+            this.FrontEast.Piece = cubePeiceBag.FrontEastPiece;
+            this.FrontSouth.Piece = cubePeiceBag.FrontSouthPiece;
+            this.FrontWest.Piece = cubePeiceBag.FrontWestPiece;
+
+
+            this.FrontNorthEast.Piece = cubePeiceBag.FrontNorthEastPiece;
+            this.FrontSouthEast.Piece = cubePeiceBag.FrontSouthEastPiece;
+            this.FrontSouthWest.Piece = cubePeiceBag.FrontSouthWestPiece;
+            this.FrontNorthWest.Piece = cubePeiceBag.FrontNorthWestPiece;
+
+
+            this.NorthEast.Piece = cubePeiceBag.NorthEastPiece;
+            this.SouthEast.Piece = cubePeiceBag.SouthEastPiece;
+            this.SouthWest.Piece = cubePeiceBag.SouthWestPiece;
+            this.NorthWest.Piece = cubePeiceBag.NorthWestPiece;
+
+            this.BackNorth.Piece = cubePeiceBag.BackNorthPiece;
+            this.BackEast.Piece = cubePeiceBag.BackEastPiece;
+            this.BackSouth.Piece = cubePeiceBag.BackSouthPiece;
+            this.BackWest.Piece = cubePeiceBag.BackWestPiece;
+
+            this.BackNorthEast.Piece = cubePeiceBag.BackNorthEastPiece;
+            this.BackSouthEast.Piece = cubePeiceBag.BackSouthEastPiece;
+            this.BackSouthWest.Piece = cubePeiceBag.BackSouthWestPiece;
+            this.BackNorthWest.Piece = cubePeiceBag.BackNorthWestPiece;
+
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontNorth);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.NorthWest);
             this.FrontNorthWest.AdjacentSideSlots.Add(this.FrontWest);

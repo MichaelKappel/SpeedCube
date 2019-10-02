@@ -525,13 +525,12 @@ namespace RC
                         side = Console.ReadLine().ToUpper();
                     }
 
-                    Logic.SetCubeState(Cube, sides.ToArray());
+                    Cube = Logic.Create(Logic.GetXyzCubeType(Cube), sides.ToArray());
                 }
                 else if (command.Length == 54)
                 {
                     Logic.SetCubeState(Cube, Logic.FromDatabase(command));
                 }
-
 
                 OutputCube(Cube);
 

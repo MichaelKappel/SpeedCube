@@ -7,6 +7,7 @@ using RC.Common.Model;
 using RC.Common.Model.Pieces;
 using RC.Common.Model.Slots;
 using RC.Common.Model.Sots;
+using RC.Common.Model.Stickers;
 
 namespace RC.Logic
 {
@@ -532,44 +533,8 @@ namespace RC.Logic
         }
 
 
-        public void SetCubeState(CubeModel cube, String[] sides)
-        {
-            String whiteCommand = String.Empty;
-            String yellowCommand = String.Empty;
-            String blueCommand = String.Empty;
-            String greenCommand = String.Empty;
-            String redCommand = String.Empty;
-            String orangeCommand = String.Empty;
+        
 
-            foreach (var side in sides)
-            {
-                switch (side[4])
-                {
-                    case 'W':
-                        whiteCommand = side;
-                        break;
-                    case 'Y':
-                        yellowCommand = side;
-                        break;
-                    case 'B':
-                        blueCommand = side;
-                        break;
-                    case 'G':
-                        greenCommand = side;
-                        break;
-                    case 'R':
-                        redCommand = side;
-                        break;
-                    case 'O':
-                        orangeCommand = side;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            this.SetCubeState(cube, whiteCommand + yellowCommand + blueCommand + greenCommand + redCommand + orangeCommand);
-        }
         public void SetCubeState(CubeModel cube, String pattern)
         {
             var patternWithColor = String.Empty;
@@ -1076,170 +1041,286 @@ namespace RC.Logic
             return result.ToArray();
         }
 
+        public CubeModel Create(XyzCubeTypes patternCubeType, String[] sides)
+        {
+            var cubePeiceBag = new CubePeiceBagModel(patternCubeType);
+            var result = new CubeModel(cubePeiceBag);
+
+            List<StickerIndexModel> GetCorners(Char[] rawStickers)
+            {
+                return new List<StickerIndexModel>() {
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[0]), 0),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[2]), 2),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[6]), 6),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[8]), 8)
+                    };
+            }
+
+            List<StickerIndexModel> GetSides(Char[] rawStickers)
+            {
+                return new List<StickerIndexModel>() {
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[1]), 1),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[3]), 3),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[5]), 5),
+                        new StickerIndexModel(this.GetStickerColorType(rawStickers[7]), 7)
+                     };
+
+            }
+
+            String whiteCommand = String.Empty;
+            String yellowCommand = String.Empty;
+            String blueCommand = String.Empty;
+            String greenCommand = String.Empty;
+            String redCommand = String.Empty;
+            String orangeCommand = String.Empty;
+            {
+
+
+                foreach (var side in sides)
+                {
+                    switch (side[4])
+                    {
+                        case 'W':
+                            whiteCommand = side;
+                            break;
+                        case 'Y':
+                            yellowCommand = side;
+                            break;
+                        case 'B':
+                            blueCommand = side;
+                            break;
+                        case 'G':
+                            greenCommand = side;
+                            break;
+                        case 'R':
+                            redCommand = side;
+                            break;
+                        case 'O':
+                            orangeCommand = side;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            Char[] whiteStep = whiteCommand.ToCharArray();
+            Char[] yellowStep = yellowCommand.ToCharArray();
+            Char[] blueStep = blueCommand.ToCharArray();
+            Char[] greenStep = greenCommand.ToCharArray();
+            Char[] redStep = redCommand.ToCharArray();
+            Char[] orangeStep = orangeCommand.ToCharArray();
+
+
+            List<StickerIndexModel> whiteCorners = GetCorners(whiteStep);
+            List<StickerIndexModel> yellowCorners = GetCorners(yellowStep);
+            List<StickerIndexModel> blueCorners = GetCorners(blueStep);
+            List<StickerIndexModel> greenCorners = GetCorners(greenStep);
+            List<StickerIndexModel> redCorners = GetCorners(redStep);
+            List<StickerIndexModel> orangeCorners = GetCorners(orangeStep);
+
+
+            List<StickerIndexModel> whiteSides = GetSides(whiteStep);
+            List<StickerIndexModel> yellowSides = GetSides(yellowStep);
+            List<StickerIndexModel> blueSides = GetSides(blueStep);
+            List<StickerIndexModel> greenSides = GetSides(greenStep);
+            List<StickerIndexModel> redSides = GetSides(redStep);
+            List<StickerIndexModel> orangeSides = GetSides(orangeStep);
+
+
+        }
+
+        public SlotSideModelBase FindSideSlot(CubeModel cube,
+                  List<StickerIndexModel> whiteSides,
+                  List<StickerIndexModel> yellowSides,
+                  List<StickerIndexModel> blueSides,
+                  List<StickerIndexModel> greenSides,
+                  List<StickerIndexModel> redSides,
+                  List<StickerIndexModel> orangeSides
+            )
+        {
+            SlotSideModelBase result = null;
+
+            PieceFrontNorthModel pieceFrontNorthWest = new PieceFrontNorthModel(this.GetXyzCubeType(cube));
+
+            var posiblePieceOnWhiteSide = whiteSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnYellowSide = yellowSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnBlueSide = blueSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnGreenSide = greenSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnRedSide = redSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType 
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnOrangeSide = orangeSides.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            return result;
+        }
+
+        public SlotFrontNorthWestModel FindSlotWherePieceFrontNorthWest(CubeModel cube,
+                  List<StickerIndexModel> whiteCorners,
+                  List<StickerIndexModel> yellowCorners,
+                  List<StickerIndexModel> blueCorners,
+                  List<StickerIndexModel> greenCorners,
+                  List<StickerIndexModel> redCorners,
+                  List<StickerIndexModel> orangeCorners
+            )
+        {
+            SlotFrontNorthWestModel result = null;
+
+            PieceFrontNorthWestModel pieceFrontNorthWest = new PieceFrontNorthWestModel(this.GetXyzCubeType(cube));
+
+            var posiblePieceOnWhiteSide = whiteCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnYellowSide = yellowCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnBlueSide = blueCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnGreenSide = greenCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnRedSide = redCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            var posiblePieceOnOrangeSide = orangeCorners.Where(x => {
+                return x.StickerColorType == pieceFrontNorthWest.StickerFront.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerWest.StickerColorType
+                    || x.StickerColorType == pieceFrontNorthWest.StickerNorth.StickerColorType;
+            }).ToArray();
+
+            return result;
+        }
 
         public CubeModel Create(XyzCubeTypes patternCubeType)
         {
-            var result = new CubeModel(patternCubeType);
+            var cubePeiceBag = new CubePeiceBagModel(patternCubeType);
 
-            //********************************************************
-            //      Pieces
-            //********************************************************
-
-            var frontPiece = new PieceFrontModel(patternCubeType);
-            var backPiece = new PieceBackModel(patternCubeType);
-            var northPiece = new PieceNorthModel(patternCubeType);
-            var southPiece = new PieceSouthModel(patternCubeType);
-            var eastPiece = new PieceEastModel(patternCubeType);
-            var westPiece = new PieceWestModel(patternCubeType);
-
-            var frontNorthPiece = new PieceFrontNorthModel(patternCubeType);
-            var frontEastPiece = new PieceFrontEastModel(patternCubeType);
-            var frontSouthPiece = new PieceFrontSouthModel(patternCubeType);
-            var frontWestPiece = new PieceFrontWestModel(patternCubeType);
-
-            var frontNorthEastPiece = new PieceFrontNorthEastModel(patternCubeType);
-            var frontSouthEastPiece = new PieceFrontSouthEastModel(patternCubeType);
-            var frontSouthWestPiece = new PieceFrontSouthWestModel(patternCubeType);
-            var frontNorthWestPiece = new PieceFrontNorthWestModel(patternCubeType);
-
-            var northEastPiece = new PieceNorthEastModel(patternCubeType);
-            var southEastPiece = new PieceSouthEastModel(patternCubeType);
-            var southWestPiece = new PieceSouthWestModel(patternCubeType);
-            var northWestPiece = new PieceNorthWestModel(patternCubeType);
-
-            var backNorthPiece = new PieceBackNorthModel(patternCubeType);
-            var backEastPiece = new PieceBackEastModel(patternCubeType);
-            var backSouthPiece = new PieceBackSouthModel(patternCubeType);
-            var backWestPiece = new PieceBackWestModel(patternCubeType);
-
-            var backNorthEastPiece = new PieceBackNorthEastModel(patternCubeType);
-            var backSouthEastPiece = new PieceBackSouthEastModel(patternCubeType);
-            var backSouthWestPiece = new PieceBackSouthWestModel(patternCubeType);
-            var backNorthWestPiece = new PieceBackNorthWestModel(patternCubeType);
-
-            result.Front.Piece = frontPiece;
-            result.Back.Piece = backPiece;
-            result.North.Piece = northPiece;
-            result.East.Piece = eastPiece;
-            result.South.Piece = southPiece;
-            result.West.Piece = westPiece;
-
-            result.FrontNorth.Piece = frontNorthPiece;
-            result.FrontEast.Piece = frontEastPiece;
-            result.FrontSouth.Piece = frontSouthPiece;
-            result.FrontWest.Piece = frontWestPiece;
-
-
-            result.FrontNorthEast.Piece = frontNorthEastPiece;
-            result.FrontSouthEast.Piece = frontSouthEastPiece;
-            result.FrontSouthWest.Piece = frontSouthWestPiece;
-            result.FrontNorthWest.Piece = frontNorthWestPiece;
-
-
-            result.NorthEast.Piece = northEastPiece;
-            result.SouthEast.Piece = southEastPiece;
-            result.SouthWest.Piece = southWestPiece;
-            result.NorthWest.Piece = northWestPiece;
-
-            result.BackNorth.Piece = backNorthPiece;
-            result.BackEast.Piece = backEastPiece;
-            result.BackSouth.Piece = backSouthPiece;
-            result.BackWest.Piece = backWestPiece;
-
-            result.BackNorthEast.Piece = backNorthEastPiece;
-            result.BackSouthEast.Piece = backSouthEastPiece;
-            result.BackSouthWest.Piece = backSouthWestPiece;
-            result.BackNorthWest.Piece = backNorthWestPiece;
-
+            var result = new CubeModel(cubePeiceBag);
 
             //********************************************************
             //      STICKERS
             //********************************************************
 
-            result.Front.StickerFront = frontPiece.StickerFront;
-            result.Back.StickerBack = backPiece.StickerBack;
-            result.North.StickerNorth = northPiece.StickerNorth;
-            result.East.StickerEast = eastPiece.StickerEast;
-            result.South.StickerSouth = southPiece.StickerSouth;
-            result.West.StickerWest = westPiece.StickerWest;
+            result.Front.StickerFront = cubePeiceBag.FrontPiece.StickerFront;
+            result.Back.StickerBack = cubePeiceBag.BackPiece.StickerBack;
+            result.North.StickerNorth = cubePeiceBag.NorthPiece.StickerNorth;
+            result.East.StickerEast = cubePeiceBag.EastPiece.StickerEast;
+            result.South.StickerSouth = cubePeiceBag.SouthPiece.StickerSouth;
+            result.West.StickerWest = cubePeiceBag.WestPiece.StickerWest;
 
-            result.NorthEast.StickerNorth = northEastPiece.StickerNorth;
-            result.NorthEast.StickerEast = northEastPiece.StickerEast;
+            result.NorthEast.StickerNorth = cubePeiceBag.NorthEastPiece.StickerNorth;
+            result.NorthEast.StickerEast = cubePeiceBag.NorthEastPiece.StickerEast;
 
-            result.NorthWest.StickerNorth = northWestPiece.StickerNorth;
-            result.NorthWest.StickerWest = northWestPiece.StickerWest;
+            result.NorthWest.StickerNorth = cubePeiceBag.NorthWestPiece.StickerNorth;
+            result.NorthWest.StickerWest = cubePeiceBag.NorthWestPiece.StickerWest;
 
-            result.FrontNorth.StickerFront = frontNorthPiece.StickerFront;
-            result.FrontNorth.StickerNorth = frontNorthPiece.StickerNorth;
+            result.FrontNorth.StickerFront = cubePeiceBag.FrontNorthPiece.StickerFront;
+            result.FrontNorth.StickerNorth = cubePeiceBag.FrontNorthPiece.StickerNorth;
 
-            result.BackNorth.StickerBack = backNorthPiece.StickerBack;
-            result.BackNorth.StickerNorth = backNorthPiece.StickerNorth;
-
-
-            result.SouthEast.StickerSouth = southEastPiece.StickerSouth;
-            result.SouthEast.StickerEast = southEastPiece.StickerEast;
-
-            result.SouthWest.StickerSouth = southWestPiece.StickerSouth;
-            result.SouthWest.StickerWest = southWestPiece.StickerWest;
-
-            result.FrontSouth.StickerFront = frontSouthPiece.StickerFront;
-            result.FrontSouth.StickerSouth = frontSouthPiece.StickerSouth;
-
-            result.BackSouth.StickerBack = backSouthPiece.StickerBack;
-            result.BackSouth.StickerSouth = backSouthPiece.StickerSouth;
+            result.BackNorth.StickerBack = cubePeiceBag.BackNorthPiece.StickerBack;
+            result.BackNorth.StickerNorth = cubePeiceBag.BackNorthPiece.StickerNorth;
 
 
-            result.FrontEast.StickerFront = frontEastPiece.StickerFront;
-            result.FrontEast.StickerEast = frontEastPiece.StickerEast;
+            result.SouthEast.StickerSouth = cubePeiceBag.SouthEastPiece.StickerSouth;
+            result.SouthEast.StickerEast = cubePeiceBag.SouthEastPiece.StickerEast;
 
-            result.FrontWest.StickerFront = frontWestPiece.StickerFront;
-            result.FrontWest.StickerWest = frontWestPiece.StickerWest;
+            result.SouthWest.StickerSouth = cubePeiceBag.SouthWestPiece.StickerSouth;
+            result.SouthWest.StickerWest = cubePeiceBag.SouthWestPiece.StickerWest;
 
-            result.BackEast.StickerEast = backEastPiece.StickerEast;
-            result.BackEast.StickerBack = backEastPiece.StickerBack;
+            result.FrontSouth.StickerFront = cubePeiceBag.FrontSouthPiece.StickerFront;
+            result.FrontSouth.StickerSouth = cubePeiceBag.FrontSouthPiece.StickerSouth;
 
-            result.BackWest.StickerBack = backWestPiece.StickerBack;
-            result.BackWest.StickerWest = backWestPiece.StickerWest;
-
-
-            result.FrontNorthEast.StickerFront = frontNorthEastPiece.StickerFront;
-            result.FrontNorthEast.StickerNorth = frontNorthEastPiece.StickerNorth;
-            result.FrontNorthEast.StickerEast = frontNorthEastPiece.StickerEast;
-
-            result.FrontSouthEast.StickerFront = frontSouthEastPiece.StickerFront;
-            result.FrontSouthEast.StickerSouth = frontSouthEastPiece.StickerSouth;
-            result.FrontSouthEast.StickerEast = frontSouthEastPiece.StickerEast;
-
-            result.FrontSouthWest.StickerFront = frontSouthWestPiece.StickerFront;
-            result.FrontSouthWest.StickerSouth = frontSouthWestPiece.StickerSouth;
-            result.FrontSouthWest.StickerWest = frontSouthWestPiece.StickerWest;
-
-            result.FrontNorthWest.StickerFront = frontNorthWestPiece.StickerFront;
-            result.FrontNorthWest.StickerNorth = frontNorthWestPiece.StickerNorth;
-            result.FrontNorthWest.StickerWest = frontNorthWestPiece.StickerWest;
+            result.BackSouth.StickerBack = cubePeiceBag.BackSouthPiece.StickerBack;
+            result.BackSouth.StickerSouth = cubePeiceBag.BackSouthPiece.StickerSouth;
 
 
-            result.BackNorthEast.StickerBack = backNorthEastPiece.StickerBack;
-            result.BackNorthEast.StickerNorth = backNorthEastPiece.StickerNorth;
-            result.BackNorthEast.StickerEast = backNorthEastPiece.StickerEast;
+            result.FrontEast.StickerFront = cubePeiceBag.FrontEastPiece.StickerFront;
+            result.FrontEast.StickerEast = cubePeiceBag.FrontEastPiece.StickerEast;
 
-            result.BackSouthEast.StickerBack = backSouthEastPiece.StickerBack;
-            result.BackSouthEast.StickerSouth = backSouthEastPiece.StickerSouth;
-            result.BackSouthEast.StickerEast = backSouthEastPiece.StickerEast;
+            result.FrontWest.StickerFront = cubePeiceBag.FrontWestPiece.StickerFront;
+            result.FrontWest.StickerWest = cubePeiceBag.FrontWestPiece.StickerWest;
 
-            result.BackSouthWest.StickerBack = backSouthWestPiece.StickerBack;
-            result.BackSouthWest.StickerSouth = backSouthWestPiece.StickerSouth;
-            result.BackSouthWest.StickerWest = backSouthWestPiece.StickerWest;
+            result.BackEast.StickerEast = cubePeiceBag.BackEastPiece.StickerEast;
+            result.BackEast.StickerBack = cubePeiceBag.BackEastPiece.StickerBack;
 
-            result.BackNorthWest.StickerBack = backNorthWestPiece.StickerBack;
-            result.BackNorthWest.StickerNorth = backNorthWestPiece.StickerNorth;
-            result.BackNorthWest.StickerWest = backNorthWestPiece.StickerWest;
+            result.BackWest.StickerBack = cubePeiceBag.BackWestPiece.StickerBack;
+            result.BackWest.StickerWest = cubePeiceBag.BackWestPiece.StickerWest;
+
+
+            result.FrontNorthEast.StickerFront = cubePeiceBag.FrontNorthEastPiece.StickerFront;
+            result.FrontNorthEast.StickerNorth = cubePeiceBag.FrontNorthEastPiece.StickerNorth;
+            result.FrontNorthEast.StickerEast = cubePeiceBag.FrontNorthEastPiece.StickerEast;
+
+            result.FrontSouthEast.StickerFront = cubePeiceBag.FrontSouthEastPiece.StickerFront;
+            result.FrontSouthEast.StickerSouth = cubePeiceBag.FrontSouthEastPiece.StickerSouth;
+            result.FrontSouthEast.StickerEast = cubePeiceBag.FrontSouthEastPiece.StickerEast;
+
+            result.FrontSouthWest.StickerFront = cubePeiceBag.FrontSouthWestPiece.StickerFront;
+            result.FrontSouthWest.StickerSouth = cubePeiceBag.FrontSouthWestPiece.StickerSouth;
+            result.FrontSouthWest.StickerWest = cubePeiceBag.FrontSouthWestPiece.StickerWest;
+
+            result.FrontNorthWest.StickerFront = cubePeiceBag.FrontNorthWestPiece.StickerFront;
+            result.FrontNorthWest.StickerNorth = cubePeiceBag.FrontNorthWestPiece.StickerNorth;
+            result.FrontNorthWest.StickerWest = cubePeiceBag.FrontNorthWestPiece.StickerWest;
+
+
+            result.BackNorthEast.StickerBack = cubePeiceBag.BackNorthEastPiece.StickerBack;
+            result.BackNorthEast.StickerNorth = cubePeiceBag.BackNorthEastPiece.StickerNorth;
+            result.BackNorthEast.StickerEast = cubePeiceBag.BackNorthEastPiece.StickerEast;
+
+            result.BackSouthEast.StickerBack = cubePeiceBag.BackSouthEastPiece.StickerBack;
+            result.BackSouthEast.StickerSouth = cubePeiceBag.BackSouthEastPiece.StickerSouth;
+            result.BackSouthEast.StickerEast = cubePeiceBag.BackSouthEastPiece.StickerEast;
+
+            result.BackSouthWest.StickerBack = cubePeiceBag.BackSouthWestPiece.StickerBack;
+            result.BackSouthWest.StickerSouth = cubePeiceBag.BackSouthWestPiece.StickerSouth;
+            result.BackSouthWest.StickerWest = cubePeiceBag.BackSouthWestPiece.StickerWest;
+
+            result.BackNorthWest.StickerBack = cubePeiceBag.BackNorthWestPiece.StickerBack;
+            result.BackNorthWest.StickerNorth = cubePeiceBag.BackNorthWestPiece.StickerNorth;
+            result.BackNorthWest.StickerWest = cubePeiceBag.BackNorthWestPiece.StickerWest;
 
             this.VerifyAllPieces(result);
 
             return result;
         }
-
 
         #region Turn Back
         public void TurnBackCounterclockwise(CubeModel cube)
