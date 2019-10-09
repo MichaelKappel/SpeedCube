@@ -10,17 +10,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Types;
+using SqlServerTypes;
 
 namespace RC
 {
     class Program
     {
+
+        public static Int32 PatternTypeId = 1;
         public static CubeLogic Logic = new CubeLogic();
         public static CubeFacePatternLogic FacePatternLogic = new CubeFacePatternLogic();
         public static CubePatternLogic PatternLogic = new CubePatternLogic();
         public static PatternRecognitionLogic PatternRecognition = new PatternRecognitionLogic();
+        public static OrangeWhiteBlueLogic ExperimentalLogic = new OrangeWhiteBlueLogic();
 
 
         public static CubeModel Cube = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
@@ -61,7 +67,29 @@ namespace RC
                 set;
             }
         }
+        public class PatternHierarchyModel
+        {
+            public PatternHierarchyModel(SqlHierarchyId patternHierarchyHid, Int16 herarchyLevel,   String relationship, String primaryPattern,  Int32 primaryPatternId, String connectedPattern, Int32 connectedPatternId)
+            {
+                this.PatternHierarchyHid = patternHierarchyHid;
+                this.HerarchyLevel = herarchyLevel;
+                this.Relationship = relationship;
+                this.PrimaryPattern = primaryPattern;
+                this.PrimaryPatternId = primaryPatternId;
+                this.ConnectedPattern = connectedPattern;
+                this.ConnectedPatternId = connectedPatternId;
+            }
 
+            public SqlHierarchyId PatternHierarchyHid { get; protected set; }   
+            public Int16 HerarchyLevel { get; protected set; }                  
+            public String Relationship { get; protected set; }                  
+            public String ConnectedPattern { get; protected set; }              
+            public String PrimaryPattern { get; protected set; }                
+            public Int32 PrimaryPatternId { get; protected set; }               
+            public Int32 ConnectedPatternId { get; protected set; }             
+        }
+
+        
         public static MoveTypes[] GetRelationships(String rawRelationships) {
             var result = new  List<MoveTypes>();
             
@@ -91,7 +119,7 @@ namespace RC
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
             {
                 connection.Open();
-                String commandName = "dbo.[wsp_SolutionGet]";
+                String commandName = "RBK.[wsp_SolutionGet]";
                 using (SqlCommand cmd = new SqlCommand(commandName, connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -147,100 +175,104 @@ namespace RC
 
         static void DoSteps(Int32 iStep)
         {
+
             if (iStep == 1)
             {
-                CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
-                DoStep(iStep, new[] { (1, 0, PatternLogic.GetCubePattern(cubeStartingPoint)) });
+                var patternRelationStepDetails = new List<PatternHierarchyModel>();
+                patternRelationStepDetails.Add(
+                                          new PatternHierarchyModel(
+                                               SqlHierarchyId.Parse(new System.Data.SqlTypes.SqlString("/1/")),
+                                                (Int16)2,
+                                                String.Empty,
+                                                String.Empty,
+                                                0,
+                                                Logic.FromDatabase("BBBBBBBBB,YYYYYYYYY,CCCCCCCCC,XXXXXXXXX,ZZZZZZZZZ,AAAAAAAAA"),
+                                                1));
+
+                DoStep(patternRelationStepDetails.ToArray());
+
+                return;
             }
-            else
+
+            Int32 stepSize = 100;
+            while (true)
             {
-                Int32 stepSize = 200;
-                while (true)
+                var patternRelationStepDetails = new List<PatternHierarchyModel>();
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
                 {
-                    var patternRelationStepDetails = new List<(Int32 PrimaryPatternId, Int32 ParentPatternStepId, String Pattern)>();
-                    using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+                    connection.Open();
+                    String commandName = "[RBK].[wsp_PatternRelationHierarchiesRemainingDetailsGet]";
+                    using (SqlCommand cmd = new SqlCommand(commandName, connection))
                     {
-                        connection.Open();
-                        String commandName = "dbo.[wsp_PatternRelationStepRemainingDetailsGet]";
-                        using (SqlCommand cmd = new SqlCommand(commandName, connection))
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 0;
+
+                        cmd.Parameters.Add(new SqlParameter("@HierarchyLevel", SqlDbType.Int)
                         {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.CommandTimeout = 0;
+                            Value = iStep
+                        });
 
-                            cmd.Parameters.Add(new SqlParameter("@Step", SqlDbType.Int)
+                        cmd.Parameters.Add(new SqlParameter("@MaxRecords", SqlDbType.Int)
+                        {
+                            Value = stepSize
+                        });
+
+                        Console.WriteLine($@"Started  EXEC {commandName} @HierarchyLevel={iStep}, @MaxRecords={stepSize}");
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
                             {
-                                Value = iStep
-                            });
+                                Int32 patternHierarchyHidOrdinal = reader.GetOrdinal("PatternHierarchyHid");
+                                Int32 herarchyLevelOrdinal = reader.GetOrdinal("HierarchyLevel");
+                                Int32 relationshipOrdinal = reader.GetOrdinal("Relationship");
+                                Int32 connectedPatternOrdinal = reader.GetOrdinal("ConnectedPattern");
+                                Int32 primaryPatternOrdinal = reader.GetOrdinal("PrimaryPattern");
+                                Int32 primaryPatternIdOrdinal = reader.GetOrdinal("PrimaryPatternId");
+                                Int32 connectedPatternIdOrdinal = reader.GetOrdinal("ConnectedPatternId");
 
-                            cmd.Parameters.Add(new SqlParameter("@MaxRecords", SqlDbType.Int)
-                            {
-                                Value = stepSize
-                            });
-
-                            Console.WriteLine($@"Started  EXEC {commandName} @Step={iStep}, @MaxRecords={stepSize}");
-
-                            using (SqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                if (reader.HasRows)
+                                while (reader.Read())
                                 {
-                                    while (reader.Read())
-                                    {
-                                        Int32 primaryPatternId = reader.GetInt32(5);
-                                        Int32 parentPatternStepId = reader.GetInt32(9);
-                                        String pattern = reader.GetString(8);
-
-                                        patternRelationStepDetails.Add((primaryPatternId, parentPatternStepId, pattern));
-                                    }
+                                    patternRelationStepDetails.Add(
+                                        new PatternHierarchyModel(
+                                             (SqlHierarchyId)reader.GetSqlValue(patternHierarchyHidOrdinal),
+                                              reader.GetInt16(herarchyLevelOrdinal),
+                                              reader.GetString(relationshipOrdinal),
+                                              reader.GetString(primaryPatternOrdinal),
+                                              reader.GetInt32(primaryPatternIdOrdinal),
+                                              reader.GetString(connectedPatternOrdinal),
+                                              reader.GetInt32(connectedPatternIdOrdinal)));
                                 }
                             }
-
-                            Console.WriteLine($@"Result: {patternRelationStepDetails.Count}");
-
                         }
-                        connection.Close();
+
+                        Console.WriteLine($@"Result: {patternRelationStepDetails.Count}");
+
                     }
-                    if (patternRelationStepDetails.Count() > 0)
-                    {
-                        DoStep(iStep, patternRelationStepDetails.ToArray());
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    connection.Close();
+                }
+                if (patternRelationStepDetails.Count() > 0)
+                {
+                    DoStep(patternRelationStepDetails.ToArray());
+                }
+                else
+                {
+                    break;
                 }
             }
         }
 
-        public class NextStepInfo
-        {
-            public NextStepInfo(Int32 parentPatternId, Int32 parentPatternStepId, String relationship, String reverseRelationship, String connectedPattern)
-            {
-                this.ParentPatternId = parentPatternId;
-                this.ParentPatternStepId = parentPatternStepId;
-                this.Relationship = relationship;
-                this.ReverseRelationship = reverseRelationship;
-                this.ConnectedPattern = connectedPattern;
-            }
-
-            public Int32 ParentPatternId { get; set; }
-            public Int32 ParentPatternStepId { get; set; }
-            public String Relationship { get; set; }
-            public String ReverseRelationship { get; set; }
-            public String ConnectedPattern { get; set; }
-        }
-
-        static void DoStep(Int32 step, (Int32 PrimaryPatternId, Int32 ParentPatternStepId, String Pattern)[] nextStepPrimaries)
+        static void DoStep(PatternHierarchyModel[] nextStepPrimaries)
         {
 
             var nextSteps = new List<NextStepInfo>();
-            var reverseSteps = new List<NextStepInfo>();
 
-            for (var isd = 0; isd < nextStepPrimaries.Count(); isd++)
+            Parallel.For(0, nextStepPrimaries.Count() - 1, (Int32 isd) =>
             {
-                Console.WriteLine("\tStep {0} {1} of {2}", step, isd + 1, nextStepPrimaries.Count());
+                Console.WriteLine("\tStep {0} {1} of {2}", nextStepPrimaries[0].HerarchyLevel, isd + 1, nextStepPrimaries.Count());
 
                 CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
-                Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(nextStepPrimaries[isd].Pattern));
+                Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(nextStepPrimaries[isd].ConnectedPattern));
                 String normalizedPattern = PatternLogic.GetCubePattern(cubeStartingPoint);
 
                 Parallel.For(1, 28, (Int32 iMove) =>
@@ -252,50 +284,50 @@ namespace RC
                     String cubeCloneRaw = PatternLogic.GetCubePattern(cubeClone);
                     String cubeClonedNormalized = PatternLogic.GetFirstPatternAlphabetically(cubeCloneRaw);
 
-                    Int32 parentPatternId = nextStepPrimaries[isd].PrimaryPatternId;
-                    Int32 parentPatternStepId = nextStepPrimaries[isd].ParentPatternStepId;
-                    String connectedPattern = Logic.ToDatabase(cubeClonedNormalized);
                     String relationship = Logic.Convert(moveType);
+                    String connectedPattern = Logic.ToDatabase(cubeClonedNormalized);
                     String reverseRelationship = Logic.Convert(Logic.Reverse(moveType));
 
                     lock (nextSteps)
                     {
-                        var nextStep = nextSteps.FirstOrDefault(x => x.ParentPatternId == parentPatternId && x.ConnectedPattern == connectedPattern);
+                        var nextStep = nextSteps.FirstOrDefault(x => x.PrimaryPatternId == nextStepPrimaries[isd].ConnectedPatternId && x.ConnectedPattern == cubeClonedNormalized);
                         if (nextStep == default)
                         {
-                            nextSteps.Add(new NextStepInfo(parentPatternId,
-                                parentPatternStepId,
+                            SqlHierarchyId patternHierarchyHid = SqlHierarchyId.Parse($"{nextStepPrimaries[isd].PatternHierarchyHid}{iMove}/");
+                            nextSteps.Add(new NextStepInfo(
+                                patternHierarchyHid,
+                                nextStepPrimaries[isd].ConnectedPatternId,
                                 '|' + relationship + '|',
                                 '|' + reverseRelationship + '|',
-                                connectedPattern));
+                                cubeClonedNormalized));
                         }
                         else
                         {
                             nextStep.Relationship += relationship + '|';
-                            nextStep.ReverseRelationship = reverseRelationship + '|';
+                            nextStep.ReverseRelationship = '|' + reverseRelationship + nextStep.ReverseRelationship;
                         }
                     }
                     Console.WriteLine("\t\tMove {0}", iMove);
                 });
-            }
+            });
 
             var nextStepsInDatabaseFormat = new DataTable();
+            nextStepsInDatabaseFormat.Columns.Add("PatternHierarchyHid");
             nextStepsInDatabaseFormat.Columns.Add("ParentPatternId");
-            nextStepsInDatabaseFormat.Columns.Add("ParentPatternStepId");
             nextStepsInDatabaseFormat.Columns.Add("Relationship");
             nextStepsInDatabaseFormat.Columns.Add("ReverseRelationship");
             nextStepsInDatabaseFormat.Columns.Add("ConnectedPattern");
+
 
             foreach (var nextStep in nextSteps)
             {
                 DataRow row = nextStepsInDatabaseFormat.NewRow();
 
-                row["ParentPatternId"] = nextStep.ParentPatternId;
-                row["ParentPatternStepId"] = nextStep.ParentPatternStepId;
+                row["PatternHierarchyHid"] = nextStep.PatternHierarchyHid;
+                row["ParentPatternId"] = nextStep.PrimaryPatternId;
                 row["Relationship"] = nextStep.Relationship;
                 row["ReverseRelationship"] = nextStep.ReverseRelationship;
-                row["ConnectedPattern"] = nextStep.ConnectedPattern;
-
+                row["ConnectedPattern"] = Logic.ToDatabase(nextStep.ConnectedPattern);
 
                 nextStepsInDatabaseFormat.Rows.Add(row);
             }
@@ -305,24 +337,19 @@ namespace RC
                 using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
                 {
                     connection.Open();
-                    using (SqlCommand cmd = new SqlCommand("[dbo].[wsp_PatternRelationStepUpsert]", connection))
+                    using (SqlCommand cmd = new SqlCommand("[RBK].[wsp_PatternRelationHierarchiesUpsert]", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 0;
 
                         cmd.Parameters.Add(new SqlParameter("@PatternTypeId", SqlDbType.Int)
                         {
-                            Value = 1
-                        });
-
-                        cmd.Parameters.Add(new SqlParameter("@Step", SqlDbType.Int)
-                        {
-                            Value = step
+                            Value = PatternTypeId
                         });
 
                         cmd.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
                         {
-                            TypeName = "dbo.[PrimaryPatternIdRelationToConnectedPatternType]",
+                            TypeName = "[RBK].[PatternRelationHierarchyType]",
                             Value = nextStepsInDatabaseFormat
                         });
 
@@ -333,6 +360,26 @@ namespace RC
             }
         }
 
+
+        public class NextStepInfo
+        {
+            public NextStepInfo(SqlHierarchyId patternHierarchyHid, Int32 primaryPatternId, String relationship, String reverseRelationship, String connectedPattern)
+            {
+                this.PatternHierarchyHid = patternHierarchyHid;
+                this.PrimaryPatternId = primaryPatternId;
+                this.Relationship = relationship;
+                this.ReverseRelationship = reverseRelationship;
+                this.ConnectedPattern = connectedPattern;
+            }
+
+            public Int32 PrimaryPatternId { get; set; }
+            public SqlHierarchyId PatternHierarchyHid { get; set; }
+            public String Relationship { get; set; }
+            public String ReverseRelationship { get; set; }
+            public String ConnectedPattern { get; set; }
+    }
+
+    
         private static RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
 
         static Int32 RandomInteger(Int32 min, Int32 max)
@@ -355,8 +402,8 @@ namespace RC
 
         static void FindAdjacentPatternTypes()
         {
-            String sqlSelectCommand = "[dbo].[wsp_PatternsWithoutAdjacentRecognitionGet]";
-            String sqlUpdateCommand = "[dbo].[wsp_PatternRecognitionAdjacentInsert]";
+            String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutAdjacentRecognitionGet]";
+            String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionAdjacentInsert]";
             Int32 pageSize = 1000000;
 
             FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
@@ -364,8 +411,8 @@ namespace RC
 
         static void FindFacePatternTypes()
         {
-            String sqlSelectCommand = "[dbo].[wsp_PatternsWithoutFaceRecognitionGet]";
-            String sqlUpdateCommand = "[dbo].[wsp_PatternRecognitionFaceInsert]";
+            String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutFaceRecognitionGet]";
+            String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionFaceInsert]";
             Int32 pageSize = 200000;
 
             FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
@@ -461,7 +508,7 @@ namespace RC
 
                             cmdUpdate.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
                             {
-                                TypeName = "dbo.[PatternRecognitionStateType]",
+                                TypeName = "RBK.[PatternRecognitionStateType]",
                                 Value = patternTypes
                             });
 
@@ -488,25 +535,26 @@ namespace RC
 
         static void Main(string[] args)
         {
+            Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
 
             var command = Console.ReadLine();
    
             if (command.ToUpper() == "GO")
             {
 
-                for (var i = 1; i <= 9; i++)
-                {
-                    DoSteps(i);
-                }
+                //for (var i = 3; i <= 9; i++)
+                //{
+                    DoSteps(6);
+                //}
 
 
-                for (var i = 0; i < 100000; i++)
-                {
-                    FindFacePatternTypes();
-                    FindAdjacentPatternTypes();
+                //for (var i = 0; i < 100000; i++)
+                //{
+                //    FindFacePatternTypes();
+                //    FindAdjacentPatternTypes();
 
-                    GC.Collect();
-                }
+                //    GC.Collect();
+                //}
             }
             else
             {
@@ -525,11 +573,11 @@ namespace RC
                         side = Console.ReadLine().ToUpper();
                     }
 
-                    Cube = Logic.Create(Logic.GetXyzCubeType(Cube), sides.ToArray());
+                    Cube = ExperimentalLogic.Create(Logic.GetXyzCubeType(Cube), sides.ToArray());
                 }
                 else if (command.Length == 54)
                 {
-                    Logic.SetCubeState(Cube, Logic.FromDatabase(command));
+                    Cube = ExperimentalLogic.Create(Logic.GetXyzCubeType(Cube), Regex.Split(command, "(.{9})").Where(x => !String.IsNullOrWhiteSpace(x)).ToArray());
                 }
 
                 OutputCube(Cube);

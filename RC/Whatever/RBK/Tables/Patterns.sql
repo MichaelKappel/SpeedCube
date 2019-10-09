@@ -1,0 +1,11 @@
+﻿CREATE TABLE [RBK].[Patterns] (
+    [PatternId]      INT          IDENTITY (1, 1) NOT NULL,
+    [PatternContent] VARCHAR (59) NOT NULL,
+    CONSTRAINT [PK_Patterns] PRIMARY KEY CLUSTERED ([PatternId] ASC) WITH (FILLFACTOR = 40, STATISTICS_NORECOMPUTE = ON)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Patterns]
+    ON [RBK].[Patterns]([PatternContent] ASC) WITH (FILLFACTOR = 40, STATISTICS_NORECOMPUTE = ON);
+

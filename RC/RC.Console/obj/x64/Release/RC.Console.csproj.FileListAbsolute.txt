@@ -9,3 +9,8 @@ D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Logic.dll
 D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Common.pdb
 D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\RC.Logic.pdb
 D:\git\SpeedCube\RC\RC.Console\obj\x64\Release\RC.Console.csproj.CopyComplete
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\SqlServerTypes\x64\msvcr120.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\SqlServerTypes\x64\SqlServerSpatial140.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\SqlServerTypes\x86\msvcr120.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\SqlServerTypes\x86\SqlServerSpatial140.dll
+D:\git\SpeedCube\RC\RC.Console\bin\x64\Release\Microsoft.SqlServer.Types.dll
