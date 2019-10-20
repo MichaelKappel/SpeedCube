@@ -1,0 +1,11 @@
+﻿CREATE TABLE [RBK].[FacePatterns] (
+    [FacePatternId]      INT      IDENTITY (1, 1) NOT NULL,
+    [FacePatternContent] CHAR (8) NOT NULL,
+    CONSTRAINT [PK_FacePatterns] PRIMARY KEY CLUSTERED ([FacePatternId] ASC) WITH (FILLFACTOR = 20, STATISTICS_NORECOMPUTE = ON)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_FacePatterns]
+    ON [RBK].[FacePatterns]([FacePatternContent] ASC) WITH (FILLFACTOR = 20, STATISTICS_NORECOMPUTE = ON);
+

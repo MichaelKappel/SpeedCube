@@ -1,23 +1,23 @@
 ﻿namespace RC.Common.Enumerations
 {
     public enum PaternStickerTypes
-    { 
+    {
         /// <summary>
-        /// Side 1 (Top / North)
+        /// Side 1 (Left / West)
         /// </summary>
         A,
         /// <summary>
-        /// Side 1 Opposite (Bottom / South)
+        /// Side 1 Opposite (Right / East)
         /// </summary>
-        a,
+        X,
         /// <summary>
-        /// Side 2 (Left / West)
+        /// Side 2 (Top / North)
         /// </summary>
         B,
         /// <summary>
-        /// Side 2 Opposite (Right / East)
+        /// Side 2 Opposite (Bottom / South)
         /// </summary>
-        b,
+        Y,
         /// <summary>
         /// Side 3 (Front)
         /// </summary>
@@ -25,6 +25,6 @@
         /// <summary>
         /// Side 3 Opposite (Back)
         /// </summary>
-        c
+        Z
     }
 }

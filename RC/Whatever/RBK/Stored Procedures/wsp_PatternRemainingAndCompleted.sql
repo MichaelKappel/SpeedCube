@@ -14,22 +14,22 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT	steps.Step AS Step
+	SELECT	steps.HierarchyLevel AS HierarchyLevel
 		,	tTotal.[Count] AS [Total]
 		,	ISNULL(CAST(tTotal.[Count] AS DECIMAL) - CAST(tRemaining.[Count] AS DECIMAL),tTotal.[Count]) AS [Completed]
 		,	ISNULL(100.0 - (CAST(tRemaining.[Count] AS DECIMAL) / CAST(tTotal.[Count] AS DECIMAL) * 100.0), 100.0) AS [% Completed]
 		,	ISNULL(tRemaining.[Count], 0)  AS [Remaining]
 		,	ISNULL(CAST(tRemaining.[Count] AS DECIMAL) / CAST(tTotal.[Count] AS DECIMAL) * 100.0, 0)  AS [% Remaining]
-		 FROM (SELECT DISTINCT ps.[Step] FROM RBK.[PatternSteps] AS ps WITH (NOLOCK)) AS steps
-			INNER JOIN (SELECT COUNT(*) AS [Count], prd.Step
-						FROM [Whatever].[RBK].[wvw_PatternRelationStepDetails] AS prd WITH (NOLOCK)
-						GROUP BY prd.Step) AS tTotal
-					ON steps.[Step] = tTotal.[Step]
-			LEFT JOIN (SELECT COUNT(*) AS [Count], prd.Step AS [Step] 
-							FROM [Whatever].[RBK].[wvw_PatternRelationStepRemainingDetails] AS prd  WITH (NOLOCK)
-							GROUP BY prd.Step) AS tRemaining
-					ON steps.[Step] = tRemaining.[Step]
-	ORDER BY  steps.[Step] ASC
+		 FROM (SELECT DISTINCT ph.[HierarchyLevel] FROM RBK.[PatternHierarchies] AS ph WITH (NOLOCK)) AS steps
+			INNER JOIN (SELECT COUNT(*) AS [Count], prd.HierarchyLevel
+						FROM [Whatever].[RBK].[wvw_PatternRelationHierarchyDetails] AS prd WITH (NOLOCK)
+						GROUP BY prd.HierarchyLevel) AS tTotal
+					ON steps.[HierarchyLevel] = tTotal.[HierarchyLevel]
+			LEFT JOIN (SELECT COUNT(*) AS [Count], prd.HierarchyLevel AS [HierarchyLevel] 
+							FROM [Whatever].[RBK].[wvw_PatternRelationHierarchyRemainingDetails] AS prd  WITH (NOLOCK)
+							GROUP BY prd.HierarchyLevel) AS tRemaining
+					ON steps.[HierarchyLevel] = tRemaining.[HierarchyLevel]
+	ORDER BY  steps.[HierarchyLevel] ASC
 
 
 END

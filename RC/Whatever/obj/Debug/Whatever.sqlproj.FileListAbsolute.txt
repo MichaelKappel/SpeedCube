@@ -1,7 +1,0 @@
-D:\git\SpeedCube\RC\Whatever\bin\Debug\Whatever.dacpac
-D:\git\SpeedCube\RC\Whatever\obj\Debug\Model.xml
-D:\git\SpeedCube\RC\Whatever\obj\Debug\refactor.xml
-D:\git\SpeedCube\RC\Whatever\obj\Debug\postdeploy.sql
-D:\git\SpeedCube\RC\Whatever\obj\Debug\predeploy.sql
-D:\git\SpeedCube\RC\Whatever\obj\Debug\Whatever.dll
-D:\git\SpeedCube\RC\Whatever\obj\Debug\Whatever.pdb

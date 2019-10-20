@@ -21,6 +21,9 @@ namespace RC
     class Program
     {
 
+        public static Dictionary<String, Int32> FacePatternDictionary = new Dictionary<string, int>();
+        public static String[] FacePatternArray = new String[1679617];
+
         public static Int32 PatternTypeId = 1;
         public static CubeLogic Logic = new CubeLogic();
         public static CubeFacePatternLogic FacePatternLogic = new CubeFacePatternLogic();
@@ -67,6 +70,79 @@ namespace RC
                 set;
             }
         }
+        public static String  FromDatabase(PatternModel cSharpFormat)
+        {
+            String result = String.Empty;
+
+            result += FacePatternArray[cSharpFormat.AFacePatternId].Insert(4, "A");
+            result += FacePatternArray[cSharpFormat.BFacePatternId].Insert(4, "B");
+            result += FacePatternArray[cSharpFormat.CFacePatternId].Insert(4, "C");
+            result += FacePatternArray[cSharpFormat.XFacePatternId].Insert(4, "X");
+            result += FacePatternArray[cSharpFormat.YFacePatternId].Insert(4, "Y");
+            result += FacePatternArray[cSharpFormat.ZFacePatternId].Insert(4, "Z");
+
+            return result;
+        }
+
+        public static PatternModel ToDatabase(String cSharpFormat)
+        {
+            if (cSharpFormat.Substring(4,1) != "A")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+            else if(cSharpFormat.Substring(13, 1) != "B")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+            else if (cSharpFormat.Substring(22, 1) != "C")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+            else if (cSharpFormat.Substring(31, 1) != "X")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+            else if (cSharpFormat.Substring(40, 1) != "Y")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+            else if (cSharpFormat.Substring(49, 1) != "Z")
+            {
+                throw new Exception("Invalid Pattern");
+            }
+
+            var result = new PatternModel(
+                FacePatternDictionary[cSharpFormat.Substring(0, 4) + cSharpFormat.Substring(5, 4)]
+                , FacePatternDictionary[cSharpFormat.Substring(9, 4) + cSharpFormat.Substring(14, 4)]
+                , FacePatternDictionary[cSharpFormat.Substring(18, 4) + cSharpFormat.Substring(23, 4)]
+                , FacePatternDictionary[cSharpFormat.Substring(27, 4) + cSharpFormat.Substring(32, 4)]
+                , FacePatternDictionary[cSharpFormat.Substring(36, 4) + cSharpFormat.Substring(41, 4)]
+                , FacePatternDictionary[cSharpFormat.Substring(45, 4) + cSharpFormat.Substring(50, 4)]
+                );
+
+            return result;
+        }
+
+        public class PatternModel
+        {
+            public PatternModel(Int32 aFacePatternId, Int32 bFacePatternId, Int32 cFacePatternId, Int32 xFacePatternId, Int32 yFacePatternId, Int32 zFacePatternId)
+            {
+                this.AFacePatternId = aFacePatternId;
+                this.BFacePatternId = bFacePatternId;
+                this.CFacePatternId = cFacePatternId;
+                this.XFacePatternId = xFacePatternId;
+                this.YFacePatternId = yFacePatternId;
+                this.ZFacePatternId = zFacePatternId;
+            }
+
+            public Int32 AFacePatternId {get; set;}
+            public Int32 BFacePatternId {get; set;}
+            public Int32 CFacePatternId {get; set;}
+            public Int32 XFacePatternId {get; set;}
+            public Int32 YFacePatternId {get; set;}
+            public Int32 ZFacePatternId { get; set; }
+        }
+
         public class PatternHierarchyModel
         {
             public PatternHierarchyModel(SqlHierarchyId patternHierarchyHid, Int16 herarchyLevel,   String relationship, String primaryPattern,  Int32 primaryPatternId, String connectedPattern, Int32 connectedPatternId)
@@ -126,13 +202,13 @@ namespace RC
                     cmd.CommandTimeout = 0;
 
                     {
-                        String unsolvedNormalizedDatabase = Logic.ToDatabase(unsolvedNormalized);
+                        PatternModel unsolvedNormalizedDatabase = ToDatabase(unsolvedNormalized);
                         cmd.Parameters.Add(new SqlParameter("@UnsolvedPattern", SqlDbType.VarChar, 59)
                         {
                             Value = unsolvedNormalizedDatabase
                         });
 
-                        String solvedNormalizedDatabase = Logic.ToDatabase(solvedNormalized);
+                        PatternModel solvedNormalizedDatabase = ToDatabase(solvedNormalized);
                         cmd.Parameters.Add(new SqlParameter("@SolvedPattern", SqlDbType.VarChar, 59)
                         {
                             Value = solvedNormalizedDatabase
@@ -155,10 +231,10 @@ namespace RC
                             {
                                 Int32 step = reader.GetInt32(stepOrdinal);
                                 MoveTypes[] relationships = GetRelationships(reader.GetString(relationshipOrdinal));
-                                String lessSolvedPattern = Logic.FromDatabase(reader.GetString(lessSolvedPatternOrdinal));
-                                String moreSolvedPatternContent = Logic.FromDatabase(reader.GetString(moreSolvedPatternOrdinal));
+                                //String lessSolvedPattern = FromDatabase(reader.GetString(lessSolvedPatternOrdinal));
+                                //String moreSolvedPatternContent = FromDatabase(reader.GetString(moreSolvedPatternOrdinal));
 
-                                results.Add(new SolutionMoveModel(step, lessSolvedPattern, moreSolvedPatternContent, relationships));
+                                //results.Add(new SolutionMoveModel(step, lessSolvedPattern, moreSolvedPatternContent, relationships));
                             }
                         }
                     }
@@ -186,7 +262,7 @@ namespace RC
                                                 String.Empty,
                                                 String.Empty,
                                                 0,
-                                                Logic.FromDatabase("BBBBBBBBB,YYYYYYYYY,CCCCCCCCC,XXXXXXXXX,ZZZZZZZZZ,AAAAAAAAA"),
+                                                FromDatabase(new PatternModel(1, 335924, 671847, 1007770, 1343693, 1679616)),
                                                 1));
 
                 DoStep(patternRelationStepDetails.ToArray());
@@ -194,7 +270,7 @@ namespace RC
                 return;
             }
 
-            Int32 stepSize = 100;
+            Int32 stepSize = 10000;
             while (true)
             {
                 var patternRelationStepDetails = new List<PatternHierarchyModel>();
@@ -226,10 +302,21 @@ namespace RC
                                 Int32 patternHierarchyHidOrdinal = reader.GetOrdinal("PatternHierarchyHid");
                                 Int32 herarchyLevelOrdinal = reader.GetOrdinal("HierarchyLevel");
                                 Int32 relationshipOrdinal = reader.GetOrdinal("Relationship");
-                                Int32 connectedPatternOrdinal = reader.GetOrdinal("ConnectedPattern");
-                                Int32 primaryPatternOrdinal = reader.GetOrdinal("PrimaryPattern");
                                 Int32 primaryPatternIdOrdinal = reader.GetOrdinal("PrimaryPatternId");
                                 Int32 connectedPatternIdOrdinal = reader.GetOrdinal("ConnectedPatternId");
+                                Int32 primaryAFacePatternIdOrdinal = reader.GetOrdinal("PrimaryAFacePatternId");
+                                Int32 primaryBFacePatternIdOrdinal = reader.GetOrdinal("PrimaryBFacePatternId");
+                                Int32 primaryCFacePatternIdOrdinal = reader.GetOrdinal("PrimaryCFacePatternId");
+                                Int32 primaryXFacePatternIdOrdinal = reader.GetOrdinal("PrimaryXFacePatternId");
+                                Int32 primaryYFacePatternIdOrdinal = reader.GetOrdinal("PrimaryYFacePatternId");
+                                Int32 primaryZFacePatternIdOrdinal = reader.GetOrdinal("PrimaryZFacePatternId");
+                                Int32 connectedAFacePatternIdOrdinal = reader.GetOrdinal("ConnectedAFacePatternId");
+                                Int32 connectedBFacePatternIdOrdinal = reader.GetOrdinal("ConnectedBFacePatternId");
+                                Int32 connectedCFacePatternIdOrdinal = reader.GetOrdinal("ConnectedCFacePatternId");
+                                Int32 connectedXFacePatternIdOrdinal = reader.GetOrdinal("ConnectedXFacePatternId");
+                                Int32 connectedYFacePatternIdOrdinal = reader.GetOrdinal("ConnectedYFacePatternId");
+                                Int32 connectedZFacePatternIdOrdinal = reader.GetOrdinal("ConnectedZFacePatternId");
+
 
                                 while (reader.Read())
                                 {
@@ -238,10 +325,25 @@ namespace RC
                                              (SqlHierarchyId)reader.GetSqlValue(patternHierarchyHidOrdinal),
                                               reader.GetInt16(herarchyLevelOrdinal),
                                               reader.GetString(relationshipOrdinal),
-                                              reader.GetString(primaryPatternOrdinal),
-                                              reader.GetInt32(primaryPatternIdOrdinal),
-                                              reader.GetString(connectedPatternOrdinal),
-                                              reader.GetInt32(connectedPatternIdOrdinal)));
+                                              FromDatabase(new PatternModel(
+                                                reader.GetInt32(primaryAFacePatternIdOrdinal),
+                                                reader.GetInt32(primaryBFacePatternIdOrdinal),
+                                                reader.GetInt32(primaryCFacePatternIdOrdinal),
+                                                reader.GetInt32(primaryXFacePatternIdOrdinal),
+                                                reader.GetInt32(primaryYFacePatternIdOrdinal),
+                                                reader.GetInt32(primaryZFacePatternIdOrdinal)
+                                                )),
+                                                reader.GetInt32(primaryPatternIdOrdinal),
+                                              FromDatabase(new PatternModel(
+                                                reader.GetInt32(connectedAFacePatternIdOrdinal),
+                                                reader.GetInt32(connectedBFacePatternIdOrdinal),
+                                                reader.GetInt32(connectedCFacePatternIdOrdinal),
+                                                reader.GetInt32(connectedXFacePatternIdOrdinal),
+                                                reader.GetInt32(connectedYFacePatternIdOrdinal),
+                                                reader.GetInt32(connectedZFacePatternIdOrdinal)
+                                                )),
+                                                reader.GetInt32(connectedPatternIdOrdinal)
+                                              ));
                                 }
                             }
                         }
@@ -262,72 +364,119 @@ namespace RC
             }
         }
 
+        public static void LoadFaces()
+        {
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+            {
+                connection.Open();
+                String commandName = "[RBK].[wsp_FacePatternsGet]";
+                using (SqlCommand cmd = new SqlCommand(commandName, connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 0;
+
+
+                    Console.WriteLine($@"Started  EXEC {commandName} ");
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                FacePatternDictionary.Add(reader.GetString(1), reader.GetInt32(0));
+                                FacePatternArray[reader.GetInt32(0)] = reader.GetString(1);
+                            }
+                        }
+                    }
+
+                    Console.WriteLine($@"Result: {FacePatternDictionary.Count}");
+
+                }
+                connection.Close();
+            }
+        }
+
         static void DoStep(PatternHierarchyModel[] nextStepPrimaries)
         {
 
             var nextSteps = new List<NextStepInfo>();
 
-            Parallel.For(0, nextStepPrimaries.Count() - 1, (Int32 isd) =>
+            for (Int32 isd = 0; isd < nextStepPrimaries.Count(); isd++)
             {
                 Console.WriteLine("\tStep {0} {1} of {2}", nextStepPrimaries[0].HerarchyLevel, isd + 1, nextStepPrimaries.Count());
 
                 CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
-                Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(nextStepPrimaries[isd].ConnectedPattern));
+                Logic.SetCubeState(cubeStartingPoint, nextStepPrimaries[isd].ConnectedPattern);
                 String normalizedPattern = PatternLogic.GetCubePattern(cubeStartingPoint);
 
                 Parallel.For(1, 28, (Int32 iMove) =>
+                // for (var iMove = 1; iMove < 28; iMove++)
                 {
+
                     CubeModel cubeClone = Logic.CloneCube(cubeStartingPoint);
-                    MoveTypes moveType = (MoveTypes)iMove;
-                    Logic.RunMove(cubeClone, moveType);
+                        MoveTypes moveType = (MoveTypes)iMove;
+                        Logic.RunMove(cubeClone, moveType);
 
-                    String cubeCloneRaw = PatternLogic.GetCubePattern(cubeClone);
-                    String cubeClonedNormalized = PatternLogic.GetFirstPatternAlphabetically(cubeCloneRaw);
+                        //Debug.Write("moveType:" + moveType);
 
-                    String relationship = Logic.Convert(moveType);
-                    String connectedPattern = Logic.ToDatabase(cubeClonedNormalized);
-                    String reverseRelationship = Logic.Convert(Logic.Reverse(moveType));
+                        String cubeCloneRaw = PatternLogic.GetCubePattern(cubeClone);
+                        String cubeClonedNormalized = PatternLogic.GetFirstPatternAlphabetically(cubeCloneRaw);
 
-                    lock (nextSteps)
-                    {
-                        var nextStep = nextSteps.FirstOrDefault(x => x.PrimaryPatternId == nextStepPrimaries[isd].ConnectedPatternId && x.ConnectedPattern == cubeClonedNormalized);
-                        if (nextStep == default)
+                        String relationship = Logic.Convert(moveType);
+                        String reverseRelationship = Logic.Convert(Logic.Reverse(moveType));
+
+                        lock (nextSteps)
                         {
-                            SqlHierarchyId patternHierarchyHid = SqlHierarchyId.Parse($"{nextStepPrimaries[isd].PatternHierarchyHid}{iMove}/");
-                            nextSteps.Add(new NextStepInfo(
-                                patternHierarchyHid,
-                                nextStepPrimaries[isd].ConnectedPatternId,
-                                '|' + relationship + '|',
-                                '|' + reverseRelationship + '|',
-                                cubeClonedNormalized));
+                            var nextStep = nextSteps.FirstOrDefault(x => x.PrimaryPatternId == nextStepPrimaries[isd].ConnectedPatternId && x.ConnectedPattern == cubeClonedNormalized);
+                            if (nextStep == default)
+                            {
+                                SqlHierarchyId patternHierarchyHid = SqlHierarchyId.Parse($"{nextStepPrimaries[isd].PatternHierarchyHid}{iMove}/");
+                                nextSteps.Add(new NextStepInfo(
+                                    patternHierarchyHid,
+                                    nextStepPrimaries[isd].ConnectedPatternId,
+                                    '|' + relationship + '|',
+                                    '|' + reverseRelationship + '|',
+                                    cubeClonedNormalized));
+                            }
+                            else
+                            {
+                                nextStep.Relationship += relationship + '|';
+                                nextStep.ReverseRelationship = '|' + reverseRelationship + nextStep.ReverseRelationship;
+                            }
                         }
-                        else
-                        {
-                            nextStep.Relationship += relationship + '|';
-                            nextStep.ReverseRelationship = '|' + reverseRelationship + nextStep.ReverseRelationship;
-                        }
+                        Console.WriteLine("\t\tMove {0}", iMove);
                     }
-                    Console.WriteLine("\t\tMove {0}", iMove);
-                });
-            });
+                );
+            }
 
             var nextStepsInDatabaseFormat = new DataTable();
             nextStepsInDatabaseFormat.Columns.Add("PatternHierarchyHid");
             nextStepsInDatabaseFormat.Columns.Add("ParentPatternId");
             nextStepsInDatabaseFormat.Columns.Add("Relationship");
             nextStepsInDatabaseFormat.Columns.Add("ReverseRelationship");
-            nextStepsInDatabaseFormat.Columns.Add("ConnectedPattern");
-
+            nextStepsInDatabaseFormat.Columns.Add("AFacePatternId");
+            nextStepsInDatabaseFormat.Columns.Add("BFacePatternId");
+            nextStepsInDatabaseFormat.Columns.Add("CFacePatternId");
+            nextStepsInDatabaseFormat.Columns.Add("XFacePatternId");
+            nextStepsInDatabaseFormat.Columns.Add("YFacePatternId");
+            nextStepsInDatabaseFormat.Columns.Add("ZFacePatternId");
 
             foreach (var nextStep in nextSteps)
             {
                 DataRow row = nextStepsInDatabaseFormat.NewRow();
+                PatternModel connectedPattern = ToDatabase(nextStep.ConnectedPattern);
 
                 row["PatternHierarchyHid"] = nextStep.PatternHierarchyHid;
                 row["ParentPatternId"] = nextStep.PrimaryPatternId;
                 row["Relationship"] = nextStep.Relationship;
                 row["ReverseRelationship"] = nextStep.ReverseRelationship;
-                row["ConnectedPattern"] = Logic.ToDatabase(nextStep.ConnectedPattern);
+                row["AFacePatternId"] = connectedPattern.AFacePatternId;
+                row["BFacePatternId"] = connectedPattern.BFacePatternId;
+                row["CFacePatternId"] = connectedPattern.CFacePatternId;
+                row["XFacePatternId"] = connectedPattern.XFacePatternId;
+                row["YFacePatternId"] = connectedPattern.YFacePatternId;
+                row["ZFacePatternId"] = connectedPattern.ZFacePatternId;
 
                 nextStepsInDatabaseFormat.Rows.Add(row);
             }
@@ -400,138 +549,138 @@ namespace RC
                 (scale / (double)uint.MaxValue));
         }
 
-        static void FindAdjacentPatternTypes()
-        {
-            String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutAdjacentRecognitionGet]";
-            String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionAdjacentInsert]";
-            Int32 pageSize = 1000000;
+        //static void FindAdjacentPatternTypes()
+        //{
+        //    String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutAdjacentRecognitionGet]";
+        //    String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionAdjacentInsert]";
+        //    Int32 pageSize = 1000000;
 
-            FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
-        }
+        //    FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
+        //}
 
-        static void FindFacePatternTypes()
-        {
-            String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutFaceRecognitionGet]";
-            String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionFaceInsert]";
-            Int32 pageSize = 200000;
+        //static void FindFacePatternTypes()
+        //{
+        //    String sqlSelectCommand = "[RBK].[wsp_PatternsWithoutFaceRecognitionGet]";
+        //    String sqlUpdateCommand = "[RBK].[wsp_PatternRecognitionFaceInsert]";
+        //    Int32 pageSize = 200000;
 
-            FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
-        }
+        //    FindPatternTypes(sqlSelectCommand, sqlUpdateCommand, pageSize);
+        //}
 
-        static void FindPatternTypes(String sqlSelectCommand, String sqlUpdateCommand, Int32 pageSize)
-        {
-            CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
+        //static void FindPatternTypes(String sqlSelectCommand, String sqlUpdateCommand, Int32 pageSize)
+        //{
+        //    CubeModel cubeStartingPoint = Logic.Create(XyzCubeTypes.OrangeWhiteBlue);
 
-            var patternTypes = new DataTable();
-            patternTypes.Columns.Add("PatternId");
-            patternTypes.Columns.Add("PatternTypeId");
-            patternTypes.Columns.Add("Color");
+        //    var patternTypes = new DataTable();
+        //    patternTypes.Columns.Add("PatternId");
+        //    patternTypes.Columns.Add("PatternTypeId");
+        //    patternTypes.Columns.Add("Color");
 
-            using (SqlConnection queryConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
-            {
-                try
-                {
-                    queryConnection.Open();
+        //    using (SqlConnection queryConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+        //    {
+        //        try
+        //        {
+        //            queryConnection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand(sqlSelectCommand, queryConnection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.CommandTimeout = 0;
+        //            using (SqlCommand cmd = new SqlCommand(sqlSelectCommand, queryConnection))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.CommandTimeout = 0;
 
-                        cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)
-                        {
-                            Value = pageSize
-                        });
+        //                cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)
+        //                {
+        //                    Value = pageSize
+        //                });
 
-                        Console.WriteLine($@"Started  EXEC {sqlSelectCommand} @PageSize={pageSize}");
+        //                Console.WriteLine($@"Started  EXEC {sqlSelectCommand} @PageSize={pageSize}");
 
-                        Int32 count = 0;
-                        int top = Console.CursorTop;
+        //                Int32 count = 0;
+        //                int top = Console.CursorTop;
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                while (reader.Read())
-                                {
+        //                using (SqlDataReader reader = cmd.ExecuteReader())
+        //                {
+        //                    if (reader.HasRows)
+        //                    {
+        //                        while (reader.Read())
+        //                        {
 
-                                    Logic.SetCubeState(cubeStartingPoint, PatternLogic.FromDatabase(reader.GetString(1)));
+        //                            Logic.SetCubeState(cubeStartingPoint, FromDatabase(reader.GetString(1)));
 
-                                    (StickerColorTypes Color, PatternFaceTypes PatternFaceType)[] typesForpattern = PatternRecognition.GetCubeFacePatterns(cubeStartingPoint);
-                                    foreach (var item in typesForpattern)
-                                    {
-                                        DataRow row = patternTypes.NewRow();
-                                        row["PatternId"] = reader.GetInt32(0);
-                                        row["PatternTypeId"] = (Int32)item.PatternFaceType;
-                                        row["Color"] = Logic.GetStickerAbbreviation(item.Color);
+        //                            (StickerColorTypes Color, PatternFaceTypes PatternFaceType)[] typesForpattern = PatternRecognition.GetCubeFacePatterns(cubeStartingPoint);
+        //                            foreach (var item in typesForpattern)
+        //                            {
+        //                                DataRow row = patternTypes.NewRow();
+        //                                row["PatternId"] = reader.GetInt32(0);
+        //                                row["PatternTypeId"] = (Int32)item.PatternFaceType;
+        //                                row["Color"] = Logic.GetStickerAbbreviation(item.Color);
 
-                                        patternTypes.Rows.Add(row);
-                                    }
+        //                                patternTypes.Rows.Add(row);
+        //                            }
 
-                                    if (count % 1000 == 0)
-                                    {
-                                        Console.SetCursorPosition(0, top);
-                                        Console.WriteLine($@" {count} of {pageSize}");
-                                    }
+        //                            if (count % 1000 == 0)
+        //                            {
+        //                                Console.SetCursorPosition(0, top);
+        //                                Console.WriteLine($@" {count} of {pageSize}");
+        //                            }
 
-                                    count++;
-                                }
-                            }
-                        }
+        //                            count++;
+        //                        }
+        //                    }
+        //                }
 
-                        Console.WriteLine($@"Completed EXEC {sqlSelectCommand} Result: {patternTypes.Rows.Count}");
-                    }
+        //                Console.WriteLine($@"Completed EXEC {sqlSelectCommand} Result: {patternTypes.Rows.Count}");
+        //            }
 
-                }
-                catch (Exception ex)
-                {
+        //        }
+        //        catch (Exception ex)
+        //        {
 
-                    Console.WriteLine($@"Query ERROR EXEC {sqlSelectCommand} @PageSize={pageSize} {ex.Message} ");
-                }
-                finally
-                {
-                    queryConnection.Close();
-                }
+        //            Console.WriteLine($@"Query ERROR EXEC {sqlSelectCommand} @PageSize={pageSize} {ex.Message} ");
+        //        }
+        //        finally
+        //        {
+        //            queryConnection.Close();
+        //        }
 
-                Console.WriteLine($@"Started  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
+        //        Console.WriteLine($@"Started  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
 
-                using (SqlConnection mergeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
-                {
-                    try
-                    {
-                        mergeConnection.Open();
+        //        using (SqlConnection mergeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["Whatever"].ConnectionString))
+        //        {
+        //            try
+        //            {
+        //                mergeConnection.Open();
 
-                        using (SqlCommand cmdUpdate = new SqlCommand(sqlUpdateCommand, mergeConnection))
-                        {
-                            cmdUpdate.CommandType = CommandType.StoredProcedure;
-                            cmdUpdate.CommandTimeout = 0;
+        //                using (SqlCommand cmdUpdate = new SqlCommand(sqlUpdateCommand, mergeConnection))
+        //                {
+        //                    cmdUpdate.CommandType = CommandType.StoredProcedure;
+        //                    cmdUpdate.CommandTimeout = 0;
 
-                            cmdUpdate.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
-                            {
-                                TypeName = "RBK.[PatternRecognitionStateType]",
-                                Value = patternTypes
-                            });
+        //                    cmdUpdate.Parameters.Add(new SqlParameter("@data", SqlDbType.Structured)
+        //                    {
+        //                        TypeName = "RBK.[PatternRecognitionStateType]",
+        //                        Value = patternTypes
+        //                    });
 
-                            cmdUpdate.ExecuteNonQuery();
-                        }
+        //                    cmdUpdate.ExecuteNonQuery();
+        //                }
 
-                        mergeConnection.Close();
+        //                mergeConnection.Close();
 
-                    }
-                    catch (Exception ex)
-                    {
+        //            }
+        //            catch (Exception ex)
+        //            {
 
-                        Console.WriteLine($@"ERROR  EXEC {sqlUpdateCommand} @PageSize={pageSize} {ex.Message} ");
-                    }
-                    finally
-                    {
-                        mergeConnection.Close();
-                    }
-                }
+        //                Console.WriteLine($@"ERROR  EXEC {sqlUpdateCommand} @PageSize={pageSize} {ex.Message} ");
+        //            }
+        //            finally
+        //            {
+        //                mergeConnection.Close();
+        //            }
+        //        }
 
-                Console.WriteLine($@"Completed  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
-            }
-        }
+        //        Console.WriteLine($@"Completed  EXEC {sqlUpdateCommand}  Rows:{patternTypes.Rows.Count}");
+        //    }
+        //}
 
         static void Main(string[] args)
         {
@@ -541,11 +690,12 @@ namespace RC
    
             if (command.ToUpper() == "GO")
             {
+                LoadFaces();
 
-                //for (var i = 3; i <= 9; i++)
-                //{
-                    DoSteps(6);
-                //}
+                for (var i = 1; i <= 9; i++)
+                {
+                  DoSteps(i);
+                }
 
 
                 //for (var i = 0; i < 100000; i++)

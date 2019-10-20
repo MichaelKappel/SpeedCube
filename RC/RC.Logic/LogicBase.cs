@@ -44,15 +44,15 @@ namespace RC.Logic
             {
                 case 'A':
                     return "O";
-                case 'a':
-                    return "R";
                 case 'B':
                     return "W";
-                case 'b':
-                    return "Y";
                 case 'C':
                     return "B";
-                case 'c':
+                case 'X':
+                    return "R";
+                case 'Y':
+                    return "Y";
+                case 'Z':
                     return "G";
                 default:
                     return sticker.ToString();
@@ -61,21 +61,21 @@ namespace RC.Logic
 
         public String GetDetailedCubeState(CubeModel cube)
         {
-            //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
-            //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
-            //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
-            //  BNW, BN, BNE, BW, B, BE, BSW, BS, BSE
-            //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
             //  FNE, NE, BNE, FE, E, BE, FSE, SE, BSW
+            //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
+            //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
+            //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
+            //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
+            //  BNW, BN, BNE, BW, B, BE, BSW, BS, BSE
 
-            String north = $"BNW:{ GetStickerAbbreviation(cube.BackNorthWest.StickerNorth)}|BN:{ GetStickerAbbreviation(cube.BackNorth.StickerNorth)}|BNE:{ GetStickerAbbreviation(cube.BackNorthEast.StickerNorth)}|NW:{ GetStickerAbbreviation(cube.NorthWest.StickerNorth)}|N:{ GetStickerAbbreviation(cube.North.StickerNorth)}|NE:{ GetStickerAbbreviation(cube.NorthEast.StickerNorth)}|FNW:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerNorth)}|FN:{ GetStickerAbbreviation(cube.FrontNorth.StickerNorth)}|FNE:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerNorth)}";
-            String south = $"FSW:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerSouth)}|FS:{ GetStickerAbbreviation(cube.FrontSouth.StickerSouth)}|FSE:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerSouth)}|SW:{ GetStickerAbbreviation(cube.SouthWest.StickerSouth)}|S:{ GetStickerAbbreviation(cube.South.StickerSouth)}|SE:{ GetStickerAbbreviation(cube.SouthEast.StickerSouth)}|BSW:{ GetStickerAbbreviation(cube.BackSouthWest.StickerSouth)}|BS:{ GetStickerAbbreviation(cube.BackSouth.StickerSouth)}|BSE:{ GetStickerAbbreviation(cube.BackSouthEast.StickerSouth)}";
-            String front = $"FNW:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerFront)}|FN:{ GetStickerAbbreviation(cube.FrontNorth.StickerFront)}|FNE:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerFront)}|FW:{ GetStickerAbbreviation(cube.FrontWest.StickerFront)}|F:{ GetStickerAbbreviation(cube.Front.StickerFront)}|FE:{ GetStickerAbbreviation(cube.FrontEast.StickerFront)}|FSW:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerFront)}|FS:{ GetStickerAbbreviation(cube.FrontSouth.StickerFront)}|FSE:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerFront)}";
-            String back = $"BNW:{ GetStickerAbbreviation(cube.BackNorthWest.StickerBack)}|BN:{ GetStickerAbbreviation(cube.BackNorth.StickerBack)}|BNE:{ GetStickerAbbreviation(cube.BackNorthEast.StickerBack)}|BW:{ GetStickerAbbreviation(cube.BackWest.StickerBack)}|B:{ GetStickerAbbreviation(cube.Back.StickerBack)}|BE:{ GetStickerAbbreviation(cube.BackEast.StickerBack)}|BSW:{ GetStickerAbbreviation(cube.BackSouthWest.StickerBack)}|BS:{ GetStickerAbbreviation(cube.BackSouth.StickerBack)}|BSE:{ GetStickerAbbreviation(cube.BackSouthEast.StickerBack)}";
-            String west = $"BNW:{ GetStickerAbbreviation(cube.BackNorthWest.StickerWest)}|NW:{ GetStickerAbbreviation(cube.NorthWest.StickerWest)}|FNW:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerWest)}|BW:{ GetStickerAbbreviation(cube.BackWest.StickerWest)}|W:{ GetStickerAbbreviation(cube.West.StickerWest)}|FW:{ GetStickerAbbreviation(cube.FrontWest.StickerWest)}|BSW:{ GetStickerAbbreviation(cube.BackSouthWest.StickerWest)}|SW:{ GetStickerAbbreviation(cube.SouthWest.StickerWest)}|FSW:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerWest)}";
-            String east = $"FNE:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerEast)}|NE:{ GetStickerAbbreviation(cube.NorthEast.StickerEast)}|BNE:{ GetStickerAbbreviation(cube.BackNorthEast.StickerEast)}|FE:{ GetStickerAbbreviation(cube.FrontEast.StickerEast)}|E:{ GetStickerAbbreviation(cube.East.StickerEast)}|BE:{ GetStickerAbbreviation(cube.BackEast.StickerEast)}|FSE:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerEast)}|SE:{ GetStickerAbbreviation(cube.SouthEast.StickerEast)}|BSE:{ GetStickerAbbreviation(cube.BackSouthEast.StickerEast)}";
+            String east =   $"{PositionTypes.EFNE}:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerEast) }|{PositionTypes.ENE}:{ GetStickerAbbreviation(cube.NorthEast.StickerEast)  }|{PositionTypes.EBNE}:{ GetStickerAbbreviation(cube.BackNorthEast.StickerEast)  }|{PositionTypes.EFE}:{ GetStickerAbbreviation(cube.FrontEast.StickerEast) }|{PositionTypes.EE}:{ GetStickerAbbreviation(cube.East.StickerEast)  }|{PositionTypes.EBE}:{ GetStickerAbbreviation(cube.BackEast.StickerEast)  }|{PositionTypes.EFSE}:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerEast) }|{PositionTypes.ESE}:{ GetStickerAbbreviation(cube.SouthEast.StickerEast)  }|{PositionTypes.EBSE}:{ GetStickerAbbreviation(cube.BackSouthEast.StickerEast)}";
+            String north =  $"{PositionTypes.NBNW}:{ GetStickerAbbreviation(cube.BackNorthWest.StickerNorth) }|{PositionTypes.NBN}:{ GetStickerAbbreviation(cube.BackNorth.StickerNorth) }|{PositionTypes.NBNE}:{ GetStickerAbbreviation(cube.BackNorthEast.StickerNorth) }|{PositionTypes.NNW}:{ GetStickerAbbreviation(cube.NorthWest.StickerNorth)}|{PositionTypes.NN}:{ GetStickerAbbreviation(cube.North.StickerNorth)}|{PositionTypes.NNE}:{ GetStickerAbbreviation(cube.NorthEast.StickerNorth)}|{PositionTypes.NFNW}:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerNorth)}|{PositionTypes.NFN}:{ GetStickerAbbreviation(cube.FrontNorth.StickerNorth)}|{PositionTypes.NFNE}:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerNorth)}";
+            String front =  $"{PositionTypes.FFNW}:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerFront)}|{PositionTypes.FFN}:{ GetStickerAbbreviation(cube.FrontNorth.StickerFront)}|{PositionTypes.FFNE}:{ GetStickerAbbreviation(cube.FrontNorthEast.StickerFront)}|{PositionTypes.FFW}:{ GetStickerAbbreviation(cube.FrontWest.StickerFront)}|{PositionTypes.FF}:{ GetStickerAbbreviation(cube.Front.StickerFront)}|{PositionTypes.FFE}:{ GetStickerAbbreviation(cube.FrontEast.StickerFront)}|{PositionTypes.FFSW}:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerFront)}|{PositionTypes.FFS}:{ GetStickerAbbreviation(cube.FrontSouth.StickerFront)}|{PositionTypes.FFSE}:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerFront)}";
+            String west =   $"{PositionTypes.WBNW}:{ GetStickerAbbreviation(cube.BackNorthWest.StickerWest)  }|{PositionTypes.WNW}:{ GetStickerAbbreviation(cube.NorthWest.StickerWest)  }|{PositionTypes.WFNW}:{ GetStickerAbbreviation(cube.FrontNorthWest.StickerWest) }|{PositionTypes.WBW}:{ GetStickerAbbreviation(cube.BackWest.StickerWest)  }|{PositionTypes.WW}:{ GetStickerAbbreviation(cube.West.StickerWest)  }|{PositionTypes.WFW}:{ GetStickerAbbreviation(cube.FrontWest.StickerWest) }|{PositionTypes.WBSW}:{ GetStickerAbbreviation(cube.BackSouthWest.StickerWest)  }|{PositionTypes.WSW}:{ GetStickerAbbreviation(cube.SouthWest.StickerWest)  }|{PositionTypes.WFSW}:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerWest)}";
+            String south =  $"{PositionTypes.SFSW}:{ GetStickerAbbreviation(cube.FrontSouthWest.StickerSouth)}|{PositionTypes.SFS}:{ GetStickerAbbreviation(cube.FrontSouth.StickerSouth)}|{PositionTypes.SFSE}:{ GetStickerAbbreviation(cube.FrontSouthEast.StickerSouth)}|{PositionTypes.SSW}:{ GetStickerAbbreviation(cube.SouthWest.StickerSouth)}|{PositionTypes.SS}:{ GetStickerAbbreviation(cube.South.StickerSouth)}|{PositionTypes.SSE}:{ GetStickerAbbreviation(cube.SouthEast.StickerSouth)}|{PositionTypes.SBSW}:{ GetStickerAbbreviation(cube.BackSouthWest.StickerSouth) }|{PositionTypes.SBS}:{ GetStickerAbbreviation(cube.BackSouth.StickerSouth) }|{PositionTypes.SBSE}:{ GetStickerAbbreviation(cube.BackSouthEast.StickerSouth)}";
+            String back =   $"{PositionTypes.BBNE}:{ GetStickerAbbreviation(cube.BackNorthEast.StickerBack)  }|{PositionTypes.BBN}:{ GetStickerAbbreviation(cube.BackNorth.StickerBack)  }|{PositionTypes.BBNW}:{ GetStickerAbbreviation(cube.BackNorthWest.StickerBack)  }|{PositionTypes.BBE}:{ GetStickerAbbreviation(cube.BackEast.StickerBack)  }|{PositionTypes.BB}:{ GetStickerAbbreviation(cube.Back.StickerBack)  }|{PositionTypes.BBW}:{ GetStickerAbbreviation(cube.BackWest.StickerBack)  }|{PositionTypes.BBSE}:{ GetStickerAbbreviation(cube.BackSouthEast.StickerBack)  }|{PositionTypes.BBS}:{ GetStickerAbbreviation(cube.BackSouth.StickerBack)  }|{PositionTypes.BBSW}:{ GetStickerAbbreviation(cube.BackSouthWest.StickerBack)}";
 
-            return $"{north},{south},{front},{back},{west},{east}";
+            return $"{east},{north},{front},{west},{south},{back}";
         }
 
 
@@ -88,7 +88,7 @@ namespace RC.Logic
                     || xyzCubeTypes == XyzCubeTypes.WhiteOrangeGreen
                     || xyzCubeTypes == XyzCubeTypes.WhiteRedBlue)
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "A" : "a";
+                    return (stickerColorType == StickerColorTypes.White) ? "A" : "X";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueWhiteRed
                    || xyzCubeTypes == XyzCubeTypes.GreenWhiteOrange
@@ -96,21 +96,21 @@ namespace RC.Logic
                    || xyzCubeTypes == XyzCubeTypes.RedWhiteGreen
                    )
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "B" : "b";
+                    return (stickerColorType == StickerColorTypes.White) ? "B" : "Y";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueOrangeWhite
                   || xyzCubeTypes == XyzCubeTypes.GreenRedWhite
                   || xyzCubeTypes == XyzCubeTypes.OrangeGreenWhite
                   || xyzCubeTypes == XyzCubeTypes.RedBlueWhite)
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "C" : "c";
+                    return (stickerColorType == StickerColorTypes.White) ? "C" : "Z";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.YellowOrangeBlue
                     || xyzCubeTypes == XyzCubeTypes.YellowRedGreen
                     || xyzCubeTypes == XyzCubeTypes.YellowGreenOrange
                     || xyzCubeTypes == XyzCubeTypes.YellowBlueRed)
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "a" : "A";
+                    return (stickerColorType == StickerColorTypes.White) ? "X" : "A";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.RedYellowBlue
                    || xyzCubeTypes == XyzCubeTypes.OrangeYellowGreen
@@ -118,14 +118,14 @@ namespace RC.Logic
                    || xyzCubeTypes == XyzCubeTypes.GreenYellowRed
                    )
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "b" : "B";
+                    return (stickerColorType == StickerColorTypes.White) ? "Y" : "B";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeBlueYellow
                   || xyzCubeTypes == XyzCubeTypes.RedGreenYellow
                   || xyzCubeTypes == XyzCubeTypes.GreenOrangeYellow
                   || xyzCubeTypes == XyzCubeTypes.BlueRedYellow)
                 {
-                    return (stickerColorType == StickerColorTypes.White) ? "c" : "C";
+                    return (stickerColorType == StickerColorTypes.White) ? "Z" : "C";
                 }
 
             }
@@ -137,7 +137,7 @@ namespace RC.Logic
                     || xyzCubeTypes == XyzCubeTypes.BlueWhiteRed
                     || xyzCubeTypes == XyzCubeTypes.BlueYellowOrange)
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "A" : "a";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "A" : "X";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeBlueYellow
                    || xyzCubeTypes == XyzCubeTypes.RedBlueWhite
@@ -145,21 +145,21 @@ namespace RC.Logic
                    || xyzCubeTypes == XyzCubeTypes.YellowBlueRed
                    )
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "B" : "b";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "B" : "Y";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeWhiteBlue
                   || xyzCubeTypes == XyzCubeTypes.RedYellowBlue
                   || xyzCubeTypes == XyzCubeTypes.WhiteRedBlue
                   || xyzCubeTypes == XyzCubeTypes.YellowOrangeBlue)
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "C" : "c";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "C" : "Z";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.GreenWhiteOrange
                  || xyzCubeTypes == XyzCubeTypes.GreenYellowRed
                  || xyzCubeTypes == XyzCubeTypes.GreenRedWhite
                  || xyzCubeTypes == XyzCubeTypes.GreenOrangeYellow)
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "a" : "A";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "X" : "A";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeGreenWhite
                   || xyzCubeTypes == XyzCubeTypes.RedGreenYellow
@@ -167,14 +167,14 @@ namespace RC.Logic
                   || xyzCubeTypes == XyzCubeTypes.YellowGreenOrange
                    )
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "b" : "B";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "Y" : "B";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeYellowGreen
                    || xyzCubeTypes == XyzCubeTypes.RedWhiteGreen
                    || xyzCubeTypes == XyzCubeTypes.WhiteOrangeGreen
                    || xyzCubeTypes == XyzCubeTypes.YellowRedGreen)
                 {
-                    return (stickerColorType == StickerColorTypes.Blue) ? "c" : "C";
+                    return (stickerColorType == StickerColorTypes.Blue) ? "Z" : "C";
                 }
             }
             else if (stickerColorType == StickerColorTypes.Red || stickerColorType == StickerColorTypes.Orange)
@@ -185,28 +185,28 @@ namespace RC.Logic
                     || xyzCubeTypes == XyzCubeTypes.RedBlueWhite
                     || xyzCubeTypes == XyzCubeTypes.RedGreenYellow)
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "A" : "a";
+                    return (stickerColorType == StickerColorTypes.Red) ? "A" : "X";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueRedYellow
                    || xyzCubeTypes == XyzCubeTypes.GreenRedWhite
                    || xyzCubeTypes == XyzCubeTypes.WhiteRedBlue
                    || xyzCubeTypes == XyzCubeTypes.YellowRedGreen)
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "B" : "b";
+                    return (stickerColorType == StickerColorTypes.Red) ? "B" : "Y";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueWhiteRed
                   || xyzCubeTypes == XyzCubeTypes.GreenYellowRed
                   || xyzCubeTypes == XyzCubeTypes.WhiteGreenRed
                   || xyzCubeTypes == XyzCubeTypes.YellowBlueRed)
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "C" : "c";
+                    return (stickerColorType == StickerColorTypes.Red) ? "C" : "Z";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.OrangeBlueYellow
                    || xyzCubeTypes == XyzCubeTypes.OrangeGreenWhite
                    || xyzCubeTypes == XyzCubeTypes.OrangeWhiteBlue
                    || xyzCubeTypes == XyzCubeTypes.OrangeYellowGreen)
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "a" : "A";
+                    return (stickerColorType == StickerColorTypes.Red) ? "X" : "A";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueOrangeWhite
                   || xyzCubeTypes == XyzCubeTypes.GreenOrangeYellow
@@ -214,14 +214,14 @@ namespace RC.Logic
                   || xyzCubeTypes == XyzCubeTypes.YellowOrangeBlue
                    )
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "b" : "B";
+                    return (stickerColorType == StickerColorTypes.Red) ? "Y" : "B";
                 }
                 else if (xyzCubeTypes == XyzCubeTypes.BlueYellowOrange
                    || xyzCubeTypes == XyzCubeTypes.GreenWhiteOrange
                    || xyzCubeTypes == XyzCubeTypes.WhiteBlueOrange
                    || xyzCubeTypes == XyzCubeTypes.YellowGreenOrange)
                 {
-                    return (stickerColorType == StickerColorTypes.Red) ? "c" : "C";
+                    return (stickerColorType == StickerColorTypes.Red) ? "Z" : "C";
                 }
             }
             throw new Exception("GetStickerAbbreviation Error");
@@ -404,47 +404,6 @@ namespace RC.Logic
                     return StickerColorTypes.Yellow;
                 default:
                     return StickerColorTypes.None;
-            }
-        }
-
-
-        public String FromDatabase(String databaseFormat)
-        {
-            if (databaseFormat.Contains("Z"))
-            {
-                return databaseFormat.Replace('Z', 'a').Replace('Y', 'b').Replace('X', 'c').Replace(",", "");
-            }
-            else
-            {
-                return databaseFormat;
-            }
-        }
-
-        public String ToDatabase(String cSharpFormat)
-        {
-            if (cSharpFormat.Contains(','))
-            {
-                return cSharpFormat;
-            }
-            else
-            {
-                String databaseFormat = cSharpFormat.Replace('a', 'Z').Replace('b', 'Y').Replace('c', 'X');
-                if (databaseFormat.Length < 10)
-                {
-                    return databaseFormat;
-                }
-                else
-                {
-                    String s2 = String.Format("{0},{1},{2},{3},{4},{5}",
-                        databaseFormat.Substring(0, 9),
-                        databaseFormat.Substring(9, 9),
-                        databaseFormat.Substring(18, 9),
-                        databaseFormat.Substring(27, 9),
-                        databaseFormat.Substring(36, 9),
-                        databaseFormat.Substring(45, 9));
-
-                    return s2;
-                }
             }
         }
 

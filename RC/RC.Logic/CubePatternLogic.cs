@@ -13,61 +13,145 @@ using RC.Common.Model.Stickers;
 
 namespace RC.Logic
 {
-    public class CubePatternLogic: PatternLogicBase
+    public class CubePatternLogic : PatternLogicBase
     {
 
 
         public const String SideX = "A";
-        public const String SideXn = "a";
+        public const String SideXn = "X";
         public const String SideY = "B";
-        public const String SideYn = "b";
+        public const String SideYn = "Y";
         public const String SideZ = "C";
-        public const String SideZn = "c";
+        public const String SideZn = "Z";
 
 
         public String[] Sides = new string[] { SideX, SideXn, SideY, SideYn, SideX, SideXn };
 
         /// <summary>
         /// 
-        /// 
-        ///                          [B  0] [B  1] [B  2]
+        ///                          [B  9] [B 10] [B 11]
         ///                          [BNW ] [ BN ] [ BNE]
         ///
-        ///                          [B  3] [B  4] [B  5]
+        ///                          [B 12] [B 13] [B 14]
         ///                          [NW  ] [  N ] [  NE]
         ///
-        ///                          [B  6] [B  7] [B  8]
+        ///                          [B 15] [B 16] [B 17]
         ///                          [FNW ] [ FN ] [ FNE]
         ///
         ///
-        ///  [a 36] [a 37] [a 38]    [C 18] [C 19] [C 20]       [A 45] [A 46] [A 47]    [c 27] [c 28] [c 29]
-        ///  [BNW ] [ NW ] [ FNW]    [FNW ] [ FN ] [ FNE]       [FNE ] [ NE ] [ BNE]    [BNW ] [ BN ] [ BNE]
+        ///  [X 27] [X 28] [X 29]    [C 18] [C 19] [C 20]       [A  0] [A  1] [A  2]    [Z 45] [Z 46] [Z 47]
+        ///  [BNW ] [ NW ] [ FNW]    [FNW ] [ FN ] [ FNE]       [FNE ] [ NE ] [ BNE]    [BNE ] [ BN ] [ BNW]
         ///
-        ///  [a 39] [a 40] [a 41]    [C 21] [C 22] [C 23]       [A 48] [A 49] [A 50]    [c 30] [c 31] [c 32]
-        ///  [BW  ] [  W ] [  FW]    [FW  ] [  F ] [  FE]       [FE  ] [  E ] [  BE]    [BW  ] [  B ] [  BE]
+        ///  [X 30] [X 31] [X 32]    [C 21] [C 22] [C 23]       [A  3] [A  4] [A  5]    [Z 48] [Z 49] [Z 50]
+        ///  [BW  ] [  W ] [  FW]    [FW  ] [  F ] [  FE]       [FE  ] [  E ] [  BE]    [BE  ] [  B ] [  BW]
         ///
-        ///  [a 42] [a 43] [a 44]    [C 24] [C 25] [C 26]       [A 51] [A 52] [A 53]    [c 33] [c 34] [c 35]
-        ///  [BSW ] [ SW ] [ FSW]    [FSW ] [ FS ] [ FSE]       [FSE ] [ SE ] [ BSE]    [BSW ] [ BS ] [ BSE]
+        ///  [X 33] [X 34] [X 35]    [C 24] [C 25] [C 26]       [A  6] [A  7] [A  8]    [Z 51] [Z 52] [Z 53]
+        ///  [BSW ] [ SW ] [ FSW]    [FSW ] [ FS ] [ FSE]       [FSE ] [ SE ] [ BSE]    [BSE ] [ BS ] [ BSW]
         ///
         ///
-        ///                          [b  9] [b 10] [b 11]
+        ///                          [Y 36] [Y 37] [Y 38]
         ///                          [FSW ] [ FS ] [ FSE]
         ///
-        ///                          [b 12] [b 13] [b 14]
+        ///                          [Y 39] [Y 40] [Y 41]
         ///                          [SW  ] [  S ] [  SE]
         ///
-        ///                          [b 15] [b 16] [b 17]
+        ///                          [Y 42] [Y 43] [Y 44]
         ///                          [BSW ] [ BS ] [ BSE]
-        ///                          
         ///
-        //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
-        //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
-        //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
-        //  BNW, BN, BNE, BW, B, BE, BSW, BS, BSE
-        //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
         //  FNE, NE, BNE, FE, E, BE, FSE, SE, BSW
+        //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
+        //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
+        //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
+        //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
+        //  BNE, BE, BNW, BE, B, BW, BSE, BS, BSW
         ///
         /// </summary>
+        /// 
+        public void ValidateAdjacentStickersAreValid(String pattern)
+        {
+            Char[] patternChars = pattern.ToCharArray();
+
+            if (patternChars[(Int32)PositionTypes.ENE] == patternChars[(Int32)PositionTypes.NNE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.EFE] == patternChars[(Int32)PositionTypes.FFE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.NBN] == patternChars[(Int32)PositionTypes.BBN])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.ESE] == patternChars[(Int32)PositionTypes.SSE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.FFS] == patternChars[(Int32)PositionTypes.SFS])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.BBS] == patternChars[(Int32)PositionTypes.SBS])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.WBW] == patternChars[(Int32)PositionTypes.BBW])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.FFN] == patternChars[(Int32)PositionTypes.NFN])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.FFNE] == patternChars[(Int32)PositionTypes.NFNE]
+                || patternChars[(Int32)PositionTypes.NFNE] == patternChars[(Int32)PositionTypes.EFNE]
+                || patternChars[(Int32)PositionTypes.EFNE] == patternChars[(Int32)PositionTypes.FFNE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.FFNW] == patternChars[(Int32)PositionTypes.NFNW]
+                || patternChars[(Int32)PositionTypes.NFNW] == patternChars[(Int32)PositionTypes.WFNW]
+                || patternChars[(Int32)PositionTypes.WFNW] == patternChars[(Int32)PositionTypes.FFNW])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.EFSE] == patternChars[(Int32)PositionTypes.FFSE]
+                || patternChars[(Int32)PositionTypes.FFSE] == patternChars[(Int32)PositionTypes.SFSE]
+                || patternChars[(Int32)PositionTypes.SFSE] == patternChars[(Int32)PositionTypes.EFSE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.FFSW] == patternChars[(Int32)PositionTypes.SFSW]
+                || patternChars[(Int32)PositionTypes.SFSW] == patternChars[(Int32)PositionTypes.WFSW]
+                || patternChars[(Int32)PositionTypes.WFSW] == patternChars[(Int32)PositionTypes.FFSW])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.BBNW] == patternChars[(Int32)PositionTypes.NBNW]
+                || patternChars[(Int32)PositionTypes.NBNW] == patternChars[(Int32)PositionTypes.WBNW]
+                || patternChars[(Int32)PositionTypes.WBNW] == patternChars[(Int32)PositionTypes.BBNW])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.BBNE] == patternChars[(Int32)PositionTypes.NBNE]
+                || patternChars[(Int32)PositionTypes.NBNE] == patternChars[(Int32)PositionTypes.EBNE]
+                || patternChars[(Int32)PositionTypes.EBNE] == patternChars[(Int32)PositionTypes.BBNE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            else if (patternChars[(Int32)PositionTypes.BBSE] == patternChars[(Int32)PositionTypes.SBSE]
+                || patternChars[(Int32)PositionTypes.SBSE] == patternChars[(Int32)PositionTypes.EBSE]
+                || patternChars[(Int32)PositionTypes.EBSE] == patternChars[(Int32)PositionTypes.BBSE])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+            if (patternChars[(Int32)PositionTypes.BBSW] == patternChars[(Int32)PositionTypes.SBSW]
+                || patternChars[(Int32)PositionTypes.SBSW] == patternChars[(Int32)PositionTypes.WBSW]
+                || patternChars[(Int32)PositionTypes.WBSW] == patternChars[(Int32)PositionTypes.BBSW])
+            {
+                throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED");
+            }
+        }
         public CubePatternLogic()
         {
 
@@ -80,35 +164,19 @@ namespace RC.Logic
 
         public String[] GetAllPatterns(String original)
         {
-            var resultWithDups = new List<String>() { original };
+            var results = new List<String>() { original };
 
-            String[] shiftedPatterns = this.ShiftSwitchAndMirrorCubePatterns(original);
-            foreach (var shiftedPattern in shiftedPatterns)
+            foreach (String mirroredPattern in this.MirrorCubePatterns(original).Distinct()) 
             {
-                String[] rotatedPatterns = this.RotateCubePatterns(shiftedPattern);
-                foreach (var rotatedPattern in rotatedPatterns)
-                {
-                    resultWithDups.Add(rotatedPattern);
-                    resultWithDups.Add(this.ReversePattern(rotatedPattern));
-                }
+                results.Add(mirroredPattern);
+                results.AddRange(this.RotateCubePatterns(mirroredPattern).Distinct());
             }
 
-            var normalizeRresultWithDups = new List<String>();
-            foreach (var resultUnnormalized in resultWithDups.Distinct())
-            {
-                normalizeRresultWithDups.Add(this.Normalize(resultUnnormalized));
-            }
-
-            String[] results = normalizeRresultWithDups.Distinct().ToArray();
-
-            //String[] results = resultWithDups.Distinct().ToArray();
-            return results;
+            return results.ToArray();
         }
 
         public String[] RotateCubePatterns(String original)
         {
-            //Debug.WriteLine("RotateCubePatterns");
-
             String n = this.RotateCubePatternNorthClockwise(original);
             String f = this.RotateCubePatternFrontClockwise(original);
             String e = this.RotateCubePatternEastClockwise(original);
@@ -156,276 +224,249 @@ namespace RC.Logic
                 nnn,nnf,nne,nfn,nff,nfe,nen,nef,nee,fnn,fnf,fne,ffn,fff,ffe,ffn,fff,ffe,fen,fef,fee
             };
 
-            return results.Distinct().ToArray();
+            return results;
         }
 
-        public String[] ShiftSwitchAndMirrorCubePatterns(String original)
+        public String[] MirrorCubePatterns(String original)
         {
-            //Debug.WriteLine("ShiftSwitchAndMirrorCubePatterns");
+            this.ValidateCube(original);
 
             var resultWithDups = new List<String>();
 
-            foreach (var shiftedPattern in ShiftPatternComprehensive(original))
-            {
-                foreach (var switchedOutPattern in this.SwitchOutPatternComprehensive(shiftedPattern))
-                {
-                    resultWithDups.Add(switchedOutPattern);
+            resultWithDups.Add(original);
 
-                    String btf = this.GetCubePatternMirrorNorthBackToFront(switchedOutPattern);
-                    String wte = this.GetCubePatternMirrorNorthWestToEast(switchedOutPattern);
-                    String ttb = this.GetCubePatternMirrorNorthTopToBottom(switchedOutPattern);
+            String btf = this.GetCubePatternMirrorBackToFront(original);
+            String wte = this.GetCubePatternMirrorWestToEast(original);
+            String ttb = this.GetCubePatternMirrorTopToBottom(original);
 
-                    resultWithDups.Add(btf);
-                    resultWithDups.Add(wte);
-                    resultWithDups.Add(ttb);
+            resultWithDups.Add(btf);
+            resultWithDups.Add(wte);
+            resultWithDups.Add(ttb);
 
-                    String btfbtf = this.GetCubePatternMirrorNorthBackToFront(btf);
-                    String btfwte = this.GetCubePatternMirrorNorthWestToEast(btf);
-                    String btfttb = this.GetCubePatternMirrorNorthTopToBottom(btf);
+            String btfbtf = this.GetCubePatternMirrorBackToFront(btf);
+            String btfwte = this.GetCubePatternMirrorWestToEast(btf);
+            String btfttb = this.GetCubePatternMirrorTopToBottom(btf);
 
-                    String wtebtf = this.GetCubePatternMirrorNorthBackToFront(wte);
-                    String wtewte = this.GetCubePatternMirrorNorthWestToEast(wte);
-                    String wtettb = this.GetCubePatternMirrorNorthTopToBottom(wte);
+            String wtebtf = this.GetCubePatternMirrorBackToFront(wte);
+            String wtewte = this.GetCubePatternMirrorWestToEast(wte);
+            String wtettb = this.GetCubePatternMirrorTopToBottom(wte);
 
-                    String ttbbtf = this.GetCubePatternMirrorNorthBackToFront(ttb);
-                    String ttbwte = this.GetCubePatternMirrorNorthWestToEast(ttb);
-                    String ttbttb = this.GetCubePatternMirrorNorthTopToBottom(ttb);
+            String ttbbtf = this.GetCubePatternMirrorBackToFront(ttb);
+            String ttbwte = this.GetCubePatternMirrorWestToEast(ttb);
+            String ttbttb = this.GetCubePatternMirrorTopToBottom(ttb);
 
 
-                    resultWithDups.Add(btfbtf);
-                    resultWithDups.Add(btfwte);
-                    resultWithDups.Add(btfttb);
+            resultWithDups.Add(btfbtf);
+            resultWithDups.Add(btfwte);
+            resultWithDups.Add(btfttb);
 
-                    resultWithDups.Add(wtebtf);
-                    resultWithDups.Add(wtewte);
-                    resultWithDups.Add(wtettb);
+            resultWithDups.Add(wtebtf);
+            resultWithDups.Add(wtewte);
+            resultWithDups.Add(wtettb);
 
-                    resultWithDups.Add(ttbbtf);
-                    resultWithDups.Add(ttbwte);
-                    resultWithDups.Add(ttbttb);
-
-
-                    String btfbtfbtf = this.GetCubePatternMirrorNorthBackToFront(btfbtf);
-                    String btfbtfwte = this.GetCubePatternMirrorNorthWestToEast(btfbtf);
-                    String btfbtfttb = this.GetCubePatternMirrorNorthTopToBottom(btfbtf);
-
-                    String btfwtebtf = this.GetCubePatternMirrorNorthBackToFront(btfwte);
-                    String btfwtewte = this.GetCubePatternMirrorNorthWestToEast(btfwte);
-                    String btfwtettb = this.GetCubePatternMirrorNorthTopToBottom(btfwte);
-
-                    String btfttbbtf = this.GetCubePatternMirrorNorthBackToFront(btfttb);
-                    String btfttbwte = this.GetCubePatternMirrorNorthWestToEast(btfttb);
-                    String btfttbttb = this.GetCubePatternMirrorNorthTopToBottom(btfttb);
+            resultWithDups.Add(ttbbtf);
+            resultWithDups.Add(ttbwte);
+            resultWithDups.Add(ttbttb);
 
 
-                    String wtebtfbtf = this.GetCubePatternMirrorNorthBackToFront(wtebtf);
-                    String wtebtfwte = this.GetCubePatternMirrorNorthWestToEast(wtebtf);
-                    String wtebtfttb = this.GetCubePatternMirrorNorthTopToBottom(wtebtf);
+            String btfbtfbtf = this.GetCubePatternMirrorBackToFront(btfbtf);
+            String btfbtfwte = this.GetCubePatternMirrorWestToEast(btfbtf);
+            String btfbtfttb = this.GetCubePatternMirrorTopToBottom(btfbtf);
 
-                    String wtewtebtf = this.GetCubePatternMirrorNorthBackToFront(wtewte);
-                    String wtewtewte = this.GetCubePatternMirrorNorthWestToEast(wtewte);
-                    String wtewtettb = this.GetCubePatternMirrorNorthTopToBottom(wtewte);
+            String btfwtebtf = this.GetCubePatternMirrorBackToFront(btfwte);
+            String btfwtewte = this.GetCubePatternMirrorWestToEast(btfwte);
+            String btfwtettb = this.GetCubePatternMirrorTopToBottom(btfwte);
 
-                    String wtettbbtf = this.GetCubePatternMirrorNorthBackToFront(wtettb);
-                    String wtettbwte = this.GetCubePatternMirrorNorthWestToEast(wtettb);
-                    String wtettbttb = this.GetCubePatternMirrorNorthTopToBottom(wtettb);
-
-
-                    String ttbbtfbtf = this.GetCubePatternMirrorNorthBackToFront(ttbbtf);
-                    String ttbbtfwte = this.GetCubePatternMirrorNorthWestToEast(ttbbtf);
-                    String ttbbtfttb = this.GetCubePatternMirrorNorthTopToBottom(ttbbtf);
-
-                    String ttbwtebtf = this.GetCubePatternMirrorNorthBackToFront(ttbwte);
-                    String ttbwtewte = this.GetCubePatternMirrorNorthWestToEast(ttbwte);
-                    String ttbwtettb = this.GetCubePatternMirrorNorthTopToBottom(ttbwte);
-
-                    String ttbttbbtf = this.GetCubePatternMirrorNorthBackToFront(ttbttb);
-                    String ttbttbwte = this.GetCubePatternMirrorNorthWestToEast(ttbttb);
-                    String ttbttbttb = this.GetCubePatternMirrorNorthTopToBottom(ttbttb);
+            String btfttbbtf = this.GetCubePatternMirrorBackToFront(btfttb);
+            String btfttbwte = this.GetCubePatternMirrorWestToEast(btfttb);
+            String btfttbttb = this.GetCubePatternMirrorTopToBottom(btfttb);
 
 
-                    resultWithDups.Add(btfbtfbtf);
-                    resultWithDups.Add(btfbtfwte);
-                    resultWithDups.Add(btfbtfttb);
+            String wtebtfbtf = this.GetCubePatternMirrorBackToFront(wtebtf);
+            String wtebtfwte = this.GetCubePatternMirrorWestToEast(wtebtf);
+            String wtebtfttb = this.GetCubePatternMirrorTopToBottom(wtebtf);
 
-                    resultWithDups.Add(btfwtebtf);
-                    resultWithDups.Add(btfwtewte);
-                    resultWithDups.Add(btfwtettb);
+            String wtewtebtf = this.GetCubePatternMirrorBackToFront(wtewte);
+            String wtewtewte = this.GetCubePatternMirrorWestToEast(wtewte);
+            String wtewtettb = this.GetCubePatternMirrorTopToBottom(wtewte);
 
-                    resultWithDups.Add(btfttbbtf);
-                    resultWithDups.Add(btfttbwte);
-                    resultWithDups.Add(btfttbttb);
-
-                    resultWithDups.Add(wtebtfbtf);
-                    resultWithDups.Add(wtebtfwte);
-                    resultWithDups.Add(wtebtfttb);
-
-                    resultWithDups.Add(wtewtebtf);
-                    resultWithDups.Add(wtewtewte);
-                    resultWithDups.Add(wtewtettb);
-
-                    resultWithDups.Add(wtettbbtf);
-                    resultWithDups.Add(wtettbwte);
-                    resultWithDups.Add(wtettbttb);
-
-                    resultWithDups.Add(ttbbtfbtf);
-                    resultWithDups.Add(ttbbtfwte);
-                    resultWithDups.Add(ttbbtfttb);
-
-                    resultWithDups.Add(ttbwtebtf);
-                    resultWithDups.Add(ttbwtewte);
-                    resultWithDups.Add(ttbwtettb);
-
-                    resultWithDups.Add(ttbttbbtf);
-                    resultWithDups.Add(ttbttbwte);
-                    resultWithDups.Add(ttbttbttb);
+            String wtettbbtf = this.GetCubePatternMirrorBackToFront(wtettb);
+            String wtettbwte = this.GetCubePatternMirrorWestToEast(wtettb);
+            String wtettbttb = this.GetCubePatternMirrorTopToBottom(wtettb);
 
 
+            String ttbbtfbtf = this.GetCubePatternMirrorBackToFront(ttbbtf);
+            String ttbbtfwte = this.GetCubePatternMirrorWestToEast(ttbbtf);
+            String ttbbtfttb = this.GetCubePatternMirrorTopToBottom(ttbbtf);
 
-                }
-            }
+            String ttbwtebtf = this.GetCubePatternMirrorBackToFront(ttbwte);
+            String ttbwtewte = this.GetCubePatternMirrorWestToEast(ttbwte);
+            String ttbwtettb = this.GetCubePatternMirrorTopToBottom(ttbwte);
+
+            String ttbttbbtf = this.GetCubePatternMirrorBackToFront(ttbttb);
+            String ttbttbwte = this.GetCubePatternMirrorWestToEast(ttbttb);
+            String ttbttbttb = this.GetCubePatternMirrorTopToBottom(ttbttb);
+
+
+            resultWithDups.Add(btfbtfbtf);
+            resultWithDups.Add(btfbtfwte);
+            resultWithDups.Add(btfbtfttb);
+
+            resultWithDups.Add(btfwtebtf);
+            resultWithDups.Add(btfwtewte);
+            resultWithDups.Add(btfwtettb);
+
+            resultWithDups.Add(btfttbbtf);
+            resultWithDups.Add(btfttbwte);
+            resultWithDups.Add(btfttbttb);
+
+            resultWithDups.Add(wtebtfbtf);
+            resultWithDups.Add(wtebtfwte);
+            resultWithDups.Add(wtebtfttb);
+
+            resultWithDups.Add(wtewtebtf);
+            resultWithDups.Add(wtewtewte);
+            resultWithDups.Add(wtewtettb);
+
+            resultWithDups.Add(wtettbbtf);
+            resultWithDups.Add(wtettbwte);
+            resultWithDups.Add(wtettbttb);
+
+            resultWithDups.Add(ttbbtfbtf);
+            resultWithDups.Add(ttbbtfwte);
+            resultWithDups.Add(ttbbtfttb);
+
+            resultWithDups.Add(ttbwtebtf);
+            resultWithDups.Add(ttbwtewte);
+            resultWithDups.Add(ttbwtettb);
+
+            resultWithDups.Add(ttbttbbtf);
+            resultWithDups.Add(ttbttbwte);
+            resultWithDups.Add(ttbttbttb);
 
             String[] results = resultWithDups.Distinct().ToArray();
             return results;
         }
 
-        public String[] SwitchOutPatternComprehensive(String original)
+        //public String[] SwitchOutPatternComprehensive(String original)
+        //{
+        //    var results = new List<String>() { original };
+
+        //    String codedOriginal = original
+        //        .Replace("A", "D").Replace("B", "E").Replace("C", "F")
+        //        .Replace("X", "U").Replace("Y", "V").Replace("Z", "W");
+
+        //    var resultsRaw = new List<String>();
+
+        //    resultsRaw.Add(codedOriginal.Replace("D", "B").Replace("U", "Y").Replace("E", "A").Replace("V", "X"));
+        //    resultsRaw.Add(codedOriginal.Replace("D", "C").Replace("U", "Z").Replace("F", "A").Replace("W", "X"));
+
+        //    resultsRaw.Add(codedOriginal.Replace("E", "C").Replace("V", "Z").Replace("F", "B").Replace("W", "Y"));
+        //    resultsRaw.Add(codedOriginal.Replace("E", "A").Replace("V", "X").Replace("D", "B").Replace("U", "Y"));
+
+        //    resultsRaw.Add(codedOriginal.Replace("F", "A").Replace("W", "X").Replace("D", "C").Replace("U", "Z"));
+        //    resultsRaw.Add(codedOriginal.Replace("F", "B").Replace("W", "Y").Replace("E", "C").Replace("V", "Z"));
+
+        //    foreach (var resultRaw in resultsRaw)
+        //    {
+        //        var result = resultRaw.Replace("D", "A").Replace("E", "B").Replace("F", "C").Replace("U", "X").Replace("V", "Y").Replace("W", "Z");
+        //        this.ValidateCube(result);
+        //        results.Add(result);
+        //    }
+
+        //    return results.Distinct().ToArray();
+        //}
+
+        //public String[] ShiftPatternComprehensive(String original)
+        //{
+        //    var results = new List<String>() { original };
+
+        //    String codedOriginal = original
+        //        .Replace("A", "D").Replace("B", "E").Replace("C", "F")
+        //        .Replace("X", "U").Replace("Y", "V").Replace("Z", "W");
+
+        //    results.Add(codedOriginal.Replace("D", "B").Replace("E", "C").Replace("F", "X").Replace("U", "Y").Replace("V", "Z").Replace("W", "A"));
+        //    results.Add(codedOriginal.Replace("D", "C").Replace("E", "X").Replace("F", "Y").Replace("U", "Z").Replace("V", "A").Replace("W", "B"));
+        //    results.Add(codedOriginal.Replace("D", "X").Replace("E", "Y").Replace("F", "Z").Replace("U", "A").Replace("V", "B").Replace("W", "C"));
+        //    results.Add(codedOriginal.Replace("D", "Y").Replace("E", "Z").Replace("F", "A").Replace("U", "B").Replace("V", "C").Replace("W", "X"));
+        //    results.Add(codedOriginal.Replace("D", "Z").Replace("E", "A").Replace("F", "B").Replace("U", "C").Replace("V", "X").Replace("W", "Y"));
+
+        //    foreach (var result in results)
+        //    {
+        //        this.ValidateCube(result);
+        //    }
+
+        //    return results.Distinct().ToArray();
+        //}
+
+
+        //public String ReversePattern(String original)
+        //{
+        //    var result = original;
+        //    result = result.Replace("A", "D").Replace("B", "E").Replace("C", "F");
+        //    result = result.Replace("X", "U").Replace("Y", "V").Replace("Z", "W");
+
+        //    result = result.Replace("D", "X").Replace("E", "Y").Replace("F", "Z");
+        //    result = result.Replace("U", "A").Replace("V", "B").Replace("W", "C");
+
+        //    this.ValidateCube(result);
+
+        //    return result;
+        //}
+
+
+        public String GetCubePatternMirrorWestToEast(String original)
         {
-            var results = new List<String>() { original };
-
-            String codedOriginal = original
-                .Replace("A", "A1").Replace("B", "B1").Replace("C", "C1")
-                .Replace("a", "a1").Replace("b", "b1").Replace("c", "c1");
-
-            var resultsRaw = new List<String>();
-
-            resultsRaw.Add(codedOriginal.Replace("A1", "B").Replace("a1", "b").Replace("B1", "A").Replace("b1", "a"));
-            resultsRaw.Add(codedOriginal.Replace("A1", "C").Replace("a1", "c").Replace("C1", "A").Replace("c1", "a"));
-
-            resultsRaw.Add(codedOriginal.Replace("B1", "C").Replace("b1", "c").Replace("C1", "B").Replace("c1", "b"));
-            resultsRaw.Add(codedOriginal.Replace("B1", "A").Replace("b1", "a").Replace("A1", "B").Replace("a1", "b"));
-
-            resultsRaw.Add(codedOriginal.Replace("C1", "A").Replace("c1", "a").Replace("A1", "C").Replace("a1", "c"));
-            resultsRaw.Add(codedOriginal.Replace("C1", "B").Replace("c1", "b").Replace("B1", "C").Replace("b1", "c"));
-
-            foreach (var resultRaw in resultsRaw)
-            {
-                var result = resultRaw.Replace("A1", "A").Replace("B1", "B").Replace("C1", "C").Replace("a1", "a").Replace("b1", "b").Replace("c1", "c");
-                this.ValidateCube(result);
-                results.Add(result);
-            }
-
-            return results.Distinct().ToArray();
-        }
-
-        public String[] ShiftPatternComprehensive(String original)
-        {
-            var results = new List<String>() { original };
-
-            String codedOriginal = original
-                .Replace("A", "A1").Replace("B", "B1").Replace("C", "C1")
-                .Replace("a", "a1").Replace("b", "b1").Replace("c", "c1");
-
-            results.Add(codedOriginal.Replace("A1", "B").Replace("B1", "C").Replace("C1", "a").Replace("a1", "b").Replace("b1", "c").Replace("c1", "A"));
-            results.Add(codedOriginal.Replace("A1", "C").Replace("B1", "a").Replace("C1", "b").Replace("a1", "c").Replace("b1", "A").Replace("c1", "B"));
-            results.Add(codedOriginal.Replace("A1", "a").Replace("B1", "b").Replace("C1", "c").Replace("a1", "A").Replace("b1", "B").Replace("c1", "C"));
-            results.Add(codedOriginal.Replace("A1", "b").Replace("B1", "c").Replace("C1", "A").Replace("a1", "B").Replace("b1", "C").Replace("c1", "a"));
-            results.Add(codedOriginal.Replace("A1", "c").Replace("B1", "A").Replace("C1", "B").Replace("a1", "C").Replace("b1", "a").Replace("c1", "b"));
-
-            foreach (var result in results)
-            {
-                this.ValidateCube(result);
-            }
-
-            return results.Distinct().ToArray();
-        }
-
-
-        public String ReversePattern(String original)
-        {
-            var result = original;
-            result = result.Replace("A", "A1").Replace("B", "B1").Replace("C", "C1");
-            result = result.Replace("a", "a1").Replace("b", "b1").Replace("c", "c1");
-
-            result = result.Replace("A1", "a").Replace("B1", "b").Replace("C1", "c");
-            result = result.Replace("a1", "A").Replace("b1", "B").Replace("c1", "C");
-
-            this.ValidateCube(result);
-
-            return result;
-        }
-
-        
-        public String GetCubePatternMirrorNorthWestToEast(String original)
-        {
-            //Debug.WriteLine("GetCubePatternNorthBackToFront");
-
             var originalStickers = original.ToCharArray();
 
-            var north = $"{originalStickers[2]}{originalStickers[1]}{originalStickers[0]}";
-            north += $"{originalStickers[5]}{originalStickers[4]}{originalStickers[3]}";
-            north += $"{originalStickers[8]}{originalStickers[7]}{originalStickers[6]}";
+            String east = $"{originalStickers[(Int32)PositionTypes.WFNW]}{originalStickers[(Int32)PositionTypes.WNW]}{originalStickers[(Int32)PositionTypes.WBNW]}";
+            east += $"{originalStickers[(Int32)PositionTypes.WFW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WBW]}";
+            east += $"{originalStickers[(Int32)PositionTypes.WFSW]}{originalStickers[(Int32)PositionTypes.WSW]}{originalStickers[(Int32)PositionTypes.WBSW]}";
 
-            var south = $"{originalStickers[11]}{originalStickers[10]}{originalStickers[9]}";
-            south += $"{originalStickers[14]}{originalStickers[13]}{originalStickers[12]}";
-            south += $"{originalStickers[17]}{originalStickers[16]}{originalStickers[15]}";
+            String north = $"{originalStickers[(Int32)PositionTypes.NBNE]}{originalStickers[(Int32)PositionTypes.NBN]}{originalStickers[(Int32)PositionTypes.NBNW]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NNE]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NNW]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NFNE]}{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NFNW]}";
 
-            var front = $"{originalStickers[20]}{originalStickers[19]}{originalStickers[18]}";
-            front += $"{originalStickers[23]}{originalStickers[22]}{originalStickers[21]}";
-            front += $"{originalStickers[26]}{originalStickers[25]}{originalStickers[24]}";
+            String front = $"{originalStickers[(Int32)PositionTypes.FFNE]}{originalStickers[(Int32)PositionTypes.FFN]}{originalStickers[(Int32)PositionTypes.FFNW]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFE]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFW]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFSE]}{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FFSW]}";
 
-            var back = $"{originalStickers[29]}{originalStickers[28]}{originalStickers[27]}";
-            back += $"{originalStickers[32]}{originalStickers[31]}{originalStickers[30]}";
-            back += $"{originalStickers[35]}{originalStickers[34]}{originalStickers[33]}";
+            String west = $"{originalStickers[(Int32)PositionTypes.EBNE]}{originalStickers[(Int32)PositionTypes.ENE]}{originalStickers[(Int32)PositionTypes.EFNE]}";
+            west += $"{originalStickers[(Int32)PositionTypes.EBE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.EFE]}";
+            west += $"{originalStickers[(Int32)PositionTypes.EBSE]}{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EFSE]}";
 
-            var west = $"{originalStickers[47]}{originalStickers[46]}{originalStickers[45]}";
-            west += $"{originalStickers[50]}{originalStickers[49]}{originalStickers[48]}";
-            west += $"{originalStickers[53]}{originalStickers[52]}{originalStickers[51]}";
+            String south = $"{originalStickers[(Int32)PositionTypes.SFSE]}{originalStickers[(Int32)PositionTypes.SFS]}{originalStickers[(Int32)PositionTypes.SFSW]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SSE]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SSW]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SBSE]}{originalStickers[(Int32)PositionTypes.SBS]}{originalStickers[(Int32)PositionTypes.SBSW]}";
 
-            var east = $"{originalStickers[38]}{originalStickers[37]}{originalStickers[36]}";
-            east += $"{originalStickers[41]}{originalStickers[40]}{originalStickers[39]}";
-            east += $"{originalStickers[44]}{originalStickers[43]}{originalStickers[42]}";
+            String back = $"{originalStickers[(Int32)PositionTypes.BBNW]}{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BBNE]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBW]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBE]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBSW]}{originalStickers[(Int32)PositionTypes.BBS]}{originalStickers[(Int32)PositionTypes.BBSE]}";
 
-            var result = $"{north}{south}{front}{back}{west}{east}";
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
 
-            this.ValidateCube(result);
+            //  X->D->A
+            //  B->E->B
+            //  C->F->C
+            //  A->U->X
+            //  Y->V->Y
+            //  Z->W->Z
 
-            return result;
-        }
+            String resultRaw = notNormalized
+                .Replace("X", "D")
+                .Replace("B", "E")
+                .Replace("C", "F")
+                .Replace("A", "U")
+                .Replace("Y", "V")
+                .Replace("Z", "W");
 
-
-        public String GetCubePatternMirrorNorthBackToFront(String original)
-        {
-            //Debug.WriteLine("GetCubePatternNorthBackToFront");
-
-            var originalStickers = original.ToCharArray();
-
-            var north = $"{originalStickers[6]}{originalStickers[7]}{originalStickers[8]}";
-            north += $"{originalStickers[3]}{originalStickers[4]}{originalStickers[5]}";
-            north += $"{originalStickers[0]}{originalStickers[1]}{originalStickers[2]}";
-
-            var south = $"{originalStickers[15]}{originalStickers[16]}{originalStickers[17]}";
-            south += $"{originalStickers[12]}{originalStickers[13]}{originalStickers[14]}";
-            south += $"{originalStickers[9]}{originalStickers[10]}{originalStickers[11]}";
-
-            var front = $"{originalStickers[27]}{originalStickers[28]}{originalStickers[29]}";
-            front += $"{originalStickers[30]}{originalStickers[31]}{originalStickers[32]}";
-            front += $"{originalStickers[33]}{originalStickers[34]}{originalStickers[35]}";
-
-            var back = $"{originalStickers[18]}{originalStickers[19]}{originalStickers[20]}";
-            back += $"{originalStickers[21]}{originalStickers[22]}{originalStickers[23]}";
-            back += $"{originalStickers[24]}{originalStickers[25]}{originalStickers[26]}";
-
-            var west = $"{originalStickers[38]}{originalStickers[37]}{originalStickers[36]}";
-            west += $"{originalStickers[41]}{originalStickers[40]}{originalStickers[39]}";
-            west += $"{originalStickers[44]}{originalStickers[43]}{originalStickers[42]}";
-
-            var east = $"{originalStickers[47]}{originalStickers[46]}{originalStickers[45]}";
-            east += $"{originalStickers[50]}{originalStickers[49]}{originalStickers[48]}";
-            east += $"{originalStickers[53]}{originalStickers[52]}{originalStickers[51]}";
-
-
-            var result = $"{north}{south}{front}{back}{west}{east}";
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
 
             this.ValidateCube(result);
 
@@ -433,101 +474,175 @@ namespace RC.Logic
         }
 
 
-        public String GetCubePatternMirrorNorthTopToBottom(String original)
+        public String GetCubePatternMirrorBackToFront(String original)
         {
-            //Debug.WriteLine("GetCubePatternMirrorNorthTopToBottom");
+            Char[] originalStickers = original.ToCharArray();
 
-            var originalStickers = original.ToCharArray();
+            String east = $"{originalStickers[(Int32)PositionTypes.EBNE]}{originalStickers[(Int32)PositionTypes.ENE]}{originalStickers[(Int32)PositionTypes.EFNE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.EBE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.EFE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.EBSE]}{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EFSE]}";
 
-            var north = $"{originalStickers[15]}{originalStickers[16]}{originalStickers[17]}";
-            north += $"{originalStickers[12]}{originalStickers[13]}{originalStickers[14]}";
-            north += $"{originalStickers[9]}{originalStickers[10]}{originalStickers[11]}";
+            String north = $"{originalStickers[(Int32)PositionTypes.NFNW]}{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NFNE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NNW]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NNE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NBNW]}{originalStickers[(Int32)PositionTypes.NBN]}{originalStickers[(Int32)PositionTypes.NBNE]}";
 
-            var south = $"{originalStickers[6]}{originalStickers[7]}{originalStickers[8]}";
-            south += $"{originalStickers[3]}{originalStickers[4]}{originalStickers[5]}";
-            south += $"{originalStickers[0]}{originalStickers[1]}{originalStickers[2]}";
+            String front = $"{originalStickers[(Int32)PositionTypes.BBNW]}{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BBNE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.BBW]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.BBSW]}{originalStickers[(Int32)PositionTypes.BBS]}{originalStickers[(Int32)PositionTypes.BBSE]}";
 
-            var front = $"{originalStickers[24]}{originalStickers[25]}{originalStickers[26]}";
-            front += $"{originalStickers[21]}{originalStickers[22]}{originalStickers[23]}";
-            front += $"{originalStickers[18]}{originalStickers[19]}{originalStickers[20]}";
+            String west = $"{originalStickers[(Int32)PositionTypes.WFNW]}{originalStickers[(Int32)PositionTypes.WNW]}{originalStickers[(Int32)PositionTypes.WBNW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WFW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WBW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WFSW]}{originalStickers[(Int32)PositionTypes.WSW]}{originalStickers[(Int32)PositionTypes.WBSW]}";
 
-            var back = $"{originalStickers[33]}{originalStickers[34]}{originalStickers[35]}";
-            back += $"{originalStickers[30]}{originalStickers[31]}{originalStickers[32]}";
-            back += $"{originalStickers[27]}{originalStickers[28]}{originalStickers[29]}";
+            String south = $"{originalStickers[(Int32)PositionTypes.SBSW]}{originalStickers[(Int32)PositionTypes.SBS]}{originalStickers[(Int32)PositionTypes.SBSE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SSW]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SSE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SFSW]}{originalStickers[(Int32)PositionTypes.SFS]}{originalStickers[(Int32)PositionTypes.SFSE]}";
 
-            var west = $"{originalStickers[42]}{originalStickers[43]}{originalStickers[44]}";
-            west += $"{originalStickers[39]}{originalStickers[40]}{originalStickers[41]}";
-            west += $"{originalStickers[36]}{originalStickers[37]}{originalStickers[38]}";
+            String back = $"{originalStickers[(Int32)PositionTypes.FFNE]}{originalStickers[(Int32)PositionTypes.FFN]}{originalStickers[(Int32)PositionTypes.FFNW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.FFE]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.FFSE]}{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FFSW]}";
 
-            var east = $"{originalStickers[51]}{originalStickers[52]}{originalStickers[53]}";
-            east += $"{originalStickers[48]}{originalStickers[49]}{originalStickers[50]}";
-            east += $"{originalStickers[45]}{originalStickers[46]}{originalStickers[47]}";
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
 
+            //  A->D->A
+            //  B->E->B
+            //  Z->F->C
+            //  X->U->X
+            //  Y->V->Y
+            //  C->W->Z
 
-            var result = $"{north}{south}{front}{back}{west}{east}";
+            String resultRaw = notNormalized
+                .Replace("A", "D")
+                .Replace("B", "E")
+                .Replace("Z", "F")
+                .Replace("X", "U")
+                .Replace("Y", "V")
+                .Replace("C", "W");
+
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
 
             this.ValidateCube(result);
 
             return result;
         }
 
-        public String Normalize( String pattern)
+
+        public String GetCubePatternMirrorTopToBottom(String original)
         {
-            String resultRaw = pattern.Replace(pattern[49].ToString(), "X").Replace(pattern[40].ToString(), "x")
-                 .Replace(pattern[4].ToString(), "Y").Replace(pattern[13].ToString(), "y")
-                 .Replace(pattern[22].ToString(), "Z").Replace(pattern[31].ToString(), "z");
+            Char[] originalStickers = original.ToCharArray();
 
-            String result = resultRaw.Replace("X", "A").Replace("x", "a")
-                         .Replace("Y", "B").Replace("y", "b")
-                         .Replace("Z", "C").Replace("z", "c");
+            String east = $"{originalStickers[(Int32)PositionTypes.EFSE]}{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EBSE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.EFE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.EBE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.EFNE]}{originalStickers[(Int32)PositionTypes.ENE]}{originalStickers[(Int32)PositionTypes.EBNE]}";
 
-            //if (result[49] != 'A'
-            //    || result[40] != 'a'
-            //    || result[4] != 'B'
-            //    || result[13] != 'b'
-            //    || result[22] != 'C'
-            //    || result[31] != 'c')
-            //{
-            //    throw new Exception("Normalize FAILED");
-            //}
+            String north = $"{originalStickers[(Int32)PositionTypes.SBSW]}{originalStickers[(Int32)PositionTypes.SBS]}{originalStickers[(Int32)PositionTypes.SBSE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.SSW]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SSE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.SFSW]}{originalStickers[(Int32)PositionTypes.SFS]}{originalStickers[(Int32)PositionTypes.SFSE]}";
+
+            String front = $"{originalStickers[(Int32)PositionTypes.FFSW]}{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FFSE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFW]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFNW]}{originalStickers[(Int32)PositionTypes.FFN]}{originalStickers[(Int32)PositionTypes.FFNE]}";
+
+            String west = $"{originalStickers[(Int32)PositionTypes.WBSW]}{originalStickers[(Int32)PositionTypes.WSW]}{originalStickers[(Int32)PositionTypes.WFSW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WBW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WFW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WBNW]}{originalStickers[(Int32)PositionTypes.WNW]}{originalStickers[(Int32)PositionTypes.WFNW]}";
+
+            String south = $"{originalStickers[(Int32)PositionTypes.NFNW]}{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NFNE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.NNW]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NNE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.NBNW]}{originalStickers[(Int32)PositionTypes.NBN]}{originalStickers[(Int32)PositionTypes.NBNE]}";
+
+            String back = $"{originalStickers[(Int32)PositionTypes.BBSE]}{originalStickers[(Int32)PositionTypes.BBS]}{originalStickers[(Int32)PositionTypes.BBSW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBE]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBNE]}{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BBNW]}";
+
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
+
+            //  A->D->A
+            //  Y->E->B
+            //  C->F->C
+            //  X->U->X
+            //  B->V->Y
+            //  X->W->Z
+
+            String resultRaw = notNormalized
+                .Replace("A", "D")
+                .Replace("Y", "E")
+                .Replace("C", "F")
+                .Replace("X", "U")
+                .Replace("B", "V")
+                .Replace("X", "W");
+
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
+
+            this.ValidateCube(result);
 
             return result;
         }
-
 
         public String RotateCubePatternNorthClockwise(String original)
         {
-            //Debug.WriteLine("RotateCubePatternNorthClockwise");
+            Char[] originalStickers = original.ToCharArray();
 
-            var originalStickers = original.ToCharArray();
+            String east = $"{originalStickers[(Int32)PositionTypes.BBNE]}{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BBNW]}";
+            east += $"{originalStickers[(Int32)PositionTypes.BBE]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBW]}";
+            east += $"{originalStickers[(Int32)PositionTypes.BBSE]}{originalStickers[(Int32)PositionTypes.BBS]}{originalStickers[(Int32)PositionTypes.BBSW]}";
 
-            var north = $"{originalStickers[6]}{originalStickers[3]}{originalStickers[0]}";
-            north += $"{originalStickers[7]}{originalStickers[4]}{originalStickers[1]}";
-            north += $"{originalStickers[8]}{originalStickers[5]}{originalStickers[2]}";
+            String north = $"{originalStickers[(Int32)PositionTypes.NFNW]}{originalStickers[(Int32)PositionTypes.NNW]}{originalStickers[(Int32)PositionTypes.NBNW]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NBN]}";
+            north += $"{originalStickers[(Int32)PositionTypes.NFNE]}{originalStickers[(Int32)PositionTypes.NNE]}{originalStickers[(Int32)PositionTypes.NBNE]}";
 
-            var south = $"{originalStickers[11]}{originalStickers[14]}{originalStickers[17]}";
-            south += $"{originalStickers[10]}{originalStickers[13]}{originalStickers[16]}";
-            south += $"{originalStickers[9]}{originalStickers[12]}{originalStickers[15]}";
+            String front = $"{originalStickers[(Int32)PositionTypes.EFNE]}{originalStickers[(Int32)PositionTypes.ENE]}{originalStickers[(Int32)PositionTypes.EBNE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.EFE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.EBE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.EFSE]}{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EBSE]}";
 
-            var front = $"{originalStickers[45]}{originalStickers[46]}{originalStickers[47]}";
-            front += $"{originalStickers[48]}{originalStickers[49]}{originalStickers[50]}";
-            front += $"{originalStickers[51]}{originalStickers[52]}{originalStickers[53]}";
+            String west = $"{originalStickers[(Int32)PositionTypes.FFNW]}{originalStickers[(Int32)PositionTypes.FFN]}{originalStickers[(Int32)PositionTypes.FFNE]}";
+            west += $"{originalStickers[(Int32)PositionTypes.FFW]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFE]}";
+            west += $"{originalStickers[(Int32)PositionTypes.FFSW]}{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FFSE]}";
 
-            var back = $"{originalStickers[38]}{originalStickers[37]}{originalStickers[36]}";
-            back += $"{originalStickers[41]}{originalStickers[40]}{originalStickers[39]}";
-            back += $"{originalStickers[44]}{originalStickers[43]}{originalStickers[42]}";
+            String south = $"{originalStickers[(Int32)PositionTypes.SFSE]}{originalStickers[(Int32)PositionTypes.SSE]}{originalStickers[(Int32)PositionTypes.SBSE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SFS]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SBS]}";
+            south += $"{originalStickers[(Int32)PositionTypes.SFSW]}{originalStickers[(Int32)PositionTypes.SSW]}{originalStickers[(Int32)PositionTypes.SBSW]}";
 
-            var west = $"{originalStickers[18]}{originalStickers[19]}{originalStickers[20]}";
-            west += $"{originalStickers[21]}{originalStickers[22]}{originalStickers[23]}";
-            west += $"{originalStickers[24]}{originalStickers[25]}{originalStickers[26]}";
+            String back = $"{originalStickers[(Int32)PositionTypes.WBNW]}{originalStickers[(Int32)PositionTypes.WNW]}{originalStickers[(Int32)PositionTypes.WFNW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.WBW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WFW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.WBSW]}{originalStickers[(Int32)PositionTypes.WSW]}{originalStickers[(Int32)PositionTypes.WFSW]}";
 
-            var east = $"{originalStickers[29]}{originalStickers[28]}{originalStickers[27]}";
-            east += $"{originalStickers[32]}{originalStickers[31]}{originalStickers[30]}";
-            east += $"{originalStickers[35]}{originalStickers[34]}{originalStickers[33]}";
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
 
-            var resultRaw = $"{north}{south}{front}{back}{west}{east}";
+            //  Z->D->A
+            //  B->E->B
+            //  A->F->C
+            //  C->U->X
+            //  Y->V->Y
+            //  X->W->Z
 
-            String result = this.Normalize(original);
+            String resultRaw = notNormalized
+               .Replace("Z", "D")
+               .Replace("B", "E")
+               .Replace("A", "F")
+               .Replace("C", "U")
+               .Replace("Y", "V")
+               .Replace("X", "W");
+
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
 
             this.ValidateCube(result);
 
@@ -535,73 +650,116 @@ namespace RC.Logic
         }
         public String RotateCubePatternEastClockwise(String original)
         {
-            //Debug.WriteLine("RotateCubePatternWestClockwise");
+            Char[] originalStickers = original.ToCharArray();
 
-            var originalStickers = original.ToCharArray();
+            String east = $"{originalStickers[(Int32)PositionTypes.EFSE]}{originalStickers[(Int32)PositionTypes.EFE]}{originalStickers[(Int32)PositionTypes.EFNE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.ENE]}";
+            east += $"{originalStickers[(Int32)PositionTypes.EBSE]}{originalStickers[(Int32)PositionTypes.EBE]}{originalStickers[(Int32)PositionTypes.EBNE]}";
 
-            var north = $"{originalStickers[18]}{originalStickers[19]}{originalStickers[20]}";
-            north += $"{originalStickers[21]}{originalStickers[22]}{originalStickers[23]}";
-            north += $"{originalStickers[24]}{originalStickers[25]}{originalStickers[26]}";
+            String north = $"{originalStickers[(Int32)PositionTypes.FFNW]}{originalStickers[(Int32)PositionTypes.FFN]}{originalStickers[(Int32)PositionTypes.FFNE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.FFW]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFE]}";
+            north += $"{originalStickers[(Int32)PositionTypes.FFSW]}{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FFSE]}";
 
-            var south = $"{originalStickers[33]}{originalStickers[34]}{originalStickers[35]}";
-            south += $"{originalStickers[30]}{originalStickers[31]}{originalStickers[32]}";
-            south += $"{originalStickers[27]}{originalStickers[28]}{originalStickers[29]}";
+            String front = $"{originalStickers[(Int32)PositionTypes.SFSW]}{originalStickers[(Int32)PositionTypes.SFS]}{originalStickers[(Int32)PositionTypes.SFSE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.SSW]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SSE]}";
+            front += $"{originalStickers[(Int32)PositionTypes.SBSW]}{originalStickers[(Int32)PositionTypes.SBS]}{originalStickers[(Int32)PositionTypes.SBSE]}";
 
-            var front = $"{originalStickers[9]}{originalStickers[10]}{originalStickers[11]}";
-            front += $"{originalStickers[12]}{originalStickers[13]}{originalStickers[14]}";
-            front += $"{originalStickers[15]}{originalStickers[16]}{originalStickers[17]}";
+            String west = $"{originalStickers[(Int32)PositionTypes.WFNW]}{originalStickers[(Int32)PositionTypes.WFW]}{originalStickers[(Int32)PositionTypes.WFSW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WNW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WSW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.WBNW]}{originalStickers[(Int32)PositionTypes.WBW]}{originalStickers[(Int32)PositionTypes.WBSW]}";
 
-            var back = $"{originalStickers[6]}{originalStickers[7]}{originalStickers[8]}";
-            back += $"{originalStickers[3]}{originalStickers[4]}{originalStickers[5]}";
-            back += $"{originalStickers[0]}{originalStickers[1]}{originalStickers[2]}";
+            String south = $"{originalStickers[(Int32)PositionTypes.BBSW]}{originalStickers[(Int32)PositionTypes.BBS]}{originalStickers[(Int32)PositionTypes.BBSE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.BBW]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.BBNW]}{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BBNE]}";
 
-            var west = $"{originalStickers[38]}{originalStickers[41]}{originalStickers[44]}";
-            west += $"{originalStickers[37]}{originalStickers[40]}{originalStickers[43]}";
-            west += $"{originalStickers[36]}{originalStickers[39]}{originalStickers[42]}";
+            String back = $"{originalStickers[(Int32)PositionTypes.NFNE]}{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NFNW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.NNE]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NNW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.NBNE]}{originalStickers[(Int32)PositionTypes.NBN]}{originalStickers[(Int32)PositionTypes.NBNW]}";
 
-            var east = $"{originalStickers[51]}{originalStickers[48]}{originalStickers[45]}";
-            east += $"{originalStickers[52]}{originalStickers[49]}{originalStickers[46]}";
-            east += $"{originalStickers[53]}{originalStickers[50]}{originalStickers[47]}";
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
 
+            //  A->D->A
+            //  C->E->B
+            //  Y->F->C
+            //  X->U->X
+            //  Z->V->Y
+            //  B->W->Z
 
-            var result = $"{north}{south}{front}{back}{west}{east}";
+            String resultRaw = notNormalized
+               .Replace("A", "D")
+               .Replace("C", "E")
+               .Replace("Y", "F")
+               .Replace("X", "U")
+               .Replace("Z", "V")
+               .Replace("B", "W");
+
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
 
             this.ValidateCube(result);
 
             return result;
         }
+
         public String RotateCubePatternFrontClockwise(String original)
         {
-            //Debug.WriteLine("RotateCubePatternFrontClockwise");
+            Char[] originalStickers = original.ToCharArray();
 
-            var originalStickers = original.ToCharArray();
+            String east = $"{originalStickers[(Int32)PositionTypes.NFNW]}{originalStickers[(Int32)PositionTypes.NNW]}{originalStickers[(Int32)PositionTypes.NBNW]}";
+            east += $"{originalStickers[(Int32)PositionTypes.NFN]}{originalStickers[(Int32)PositionTypes.NN]}{originalStickers[(Int32)PositionTypes.NBN]}";
+            east += $"{originalStickers[(Int32)PositionTypes.NFNE]}{originalStickers[(Int32)PositionTypes.NNE]}{originalStickers[(Int32)PositionTypes.NBNE]}";
 
-           var north = $"{originalStickers[42]}{originalStickers[39]}{originalStickers[36]}";
-            north += $"{originalStickers[43]}{originalStickers[40]}{originalStickers[37]}";
-            north += $"{originalStickers[44]}{originalStickers[41]}{originalStickers[38]}";
+            String north = $"{originalStickers[(Int32)PositionTypes.WBSW]}{originalStickers[(Int32)PositionTypes.WBW]}{originalStickers[(Int32)PositionTypes.WBNW]}";
+            north += $"{originalStickers[(Int32)PositionTypes.WSW]}{originalStickers[(Int32)PositionTypes.WW]}{originalStickers[(Int32)PositionTypes.WNW]}";
+            north += $"{originalStickers[(Int32)PositionTypes.WFSW]}{originalStickers[(Int32)PositionTypes.WFW]}{originalStickers[(Int32)PositionTypes.WFNW]}";
 
-            var south = $"{originalStickers[51]}{originalStickers[48]}{originalStickers[45]}";
-            south += $"{originalStickers[52]}{originalStickers[49]}{originalStickers[46]}";
-            south += $"{originalStickers[53]}{originalStickers[50]}{originalStickers[47]}";
+            String front = $"{originalStickers[(Int32)PositionTypes.FFSW]}{originalStickers[(Int32)PositionTypes.FFW]}{originalStickers[(Int32)PositionTypes.FFNW]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFS]}{originalStickers[(Int32)PositionTypes.FF]}{originalStickers[(Int32)PositionTypes.FFN]}";
+            front += $"{originalStickers[(Int32)PositionTypes.FFSE]}{originalStickers[(Int32)PositionTypes.FFE]}{originalStickers[(Int32)PositionTypes.FFNE]}";
 
-            var front = $"{originalStickers[24]}{originalStickers[21]}{originalStickers[18]}";
-            front += $"{originalStickers[25]}{originalStickers[22]}{originalStickers[19]}";
-            front += $"{originalStickers[26]}{originalStickers[23]}{originalStickers[20]}";
+            String west = $"{originalStickers[(Int32)PositionTypes.SBSW]}{originalStickers[(Int32)PositionTypes.SSW]}{originalStickers[(Int32)PositionTypes.SFSW]}";
+            west += $"{originalStickers[(Int32)PositionTypes.SBS]}{originalStickers[(Int32)PositionTypes.SS]}{originalStickers[(Int32)PositionTypes.SFS]}";
+            west += $"{originalStickers[(Int32)PositionTypes.SBSE]}{originalStickers[(Int32)PositionTypes.SSE]}{originalStickers[(Int32)PositionTypes.SFSE]}";
 
-            var back = $"{originalStickers[33]}{originalStickers[30]}{originalStickers[27]}";
-            back += $"{originalStickers[34]}{originalStickers[31]}{originalStickers[28]}";
-            back += $"{originalStickers[35]}{originalStickers[32]}{originalStickers[29]}";
+            String south = $"{originalStickers[(Int32)PositionTypes.EFSE]}{originalStickers[(Int32)PositionTypes.EFE]}{originalStickers[(Int32)PositionTypes.EFNE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.ESE]}{originalStickers[(Int32)PositionTypes.EE]}{originalStickers[(Int32)PositionTypes.ENE]}";
+            south += $"{originalStickers[(Int32)PositionTypes.EBSE]}{originalStickers[(Int32)PositionTypes.EBE]}{originalStickers[(Int32)PositionTypes.EBNE]}";
 
-            var west = $"{originalStickers[15]}{originalStickers[12]}{originalStickers[9]}";
-            west += $"{originalStickers[16]}{originalStickers[13]}{originalStickers[10]}";
-            west += $"{originalStickers[17]}{originalStickers[14]}{originalStickers[11]}";
+            String back = $"{originalStickers[(Int32)PositionTypes.BBNW]}{originalStickers[(Int32)PositionTypes.BBW]}{originalStickers[(Int32)PositionTypes.BBSW]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBN]}{originalStickers[(Int32)PositionTypes.BB]}{originalStickers[(Int32)PositionTypes.BBS]}";
+            back += $"{originalStickers[(Int32)PositionTypes.BBNE]}{originalStickers[(Int32)PositionTypes.BBE]}{originalStickers[(Int32)PositionTypes.BBSE]}";
 
-            var east = $"{originalStickers[6]}{originalStickers[3]}{originalStickers[0]}";
-            east += $"{originalStickers[7]}{originalStickers[4]}{originalStickers[1]}";
-            east += $"{originalStickers[8]}{originalStickers[5]}{originalStickers[2]}";
+            String notNormalized = $"{east}{north}{front}{west}{south}{back}";
+
+            //  B->D->A
+            //  X->E->B
+            //  C->F->C
+            //  Y->U->X
+            //  A->V->Y
+            //  Z->W->Z
+
+            String resultRaw = notNormalized
+               .Replace("B", "D")
+               .Replace("X", "E")
+               .Replace("C", "F")
+               .Replace("Y", "U")
+               .Replace("A", "V")
+               .Replace("Z", "W");
+
+            String result = resultRaw
+                .Replace("D", "A")
+                .Replace("E", "B")
+                .Replace("F", "C")
+                .Replace("U", "X")
+                .Replace("V", "Y")
+                .Replace("W", "Z");
 
 
-            var result = $"{north}{south}{front}{back}{west}{east}";
 
             this.ValidateCube(result);
 
@@ -613,6 +771,8 @@ namespace RC.Logic
 
         public void ValidateCube(String pattern)
         {
+            //Debug.Write(this.Visualize(pattern));
+
             this.ValidateStickerCount(pattern);
             this.ValidateMiddleStickers(pattern);
             this.ValidateAdjacentStickersAreValid(pattern);
@@ -621,7 +781,7 @@ namespace RC.Logic
         public Boolean IsCubeValid(String pattern)
         {
             if (!this.IsStickerCountValid(pattern)
-                ||this.AreMiddleStickersValid(pattern))
+                || this.AreMiddleStickersValid(pattern))
             {
                 this.ValidateAdjacentStickersAreValid(pattern);
                 return true;
@@ -645,9 +805,9 @@ namespace RC.Logic
             if (pattern.ToArray().Count(x => x == 'A') != 9
                     || pattern.ToArray().Count(x => x == 'B') != 9
                     || pattern.ToArray().Count(x => x == 'C') != 9
-                    || pattern.ToArray().Count(x => x == 'a') != 9
-                    || pattern.ToArray().Count(x => x == 'b') != 9
-                    || pattern.ToArray().Count(x => x == 'c') != 9)
+                    || pattern.ToArray().Count(x => x == 'X') != 9
+                    || pattern.ToArray().Count(x => x == 'Y') != 9
+                    || pattern.ToArray().Count(x => x == 'Z') != 9)
             {
                 return false;
             }
@@ -665,187 +825,24 @@ namespace RC.Logic
 
         public Boolean AreMiddleStickersValid(String pattern)
         {
-            String[] upperPattern = pattern.ToCharArray().Select(x => x.ToString().ToUpper()).ToArray();
-            if (upperPattern[49] != upperPattern[40])
+            String[] upperPattern = pattern.ToCharArray().Select(x => x.ToString().Replace('X', 'A').Replace('Y', 'B').Replace('Z', 'C')).ToArray();
+
+            if (upperPattern[4] != upperPattern[31])
             {
                 return false;
             }
-            else if (upperPattern[4] != upperPattern[13])
+            else if (upperPattern[13] != upperPattern[40])
             {
                 return false;
             }
-            else if (upperPattern[22] != upperPattern[31])
+            else if (upperPattern[22] != upperPattern[49])
             {
                 return false;
             }
 
             return true;
         }
-      
-        public void ValidateAdjacentStickersAreValid(String pattern)
-        {
-            String[] upperPattern = pattern.ToCharArray().Select(x => x.ToString().ToUpper()).ToArray();
-            if (upperPattern[0] == upperPattern[27])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[1] == upperPattern[28])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[2] == upperPattern[29])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
 
-
-            if (upperPattern[2] == upperPattern[47])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[5] == upperPattern[46])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[8] == upperPattern[45])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-
-            if (upperPattern[6] == upperPattern[18])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[7] == upperPattern[19])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[8] == upperPattern[20])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-
-            if (upperPattern[0] == upperPattern[36])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[3] == upperPattern[37])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[6] == upperPattern[38])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-
-            if (upperPattern[20] == upperPattern[45])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[23] == upperPattern[48])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[26] == upperPattern[51])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[24] == upperPattern[9])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[25] == upperPattern[10])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[26] == upperPattern[11])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[18] == upperPattern[38])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[21] == upperPattern[41])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[24] == upperPattern[44])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[47] == upperPattern[29])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[50] == upperPattern[32])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[53] == upperPattern[35])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[51] == upperPattern[11])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[52] == upperPattern[14])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[53] == upperPattern[17])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-
-            if (upperPattern[27] == upperPattern[36])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[30] == upperPattern[39])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[33] == upperPattern[42])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[33] == upperPattern[15])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[34] == upperPattern[16])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[35] == upperPattern[17])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-
-            if (upperPattern[42] == upperPattern[15])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[43] == upperPattern[12])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-            else if (upperPattern[44] == upperPattern[9])
-            {
-               throw new Exception($"ValidateCube ValidateAdjacentStickers FAILED"); 
-            }
-        }
 
         #endregion
 

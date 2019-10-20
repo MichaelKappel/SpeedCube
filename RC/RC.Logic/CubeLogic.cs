@@ -16,35 +16,42 @@ namespace RC.Logic
 
         /// <summary>
         /// 
-        ///                          [B  0] [B  1] [B  2]
+        ///                          [B  9] [B 10] [B 11]
         ///                          [BNW ] [ BN ] [ BNE]
-
-        ///                          [B  3] [B  4] [B  5]
+        ///
+        ///                          [B 12] [B 13] [B 14]
         ///                          [NW  ] [  N ] [  NE]
-
-        ///                          [B  6] [B  7] [B  8]
+        ///
+        ///                          [B 15] [B 16] [B 17]
         ///                          [FNW ] [ FN ] [ FNE]
-
-
-        ///  [a 36] [a 37] [a 38]    [C 18] [C 19] [C 20]       [A 45] [A 46] [A 47]    [c 27] [c 28] [c 29]
-        ///  [BNW ] [ NW ] [ FNW]    [FNW ] [ FN ] [ FNE]       [FNE ] [ NE ] [ BNE]    [BNW ] [ BN ] [ BNE]
-
-        ///  [a 39] [a 40] [a 41]    [C 21] [C 22] [C 23]       [A 48] [A 49] [A 50]    [c 30] [c 31] [c 32]
-        ///  [BW  ] [  W ] [  FW]    [FW  ] [  F ] [  FE]       [FE  ] [  E ] [  BE]    [BW  ] [  B ] [  BE]
-
-        ///  [a 42] [a 43] [a 44]    [C 24] [C 25] [C 26]       [A 51] [A 52] [A 53]    [c 33] [c 34] [c 35]
-        ///  [BSW ] [ SW ] [ FSW]    [FSW ] [ FS ] [ FSE]       [FSE ] [ SE ] [ BSE]    [BSW ] [ BS ] [ BSE]
-
-
-        ///                          [b  9] [b 10] [b 11]
+        ///
+        ///
+        ///  [X 27] [X 28] [X 29]    [C 18] [C 19] [C 20]       [A  0] [A  1] [A  2]    [Z 45] [Z 46] [Z 47]
+        ///  [BNW ] [ NW ] [ FNW]    [FNW ] [ FN ] [ FNE]       [FNE ] [ NE ] [ BNE]    [BNE ] [ BN ] [ BNW]
+        ///
+        ///  [X 30] [X 31] [X 32]    [C 21] [C 22] [C 23]       [A  3] [A  4] [A  5]    [Z 48] [Z 49] [Z 50]
+        ///  [BW  ] [  W ] [  FW]    [FW  ] [  F ] [  FE]       [FE  ] [  E ] [  BE]    [BE  ] [  B ] [  BW]
+        ///
+        ///  [X 33] [X 34] [X 35]    [C 24] [C 25] [C 26]       [A  6] [A  7] [A  8]    [Z 51] [Z 52] [Z 53]
+        ///  [BSW ] [ SW ] [ FSW]    [FSW ] [ FS ] [ FSE]       [FSE ] [ SE ] [ BSE]    [BSE ] [ BS ] [ BSW]
+        ///
+        ///
+        ///                          [Y 36] [Y 37] [Y 38]
         ///                          [FSW ] [ FS ] [ FSE]
-
-        ///                          [b 12] [b 13] [b 14]
+        ///
+        ///                          [Y 39] [Y 40] [Y 41]
         ///                          [SW  ] [  S ] [  SE]
-
-        ///                          [b 15] [b 16] [b 17]
+        ///
+        ///                          [Y 42] [Y 43] [Y 44]
         ///                          [BSW ] [ BS ] [ BSE]
-
+        ///
+        //  FNE, NE, BNE, FE, E, BE, FSE, SE, BSW
+        //  BNW, BN, BNE, NW, N, NE, FNW, FN, FNE
+        //  FNW, FN, FNE, FW, F, FE, FSW, FS, FSE
+        //  BNW, NW, FNW, BW, W, FW, BSW, SW, FSW
+        //  FSW, FS, FSE, SW, S, SE, BSW, BS, BSE
+        //  BNE, BE, BNW, BE, B, BW, BSE, BS, BSW
+        ///
         /// </summary>
         public CubeLogic()
         {
@@ -138,31 +145,33 @@ namespace RC.Logic
             this.VerifyPieceInSlot(cube.BackNorthWest);
         }
 
-        public (String, StickerColorTypes) ParseSticker(String rawSticker)
+        public (PositionTypes, StickerColorTypes) ParseSticker(String rawSticker)
         {
             String[] rawStickerArr = rawSticker.Split(':');
-            String key = rawStickerArr[0];
+            PositionTypes key = (PositionTypes)Enum.Parse(typeof(PositionTypes), rawStickerArr[0]);
             StickerColorTypes value = GetStickerColorType(rawStickerArr[1]);
 
             return (key, value);
         }
 
-        public Dictionary<String, StickerColorTypes> ParseStickers(String rawCubeState)
+        public Dictionary<PositionTypes, StickerColorTypes> ParseStickers(String rawCubeState)
         {
-            var results = new Dictionary<String, StickerColorTypes>();
-            String[] prefixs = new string[6] { "N", "S", "F", "B", "W", "E" };
+            var results = new Dictionary<PositionTypes, StickerColorTypes>();
             String[] cubeSides = rawCubeState.Split(',');
             for (var i = 0; i < 6; i++)
             {
-                String prefix = prefixs[i];
                 String[] stickers = cubeSides[i].Split('|');
                 foreach (String sticker in stickers)
                 {
-                    String key;
+                    PositionTypes key;
                     StickerColorTypes value;
                     (key, value) = this.ParseSticker(sticker);
-                    results.Add(prefix + key, value);
+                    results.Add(key, value);
                 }
+            }
+            if (!results.ContainsKey(PositionTypes.EE) || !results.ContainsKey(PositionTypes.NN) || !results.ContainsKey(PositionTypes.FF) || !results.ContainsKey(PositionTypes.WW) || !results.ContainsKey(PositionTypes.SS) || !results.ContainsKey(PositionTypes.BB))
+            {
+                throw new Exception("Invalid ParseStickers");
             }
             return results;
         }
@@ -207,54 +216,54 @@ namespace RC.Logic
         }
 
         #region Set Middles
-        public void SetFrontSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontModel slot)
+        public void SetFrontSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FF"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FF];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front) == 1);
 
             slot.StickerFront = slot.Piece.Stickers.Single(x => x.StickerColorType == front);
         }
 
-        public void SetBackSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackModel slot)
+        public void SetBackSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BB"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BB];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back) == 1);
 
             slot.StickerBack = slot.Piece.Stickers.Single(x => x.StickerColorType == back);
         }
 
-        public void SetWestSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotWestModel slot)
+        public void SetWestSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotWestModel slot)
         {
-            StickerColorTypes west = stickerDictionary["WW"];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WW];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == west) == 1);
 
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
 
-        public void SetEastSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotEastModel slot)
+        public void SetEastSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotEastModel slot)
         {
-            StickerColorTypes east = stickerDictionary["EE"];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EE];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == east) == 1);
 
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
 
-        public void SetNorthSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotNorthModel slot)
+        public void SetNorthSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotNorthModel slot)
         {
-            StickerColorTypes north = stickerDictionary["NN"];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NN];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == north) == 1);
 
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
         }
 
-        public void SetSouthSlot(IList<PieceMiddleModelBase> middles, Dictionary<String, StickerColorTypes> stickerDictionary, SlotSouthModel slot)
+        public void SetSouthSlot(IList<PieceMiddleModelBase> middles, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotSouthModel slot)
         {
-            StickerColorTypes south = stickerDictionary["SS"];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SS];
 
             slot.Piece = middles.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == south) == 1);
 
@@ -270,11 +279,11 @@ namespace RC.Logic
         //slot.Piece = corners.Single(x => x.GetNorthStickerColorType() == north || x.GetFrontStickerColorType() == front || x.GetFrontStickerColorType() == west) == 3);
 
 
-        public void SetFrontNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontNorthWestModel slot)
+        public void SetFrontNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontNorthWestModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFNW"];
-            StickerColorTypes north = stickerDictionary["NFNW"];
-            StickerColorTypes west = stickerDictionary["WFNW"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFNW];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NFNW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WFNW];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north || x2.StickerColorType == west) == 3);
 
@@ -282,11 +291,11 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
-        public void SetFrontNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontNorthEastModel slot)
+        public void SetFrontNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontNorthEastModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFNE"];
-            StickerColorTypes north = stickerDictionary["NFNE"];
-            StickerColorTypes east = stickerDictionary["EFNE"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFNE];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NFNE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EFNE];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north || x2.StickerColorType == east) == 3);
 
@@ -294,11 +303,11 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
-        public void SetFrontSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthEastModel slot)
+        public void SetFrontSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontSouthEastModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFSE"];
-            StickerColorTypes south = stickerDictionary["SFSE"];
-            StickerColorTypes east = stickerDictionary["EFSE"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFSE];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SFSE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EFSE];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south || x2.StickerColorType == east) == 3);
 
@@ -306,11 +315,11 @@ namespace RC.Logic
             slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
-        public void SetFrontSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthWestModel slot)
+        public void SetFrontSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontSouthWestModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFSW"];
-            StickerColorTypes south = stickerDictionary["SFSW"];
-            StickerColorTypes west = stickerDictionary["WFSW"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFSW];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SFSW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WFSW];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south || x2.StickerColorType == west) == 3);
 
@@ -319,11 +328,11 @@ namespace RC.Logic
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
 
-        public void SetBackNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthWestModel slot)
+        public void SetBackNorthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackNorthWestModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBNW"];
-            StickerColorTypes north = stickerDictionary["NBNW"];
-            StickerColorTypes west = stickerDictionary["WBNW"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBNW];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NBNW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WBNW];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north || x2.StickerColorType == west) == 3);
 
@@ -331,11 +340,11 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
-        public void SetBackNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthEastModel slot)
+        public void SetBackNorthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackNorthEastModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBNE"];
-            StickerColorTypes north = stickerDictionary["NBNE"];
-            StickerColorTypes east = stickerDictionary["EBNE"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBNE];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NBNE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EBNE];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north || x2.StickerColorType == east) == 3);
 
@@ -343,11 +352,11 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
-        public void SetBackSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthEastModel slot)
+        public void SetBackSouthEastSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackSouthEastModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBSE"];
-            StickerColorTypes south = stickerDictionary["SBSE"];
-            StickerColorTypes east = stickerDictionary["EBSE"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBSE];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SBSE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EBSE];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south || x2.StickerColorType == east) == 3);
 
@@ -355,11 +364,11 @@ namespace RC.Logic
             slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
-        public void SetBackSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthWestModel slot)
+        public void SetBackSouthWestSlot(IList<PieceCornerModelBase> corners, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackSouthWestModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBSW"];
-            StickerColorTypes south = stickerDictionary["SBSW"];
-            StickerColorTypes west = stickerDictionary["WBSW"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBSW];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SBSW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WBSW];
 
             slot.Piece = corners.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south || x2.StickerColorType == west) == 3);
 
@@ -371,10 +380,10 @@ namespace RC.Logic
 
         #region Set Sides
 
-        public void SetFrontNorthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontNorthModel slot)
+        public void SetFrontNorthSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontNorthModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFN"];
-            StickerColorTypes north = stickerDictionary["NFN"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFN];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NFN];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == north) == 2);
 
@@ -382,10 +391,10 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
         }
 
-        public void SetFrontEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontEastModel slot)
+        public void SetFrontEastSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontEastModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFE"];
-            StickerColorTypes east = stickerDictionary["EFE"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EFE];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == east) == 2);
 
@@ -393,10 +402,10 @@ namespace RC.Logic
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
 
-        public void SetFrontSouthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontSouthModel slot)
+        public void SetFrontSouthSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontSouthModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFS"];
-            StickerColorTypes south = stickerDictionary["SFS"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFS];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SFS];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == south) == 2);
 
@@ -404,10 +413,10 @@ namespace RC.Logic
             slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
         }
 
-        public void SetFrontWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotFrontWestModel slot)
+        public void SetFrontWestSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotFrontWestModel slot)
         {
-            StickerColorTypes front = stickerDictionary["FFW"];
-            StickerColorTypes west = stickerDictionary["WFW"];
+            StickerColorTypes front = stickerDictionary[PositionTypes.FFW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WFW];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == front || x2.StickerColorType == west) == 2);
 
@@ -415,10 +424,10 @@ namespace RC.Logic
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
 
-        public void SetBackNorthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackNorthModel slot)
+        public void SetBackNorthSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackNorthModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBN"];
-            StickerColorTypes north = stickerDictionary["NBN"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBN];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NBN];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == north) == 2);
 
@@ -426,10 +435,10 @@ namespace RC.Logic
             slot.StickerNorth = slot.Piece.Stickers.Single(x => x.StickerColorType == north);
         }
 
-        public void SetBackEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackEastModel slot)
+        public void SetBackEastSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackEastModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBE"];
-            StickerColorTypes east = stickerDictionary["EBE"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.EBE];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == east) == 2);
 
@@ -437,10 +446,10 @@ namespace RC.Logic
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
 
-        public void SetBackSouthSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackSouthModel slot)
+        public void SetBackSouthSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackSouthModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBS"];
-            StickerColorTypes south = stickerDictionary["SBS"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBS];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SBS];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == south) == 2);
 
@@ -448,10 +457,10 @@ namespace RC.Logic
             slot.StickerSouth = slot.Piece.Stickers.Single(x => x.StickerColorType == south);
         }
 
-        public void SetBackWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotBackWestModel slot)
+        public void SetBackWestSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotBackWestModel slot)
         {
-            StickerColorTypes back = stickerDictionary["BBW"];
-            StickerColorTypes west = stickerDictionary["WBW"];
+            StickerColorTypes back = stickerDictionary[PositionTypes.BBW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WBW];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == back || x2.StickerColorType == west) == 2);
 
@@ -459,10 +468,10 @@ namespace RC.Logic
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
 
-        public void SetNorthEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotNorthEastModel slot)
+        public void SetNorthEastSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotNorthEastModel slot)
         {
-            StickerColorTypes north = stickerDictionary["NNE"];
-            StickerColorTypes east = stickerDictionary["ENE"];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NNE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.ENE];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == north || x2.StickerColorType == east) == 2);
 
@@ -470,10 +479,10 @@ namespace RC.Logic
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
 
-        public void SetSouthEastSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotSouthEastModel slot)
+        public void SetSouthEastSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotSouthEastModel slot)
         {
-            StickerColorTypes south = stickerDictionary["SSE"];
-            StickerColorTypes east = stickerDictionary["ESE"];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SSE];
+            StickerColorTypes east = stickerDictionary[PositionTypes.ESE];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == south || x2.StickerColorType == east) == 2);
 
@@ -481,10 +490,10 @@ namespace RC.Logic
             slot.StickerEast = slot.Piece.Stickers.Single(x => x.StickerColorType == east);
         }
 
-        public void SetSouthWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotSouthWestModel slot)
+        public void SetSouthWestSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotSouthWestModel slot)
         {
-            StickerColorTypes south = stickerDictionary["SSW"];
-            StickerColorTypes west = stickerDictionary["WSW"];
+            StickerColorTypes south = stickerDictionary[PositionTypes.SSW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WSW];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == south || x2.StickerColorType == west) == 2);
 
@@ -492,10 +501,10 @@ namespace RC.Logic
             slot.StickerWest = slot.Piece.Stickers.Single(x => x.StickerColorType == west);
         }
 
-        public void SetNorthWestSlot(IList<PieceSideModelBase> sides, Dictionary<String, StickerColorTypes> stickerDictionary, SlotNorthWestModel slot)
+        public void SetNorthWestSlot(IList<PieceSideModelBase> sides, Dictionary<PositionTypes, StickerColorTypes> stickerDictionary, SlotNorthWestModel slot)
         {
-            StickerColorTypes north = stickerDictionary["NNW"];
-            StickerColorTypes west = stickerDictionary["WNW"];
+            StickerColorTypes north = stickerDictionary[PositionTypes.NNW];
+            StickerColorTypes west = stickerDictionary[PositionTypes.WNW];
 
             slot.Piece = sides.Single(x => x.Stickers.Count(x2 => x2.StickerColorType == north || x2.StickerColorType == west) == 2);
 
@@ -549,20 +558,20 @@ namespace RC.Logic
                 patternWithColor = pattern;
             }
 
-            String north = $"BNW:{ patternWithColor[0]}|BN:{patternWithColor[1]}|BNE:{ patternWithColor[2]}|NW:{ patternWithColor[3]}|N:{ patternWithColor[4]}|NE:{ patternWithColor[5]}|FNW:{ patternWithColor[6]}|FN:{ patternWithColor[7]}|FNE:{ patternWithColor[8]}";
-            String south = $"FSW:{ patternWithColor[9]}|FS:{patternWithColor[10]}|FSE:{ patternWithColor[11]}|SW:{ patternWithColor[12]}|S:{ patternWithColor[13]}|SE:{ patternWithColor[14]}|BSW:{ patternWithColor[15]}|BS:{ patternWithColor[16]}|BSE:{ patternWithColor[17]}";
-            String front = $"FNW:{ patternWithColor[18]}|FN:{patternWithColor[19]}|FNE:{ patternWithColor[20]}|FW:{ patternWithColor[21]}|F:{ patternWithColor[22]}|FE:{ patternWithColor[23]}|FSW:{ patternWithColor[24]}|FS:{ patternWithColor[25]}|FSE:{ patternWithColor[26]}";
-            String back = $"BNW:{ patternWithColor[27]}|BN:{patternWithColor[28]}|BNE:{ patternWithColor[29]}|BW:{ patternWithColor[30]}|B:{ patternWithColor[31]}|BE:{ patternWithColor[32]}|BSW:{ patternWithColor[33]}|BS:{ patternWithColor[34]}|BSE:{ patternWithColor[35]}";
-            String west = $"BNW:{ patternWithColor[36]}|NW:{patternWithColor[37]}|FNW:{ patternWithColor[38]}|BW:{ patternWithColor[39]}|W:{ patternWithColor[40]}|FW:{ patternWithColor[41]}|BSW:{ patternWithColor[42]}|SW:{ patternWithColor[43]}|FSW:{ patternWithColor[44]}";
-            String east = $"FNE:{ patternWithColor[45]}|NE:{patternWithColor[46]}|BNE:{ patternWithColor[47]}|FE:{ patternWithColor[48]}|E:{ patternWithColor[49]}|BE:{ patternWithColor[50]}|FSE:{ patternWithColor[51]}|SE:{ patternWithColor[52]}|BSE:{ patternWithColor[53]}";
-
-            String detailedCubeState = $"{north},{south},{front},{back},{west},{east}";
+            String east = $"{PositionTypes.EFNE}:{ patternWithColor[(Int32)PositionTypes.EFNE]}|{PositionTypes.ENE}:{patternWithColor[(Int32)PositionTypes.ENE]}|{PositionTypes.EBNE}:{ patternWithColor[(Int32)PositionTypes.EBNE]}|{PositionTypes.EFE}:{ patternWithColor[(Int32)PositionTypes.EFE]}|{PositionTypes.EE}:{ patternWithColor[(Int32)PositionTypes.EE]}|{PositionTypes.EBE}:{ patternWithColor[(Int32)PositionTypes.EBE]}|{PositionTypes.EFSE}:{ patternWithColor[(Int32)PositionTypes.EFSE]}|{PositionTypes.ESE}:{ patternWithColor[(Int32)PositionTypes.ESE]}|{PositionTypes.EBSE}:{ patternWithColor[(Int32)PositionTypes.EBSE]}";
+            String north = $"{PositionTypes.NBNW}:{ patternWithColor[(Int32)PositionTypes.NBNW]}|{PositionTypes.NBN}:{patternWithColor[(Int32)PositionTypes.NBN]}|{PositionTypes.NBNE}:{ patternWithColor[(Int32)PositionTypes.NBNE]}|{PositionTypes.NNW}:{ patternWithColor[(Int32)PositionTypes.NNW]}|{PositionTypes.NN}:{ patternWithColor[(Int32)PositionTypes.NN]}|{PositionTypes.NNE}:{ patternWithColor[(Int32)PositionTypes.NNE]}|{PositionTypes.NFNW}:{ patternWithColor[(Int32)PositionTypes.NFNW]}|{PositionTypes.NFN}:{ patternWithColor[(Int32)PositionTypes.NFN]}|{PositionTypes.NFNE}:{ patternWithColor[(Int32)PositionTypes.NFNE]}";
+            String front = $"{PositionTypes.FFNW}:{ patternWithColor[(Int32)PositionTypes.FFNW]}|{PositionTypes.FFN}:{patternWithColor[(Int32)PositionTypes.FFN]}|{PositionTypes.FFNE}:{ patternWithColor[(Int32)PositionTypes.FFNE]}|{PositionTypes.FFW}:{ patternWithColor[(Int32)PositionTypes.FFW]}|{PositionTypes.FF}:{ patternWithColor[(Int32)PositionTypes.FF]}|{PositionTypes.FFE}:{ patternWithColor[(Int32)PositionTypes.FFE]}|{PositionTypes.FFSW}:{ patternWithColor[(Int32)PositionTypes.FFSW]}|{PositionTypes.FFS}:{ patternWithColor[(Int32)PositionTypes.FFS]}|{PositionTypes.FFSE}:{ patternWithColor[(Int32)PositionTypes.FFSE]}";
+            String west = $"{PositionTypes.WBNW}:{ patternWithColor[(Int32)PositionTypes.WBNW]}|{PositionTypes.WNW}:{patternWithColor[(Int32)PositionTypes.WNW]}|{PositionTypes.WFNW}:{ patternWithColor[(Int32)PositionTypes.WFNW]}|{PositionTypes.WBW}:{ patternWithColor[(Int32)PositionTypes.WBW]}|{PositionTypes.WW}:{ patternWithColor[(Int32)PositionTypes.WW]}|{PositionTypes.WFW}:{ patternWithColor[(Int32)PositionTypes.WFW]}|{PositionTypes.WBSW}:{ patternWithColor[(Int32)PositionTypes.WBSW]}|{PositionTypes.WSW}:{ patternWithColor[(Int32)PositionTypes.WSW]}|{PositionTypes.WFSW}:{ patternWithColor[(Int32)PositionTypes.WFSW]}";
+            String south = $"{PositionTypes.SFSW}:{ patternWithColor[(Int32)PositionTypes.SFSW]}|{PositionTypes.SFS}:{patternWithColor[(Int32)PositionTypes.SFS]}|{PositionTypes.SFSE}:{ patternWithColor[(Int32)PositionTypes.SFSE]}|{PositionTypes.SSW}:{ patternWithColor[(Int32)PositionTypes.SSW]}|{PositionTypes.SS}:{ patternWithColor[(Int32)PositionTypes.SS]}|{PositionTypes.SSE}:{ patternWithColor[(Int32)PositionTypes.SSE]}|{PositionTypes.SBSW}:{ patternWithColor[(Int32)PositionTypes.SBSW]}|{PositionTypes.SBS}:{ patternWithColor[(Int32)PositionTypes.SBS]}|{PositionTypes.SBSE}:{ patternWithColor[(Int32)PositionTypes.SBSE]}";
+            String back = $"{PositionTypes.BBNE}:{ patternWithColor[(Int32)PositionTypes.BBNE]}|{PositionTypes.BBN}:{patternWithColor[(Int32)PositionTypes.BBN]}|{PositionTypes.BBNW}:{ patternWithColor[(Int32)PositionTypes.BBNW]}|{PositionTypes.BBE}:{ patternWithColor[(Int32)PositionTypes.BBE]}|{PositionTypes.BB}:{ patternWithColor[(Int32)PositionTypes.BB]}|{PositionTypes.BBW}:{ patternWithColor[(Int32)PositionTypes.BBW]}|{PositionTypes.BBSE}:{ patternWithColor[(Int32)PositionTypes.BBSE]}|{PositionTypes.BBS}:{ patternWithColor[(Int32)PositionTypes.BBS]}|{PositionTypes.BBSW}:{ patternWithColor[(Int32)PositionTypes.BBSW]}";
+       
+            String detailedCubeState = $"{east},{north},{front},{west},{south},{back}";
             this.SetDetailedCubeState(cube, detailedCubeState);
         }
 
         public void SetDetailedCubeState(CubeModel cube, String detailedCubeState)
         {
-            Dictionary<String, StickerColorTypes> stickerDictionary = this.ParseStickers(detailedCubeState);
+            Dictionary<PositionTypes, StickerColorTypes> stickerDictionary = this.ParseStickers(detailedCubeState);
 
             IList<PieceMiddleModelBase> middles = this.GetAllMiddles(cube);
 

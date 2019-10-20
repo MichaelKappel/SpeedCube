@@ -84,7 +84,7 @@ namespace RC.Common.Enumerations
         Stripes,
 
         /// <summary>
-        /// Cube in a cube
+        /// Cube in X cube
         /// 
         /// G G G
         /// G W W 
@@ -98,7 +98,7 @@ namespace RC.Common.Enumerations
         /// </summary>
         CubeInACube,
 
-        /// Cube in a cube in a cube
+        /// Cube in X cube in X cube
         ///  
         /// G G G
         /// G W W 
@@ -492,7 +492,7 @@ namespace RC.Common.Enumerations
         TomParksPattern,
 
         /// <summary>
-        /// Ron's cube in a cube
+        /// Ron's cube in X cube
         /// 
         /// W W W 
         /// W W W 

@@ -2,6 +2,8 @@
 
 
 
+
+
 -- =============================================
 -- Author:		Michael Kappel, MCTS
 -- Create date: 6/23/2018
@@ -9,7 +11,7 @@
 /*
 	EXAMPLE:
 	
-declare @p3 RBK.PrimaryPatternIdRelationToConnectedPatternType
+declare @p3 [RBK].[PatternRelationHierarchyType]
 
 insert into @p3 values(N'1',N'23',N'|E|S|E''|S''|M''|M|S''|S|M|E''|M''|E|E|S''|M''|S|M|E''|M|M''|S|E''|E|S''|',N'|E''|S''|E|S|M|M''|S|S''|M''|E|M|E''|E''|S|M|S''|M''|E|M''|M|S''|E|E''|S|',N'ZZZBBBZZZ,AAAYYYAAA,CCCCCCCCC,XXXXXXXXX,YZYYZYYZY,BABBABBAB')
 insert into @p3 values(N'1',N'23',N'|U2|F2|R2|B2|D2|L2|U2|R2|F2|B2|L2|D2|F2|R2|U2|B2|L2|D2|R2|F2|U2|B2|L2|D2|',NULL,N'YYYBBBBBB,YYYYYYBBB,CCCCCCCCC,XXXXXXXXX,AZZAZZAZZ,AAZAAZAAZ')
@@ -21,30 +23,34 @@ insert into @p3 values(N'18',N'43',N'|F|B''|',N'|F''|B|',N'ZZZBBBBYB,YBYYYYAAA,X
 insert into @p3 values(N'18',N'43',N'|R''|R|L''|L|',N'|R|R''|L|L''|',N'ZAZYBYZAZ,ABAZYZABA,XCXXCXYAY,CXCCXCBZB,BZBBZBXCX,YAYYAYCXC')
 insert into @p3 values(N'18',N'43',N'|S''|',N'|S|',N'YYYYBYYYY,BBBBYBBBB,XXXCCCXXX,CCCXXXCCC,ZZZAZAZZZ,AAAZAZAAA')
 
-exec RBK.[PatternRelationStepUpsert] @PatternTypeId=1,@Step=3,@data=@p3
+exec RBK.[PatternRelationHierarchiesUpsert] @PatternTypeId=1,@Hierarchies=3,@data=@p3
 
 */
 -- =============================================
-CREATE PROCEDURE [RBK].[wsp_PatternRelationStepUpsert]
+CREATE PROCEDURE [RBK].[wsp_PatternRelationHierarchiesUpsert]
 		@PatternTypeId	INT
-	,	@Step			INT
-	,	@data  RBK.PrimaryPatternIdRelationToConnectedPatternType READONLY
+	,	@data  [RBK].[PatternRelationHierarchyType] READONLY
 AS
 BEGIN
 	SET NOCOUNT ON;
 	
-PRINT '@PatternTypeId: ' + CAST(@PatternTypeId AS VARCHAR(10))	
-PRINT '@Step: ' + CAST(@Step AS VARCHAR(10))	
+PRINT '@PatternTypeId: ' + CAST(@PatternTypeId AS VARCHAR(10));
 
 --SELECT * FROM @data;
 
 	-- Merge Patterns
-	MERGE RBK.Patterns AS target  
-	USING (SELECT DISTINCT [ConnectedPattern] FROM @data) AS source ([ConnectedPattern])  
-		ON (target.PatternContent = source.[ConnectedPattern])  
+	MERGE [RBK].[Patterns] AS target  
+	USING (SELECT DISTINCT [AFacePatternId], [BFacePatternId],[CFacePatternId], [XFacePatternId], [YFacePatternId], [ZFacePatternId] FROM @data) 
+				AS source ([AFacePatternId], [BFacePatternId],[CFacePatternId], [XFacePatternId], [YFacePatternId], [ZFacePatternId])  
+		ON (target.[AFacePatternId] = source.[AFacePatternId] 
+		AND target.[BFacePatternId] = source.[BFacePatternId] 
+		AND target.[CFacePatternId] = source.[CFacePatternId] 
+		AND target.[XFacePatternId] = source.[XFacePatternId] 
+		AND target.[YFacePatternId] = source.[YFacePatternId] 
+		AND target.[ZFacePatternId] = source.[ZFacePatternId])
 	WHEN NOT MATCHED THEN  
-		INSERT ([PatternContent])  
-		VALUES (source.[ConnectedPattern]);
+		INSERT ([AFacePatternId], [BFacePatternId],[CFacePatternId], [XFacePatternId], [YFacePatternId], [ZFacePatternId])  
+		VALUES (source.[AFacePatternId],source.[BFacePatternId],source.[CFacePatternId],source.[XFacePatternId],source.[YFacePatternId],source.[ZFacePatternId]);
 	
 PRINT 'ADDED Patterns: ' + CAST(@@ROWCOUNT AS VARCHAR(10))	
 
@@ -55,13 +61,20 @@ PRINT 'ADDED Patterns: ' + CAST(@@ROWCOUNT AS VARCHAR(10))
 				, d.[Relationship]				AS [Relationship]
 			FROM @data AS d
 				INNER JOIN RBK.Patterns AS insertedPattern 
-					on d.[ConnectedPattern] = insertedPattern.[PatternContent])
+					on d.[AFacePatternId] = insertedPattern.[AFacePatternId] 
+					AND d.[BFacePatternId] = insertedPattern.[BFacePatternId] 
+					AND d.[CFacePatternId] = insertedPattern.[CFacePatternId] 
+					AND d.[XFacePatternId] = insertedPattern.[XFacePatternId] 
+					AND d.[YFacePatternId] = insertedPattern.[YFacePatternId] 
+					AND d.[ZFacePatternId] = insertedPattern.[ZFacePatternId])
 	AS source ([PatternId], [ConnectedPatternId], [Relationship])  
 		ON (target.PatternId = source.[PatternId]
 			AND target.ConnectedPatternId = source.[ConnectedPatternId])
+	WHEN MATCHED THEN  
+		  UPDATE SET [Relationship] = source.[Relationship]
 	WHEN NOT MATCHED THEN  
 		INSERT ([PatternId], [ConnectedPatternId], [Relationship])  
-		VALUES (source.[PatternId], source.[ConnectedPatternId], source.[Relationship]);
+		VALUES (source.[PatternId], source.[ConnectedPatternId], source.[Relationship]);;
 
 	-- Reverse Merge PatternRelations
 	MERGE RBK.PatternRelations AS target  
@@ -70,39 +83,50 @@ PRINT 'ADDED Patterns: ' + CAST(@@ROWCOUNT AS VARCHAR(10))
 				, d.[ReverseRelationship]		AS [Relationship]
 			FROM @data AS d
 				INNER JOIN RBK.Patterns AS insertedPattern 
-					on d.[ConnectedPattern] = insertedPattern.[PatternContent]
+					on d.[AFacePatternId] = insertedPattern.[AFacePatternId] 
+					AND d.[BFacePatternId] = insertedPattern.[BFacePatternId] 
+					AND d.[CFacePatternId] = insertedPattern.[CFacePatternId] 
+					AND d.[XFacePatternId] = insertedPattern.[XFacePatternId] 
+					AND d.[YFacePatternId] = insertedPattern.[YFacePatternId] 
+					AND d.[ZFacePatternId] = insertedPattern.[ZFacePatternId]
 			WHERE  d.[ReverseRelationship] IS NOT NULL)
 	AS source ([PatternId], [ConnectedPatternId], [Relationship])  
 		ON (target.PatternId = source.[PatternId]
 			AND target.ConnectedPatternId = source.[ConnectedPatternId])
+	WHEN MATCHED THEN  
+		  UPDATE SET [Relationship] = source.[Relationship]
 	WHEN NOT MATCHED THEN  
 		INSERT ([PatternId], [ConnectedPatternId], [Relationship])  
 		VALUES (source.[PatternId], source.[ConnectedPatternId], source.[Relationship]);
 
 PRINT 'ADDED PatternRelations: ' +CAST(@@ROWCOUNT AS VARCHAR(10))
 
-	-- Merge PatternSteps
-	MERGE RBK.PatternSteps AS target  
-	USING (SELECT		pr.[PatternRelationId]																AS [PatternRelationId]
-					,	CASE WHEN d.[ParentPatternStepId] = 0 THEN NULL ELSE d.[ParentPatternStepId] END	AS [ParentPatternStepId]
-					,	@PatternTypeId																		AS [PatternTypeId]	
-					,	@Step																				AS [Step]
+	-- Merge PatternHierarchies
+	MERGE RBK.PatternHierarchies AS target  
+	USING (SELECT	
+						d.[PatternHierarchyHid]		AS [PatternHierarchyHid]																
+					,	pr.[PatternRelationId]		AS [PatternRelationId]
+					,	@PatternTypeId				AS [PatternTypeId]	
 			FROM @data AS d
 				INNER JOIN RBK.Patterns AS p
-					ON d.[ConnectedPattern] = p.[PatternContent]
+					ON d.[AFacePatternId] = p.[AFacePatternId] 
+					AND d.[BFacePatternId] = p.[BFacePatternId] 
+					AND d.[CFacePatternId] = p.[CFacePatternId] 
+					AND d.[XFacePatternId] = p.[XFacePatternId] 
+					AND d.[YFacePatternId] = p.[YFacePatternId] 
+					AND d.[ZFacePatternId] = p.[ZFacePatternId]
 				INNER JOIN RBK.PatternRelations AS pr
 					ON	d.[ParentPatternId] = pr.[PatternId]
 					AND p.[PatternId] = pr.[ConnectedPatternId])
-			AS source (	[PatternRelationId], 
-						[ParentPatternStepId], 
-						[PatternTypeId], 
-						[Step])  
+			AS source ([PatternHierarchyHid],
+						[PatternRelationId],  
+						[PatternTypeId])  
 			ON (target.[PatternRelationId] = source.[PatternRelationId]
 				AND target.[PatternTypeId] = source.[PatternTypeId])
 	WHEN NOT MATCHED THEN  
-		INSERT ([ParentPatternStepId], [PatternTypeId], [PatternRelationId], [Step])  
-		VALUES (source.[ParentPatternStepId], source.[PatternTypeId], source.[PatternRelationId], source.[Step]);
+		INSERT ([PatternHierarchyHid], [PatternTypeId], [PatternRelationId])  
+		VALUES (source.[PatternHierarchyHid], source.[PatternTypeId], source.[PatternRelationId]);
 
-PRINT 'ADDED PatternSteps: ' + CAST(@@ROWCOUNT AS VARCHAR(10))
+PRINT 'ADDED PatternHierarchies: ' + CAST(@@ROWCOUNT AS VARCHAR(10))
 
 END
