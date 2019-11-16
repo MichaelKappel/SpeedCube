@@ -1,0 +1,8 @@
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Release\netcoreapp3.0\RC.AzureRespositories.deps.json
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Release\netcoreapp3.0\RC.AzureRespositories.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Release\netcoreapp3.0\RC.AzureRespositories.pdb
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Release\netcoreapp3.0\RC.AzureRespositories.csprojAssemblyReference.cache
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Release\netcoreapp3.0\RC.AzureRespositories.AssemblyInfoInputs.cache
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Release\netcoreapp3.0\RC.AzureRespositories.AssemblyInfo.cs
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Release\netcoreapp3.0\RC.AzureRespositories.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Release\netcoreapp3.0\RC.AzureRespositories.pdb

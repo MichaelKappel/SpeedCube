@@ -11,22 +11,31 @@
 */
 -- =============================================
 CREATE PROCEDURE [RBK].[wsp_PatternGet]
-	@PatternContent VARCHAR(54)
+ @AFacePatternId AS INT,
+ @BFacePatternId AS INT,
+ @CFacePatternId AS INT,
+ @XFacePatternId AS INT,
+ @YFacePatternId AS INT,
+ @ZFacePatternId AS INT
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SET @PatternContent = REPLACE(@PatternContent COLLATE SQL_Latin1_General_CP1_CS_AS, 'a', 'Z');
-	
-	SET @PatternContent = REPLACE(@PatternContent COLLATE SQL_Latin1_General_CP1_CS_AS, 'b', 'Y');
-	
-	SET @PatternContent = REPLACE(@PatternContent COLLATE SQL_Latin1_General_CP1_CS_AS, 'c', 'X');
-
-	SELECT TOP 1 PatternId
-			,	PatternContent
+	SELECT TOP 1 
+			[PatternId]
+		,	[AFacePatternId]
+		,	[BFacePatternId]
+		,	[CFacePatternId]
+		,	[XFacePatternId]
+		,	[YFacePatternId]
+		,	[ZFacePatternId]
 	FROM Patterns
-	WHERE PatternContent = @PatternContent;
+	WHERE	[AFacePatternId] = @AFacePatternId
+		AND [BFacePatternId] = @BFacePatternId
+		AND [CFacePatternId] = @CFacePatternId
+		AND [XFacePatternId] = @XFacePatternId
+		AND [YFacePatternId] = @YFacePatternId
+		AND [ZFacePatternId] = @ZFacePatternId
 
-	PRINT '@PatternContent:' + @PatternContent
 
 END

@@ -1,0 +1,11 @@
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\net48\RC.AzureRespositories.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\net48\RC.AzureRespositories.pdb
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\net48\Microsoft.Azure.KeyVault.Core.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\net48\Newtonsoft.Json.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\net48\Microsoft.WindowsAzure.Storage.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.csprojAssemblyReference.cache
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.AssemblyInfoInputs.cache
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.AssemblyInfo.cs
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.csproj.CopyComplete
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\net48\RC.AzureRespositories.pdb

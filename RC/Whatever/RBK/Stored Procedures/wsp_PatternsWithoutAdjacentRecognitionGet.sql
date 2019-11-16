@@ -2,6 +2,7 @@
 
 
 
+
 -- =============================================
 -- Author:		Michael Kappel, MCTS
 -- Create date: 9/23/2019
@@ -19,8 +20,13 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT TOP(@PageSize) 
-			p.PatternId,	
-			p.PatternContent
+			p.PatternId,
+			p.AFacePatternId,	
+			p.BFacePatternId,	
+			p.CFacePatternId,	
+			p.XFacePatternId,	
+			p.YFacePatternId,	
+			p.ZFacePatternId
 	FROM
 			RBK.Patterns AS p WITH  (NOLOCK)  
 	WHERE 

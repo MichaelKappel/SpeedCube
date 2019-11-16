@@ -19,7 +19,12 @@ BEGIN
 
 	SELECT TOP(@PageSize) 
 			p.PatternId,	
-			p.PatternContent
+			p.AFacePatternId,	
+			p.BFacePatternId,	
+			p.CFacePatternId,	
+			p.XFacePatternId,	
+			p.YFacePatternId,	
+			p.ZFacePatternId
 	FROM
 			RBK.Patterns AS p WITH  (NOLOCK)  
 	WHERE 

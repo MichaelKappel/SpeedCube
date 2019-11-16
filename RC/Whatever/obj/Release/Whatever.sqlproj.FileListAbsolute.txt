@@ -1,0 +1,7 @@
+D:\git\SpeedCube\RC\Whatever\bin\Release\Whatever.dacpac
+D:\git\SpeedCube\RC\Whatever\obj\Release\Model.xml
+D:\git\SpeedCube\RC\Whatever\obj\Release\refactor.xml
+D:\git\SpeedCube\RC\Whatever\obj\Release\postdeploy.sql
+D:\git\SpeedCube\RC\Whatever\obj\Release\predeploy.sql
+D:\git\SpeedCube\RC\Whatever\obj\Release\Whatever.dll
+D:\git\SpeedCube\RC\Whatever\obj\Release\Whatever.pdb

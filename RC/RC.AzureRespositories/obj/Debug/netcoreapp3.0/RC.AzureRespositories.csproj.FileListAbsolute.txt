@@ -3,3 +3,6 @@ D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\netcoreapp3.0\RC.AzureRespos
 D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\netcoreapp3.0\RC.AzureRespositories.csprojAssemblyReference.cache
 D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\netcoreapp3.0\RC.AzureRespositories.AssemblyInfoInputs.cache
 D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\netcoreapp3.0\RC.AzureRespositories.AssemblyInfo.cs
+D:\git\SpeedCube\RC\RC.AzureRespositories\bin\Debug\netcoreapp3.0\RC.AzureRespositories.pdb
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\netcoreapp3.0\RC.AzureRespositories.dll
+D:\git\SpeedCube\RC\RC.AzureRespositories\obj\Debug\netcoreapp3.0\RC.AzureRespositories.pdb
