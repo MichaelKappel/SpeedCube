@@ -1,4 +1,5 @@
 ﻿
+
 -- =============================================
 -- Author:		Michael Kappel, MCTS
 -- Create date: 6/6/2018
@@ -22,14 +23,14 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT TOP 1 
-			[PatternId]
-		,	[AFacePatternId]
-		,	[BFacePatternId]
-		,	[CFacePatternId]
-		,	[XFacePatternId]
-		,	[YFacePatternId]
-		,	[ZFacePatternId]
-	FROM Patterns
+			[p].[PatternId]
+		,	[p].[AFacePatternId]
+		,	[p].[BFacePatternId]
+		,	[p].[CFacePatternId]
+		,	[p].[XFacePatternId]
+		,	[p].[YFacePatternId]
+		,	[p].[ZFacePatternId]
+	FROM Patterns AS [p]
 	WHERE	[AFacePatternId] = @AFacePatternId
 		AND [BFacePatternId] = @BFacePatternId
 		AND [CFacePatternId] = @CFacePatternId

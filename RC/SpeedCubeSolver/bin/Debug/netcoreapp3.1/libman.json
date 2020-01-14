@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "systemjs@6.1.9",
+      "destination": "wwwroot/lib/systemjs/"
+    }
+  ]
+}
+

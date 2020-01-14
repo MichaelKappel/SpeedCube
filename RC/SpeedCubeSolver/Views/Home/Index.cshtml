@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*@section Scripts {
+    <script src="~/Scripts/file.js"></script>
+}*@
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div id="container">
+
+    <div class="insideWrapper">
+        <video autoplay="true" id="myVideo">
+        </video>
+        <img src="~/images/CubeOverlay.png" id="myVideoOverlay">
+    </div>
+
+    <canvas id="cvsLive" width="640" height="480">
+    </canvas>
+    <button id="btnCapture">btnCapture</button>
+
+    <div>[X:<label id="lblWidth"></label>]</div>
+    <div>[Y:<label id="lblHeight"></label>]</div>
+
+    <label id="lblData"></label>
+</div>
+
+

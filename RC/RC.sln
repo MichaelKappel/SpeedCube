@@ -11,7 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RC.Common", "RC.Common\RC.C
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Whatever", "Whatever\Whatever.sqlproj", "{3C1C291B-8C80-4438-A6D7-4BAECAE840A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RC.AzureRespositories", "RC.AzureRespositories\RC.AzureRespositories.csproj", "{E9328104-9D36-408F-A89F-07A6CDC388C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RC.AzureRespositories", "RC.AzureRespositories\RC.AzureRespositories.csproj", "{E9328104-9D36-408F-A89F-07A6CDC388C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpeedCubeSolver", "SpeedCubeSolver\SpeedCubeSolver.csproj", "{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C517ADA-C342-4951-93FC-01C953A94894}"
+	ProjectSection(SolutionItems) = preProject
+		package.json = package.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +72,14 @@ Global
 		{E9328104-9D36-408F-A89F-07A6CDC388C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9328104-9D36-408F-A89F-07A6CDC388C9}.Release|x64.ActiveCfg = Release|Any CPU
 		{E9328104-9D36-408F-A89F-07A6CDC388C9}.Release|x64.Build.0 = Release|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Debug|x64.Build.0 = Debug|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DC065DF-6424-4C79-96E2-949EAAC5EFC3}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

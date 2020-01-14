@@ -279,7 +279,7 @@ namespace RC
                 return;
             }
 
-            Int32 stepSize = 50000;
+            Int32 stepSize = 5000;
             while (true)
             {
                 GC.Collect();
