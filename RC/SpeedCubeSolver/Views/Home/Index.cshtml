@@ -3,28 +3,47 @@
 }
 
 @*@section Scripts {
-    <script src="~/Scripts/file.js"></script>
-}*@
+        <script src="~/Scripts/file.js"></script>
+    }*@
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style type="text/css">
+    #myVideoOverlay {
+        width: 640px;
+        height: 480px;
+        position: relative;
+        top: -480px;
+        z-index: 100;
+    }
+    #divSegments canvas {
+        border: 2px solid red;
+    }
+</style>
+
+@*<div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>*@
+<div class="row row-no-gutters">
+    <div class="col-lg-6">
+        <br /><video autoplay="true" id="myVideo">
+        </video>
+        <br /><img src="~/images/CubeOverlay.png" id="myVideoOverlay">
+    </div>
+    <div class="col-lg-6">
+        <canvas id="cvsLive" width="640" height="480">
+        </canvas>
+
+        <div id="divSegments"></div>
+    </div>
 </div>
+<div>[X:<label id="lblWidth"></label>]</div>
+<div>[Y:<label id="lblHeight"></label>]</div>
 
 <div id="container">
 
     <div class="insideWrapper">
-        <video autoplay="true" id="myVideo">
-        </video>
-        <img src="~/images/CubeOverlay.png" id="myVideoOverlay">
+
     </div>
-
-    <canvas id="cvsLive" width="640" height="480">
-    </canvas>
-    <button id="btnCapture">btnCapture</button>
-
-    <div>[X:<label id="lblWidth"></label>]</div>
-    <div>[Y:<label id="lblHeight"></label>]</div>
 
     <label id="lblData"></label>
 </div>
