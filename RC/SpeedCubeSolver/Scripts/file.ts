@@ -1,25 +1,16 @@
-﻿export class HueSaturationLightnessPixelModel {
-    public constructor(hue: number = 0, saturation: number = 0, lightness = 0) {
-        this.Hue = hue;
-        this.Saturation = saturation;
-        this.Lightness = lightness;
-    }
-
-    public Hue: number;
-    public Saturation: number;
-    public Lightness: number;
-}
-
+﻿
 export class RedGreenBluePixelModel {
-    public constructor(red: number = 0, green: number = 0, blue = 0) {
+    public constructor(red: number = 0, green: number = 0, blue = 0, alpha = 0) {
         this.Red = red;
         this.Green = green;
         this.Blue = blue;
+        this.Alpha = alpha;
     }
 
     public Red: number;
     public Green: number;
     public Blue: number;
+    public Alpha: number;
 }
 
 export class MaskSegmentModel {
@@ -33,7 +24,7 @@ export class MaskSegmentModel {
         this.VerticalStart = 0;
         this.VerticalEnd = 0;
 
-        this.Pixels = new Array<HueSaturationLightnessPixelModel>();
+        this.Pixels = new Array<RedGreenBluePixelModel>();
 
         this.Canvas = <HTMLCanvasElement>document.createElement('canvas');
     }
@@ -47,7 +38,7 @@ export class MaskSegmentModel {
     public VerticalStart: number;
     public VerticalEnd: number;
 
-    public Pixels: Array<HueSaturationLightnessPixelModel>;
+    public Pixels: Array<RedGreenBluePixelModel>;
     public Canvas: HTMLCanvasElement;
 }
 
@@ -56,68 +47,6 @@ export class CubeAnalyzer {
     public constructor() {
 
     }
-
-    // Start Section adapted from https://gist.github.com/mjackson/5311256
-    // color-conversion-algorithms.js by Michael Jackson
-    public HslToRgb(pixel: HueSaturationLightnessPixelModel): RedGreenBluePixelModel {
-        let r: number, g: number, b: number;
-
-        if (pixel.Saturation == 0) {
-            r = g = b = pixel.Lightness; // achromatic
-        } else {
-            let hue2rgb = (p: number, q: number, t: number): number => {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1 / 6) return p + (q - p) * 6 * t;
-                if (t < 1 / 2) return q;
-                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            };
-
-            let q = pixel.Lightness < 0.5 ? pixel.Lightness * (1 + pixel.Saturation) : pixel.Lightness + pixel.Saturation - pixel.Lightness * pixel.Saturation;
-            let p = 2 * pixel.Lightness - q;
-
-            r = hue2rgb(p, q, pixel.Hue + 1 / 3);
-            g = hue2rgb(p, q, pixel.Hue);
-            b = hue2rgb(p, q, pixel.Hue - 1 / 3);
-        }
-
-        return new RedGreenBluePixelModel(r * 255, g * 255, b * 255);
-    }
-
-    public RgbToHsl(pixel: RedGreenBluePixelModel): HueSaturationLightnessPixelModel {
-
-        let r = pixel.Red / 255;
-        let g = pixel.Green / 255;
-        let b = pixel.Blue / 255;
-
-        let max = Math.max(r, g, b), min = Math.min(r, g, b);
-
-        let h: number = 0;
-        let s: number = 0;
-        let l: number = (max + min) / 2;
-
-        if (max == min) {
-            h = s = 0; // achromatic
-        } else {
-            var d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-            switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
-            }
-
-            h /= 6;
-        }
-
-        return new HueSaturationLightnessPixelModel(h, s, l);
-    }
-
-    // End Section adapted from https://gist.github.com/mjackson/5311256
-    // color-conversion-algorithms.js by Michael Jackson
-
 
     public VideoFrame: HTMLVideoElement = <HTMLVideoElement>{};
     public LiveCanvas: HTMLCanvasElement = <HTMLCanvasElement>{};
@@ -144,7 +73,7 @@ export class CubeAnalyzer {
 
         let divSegments = <HTMLDivElement>document.getElementById("divSegments");
 
-        this.SetStartingMasks(divSegments, this.ImageOverlay.width, this.ImageOverlay.width * 0.3, this.ImageOverlay.height * 0.3);
+        //this.SetStartingMasks(divSegments, this.ImageOverlay.width, this.ImageOverlay.width * 0.3, this.ImageOverlay.height * 0.3);
 
         navigator.getUserMedia = (
             navigator.getUserMedia ||
@@ -177,111 +106,111 @@ export class CubeAnalyzer {
         }
     }
 
-    public SetStartingMasks(parentElement: HTMLElement, maskSize: number, horizontalOffset: number, verticalOffset: number): void {
+    //public SetStartingMasks(parentElement: HTMLElement, maskSize: number, horizontalOffset: number, verticalOffset: number): void {
 
-        let maskPercent = 0.05;
-        let maskSegmentSize = Math.floor(maskSize * maskPercent);
+    //    let maskPercent = 0.05;
+    //    let maskSegmentSize = Math.floor(maskSize * maskPercent);
 
-        let masks = Array<MaskSegmentModel>();
-        for (let i = 0; i < 9; i++) {
+    //    let masks = Array<MaskSegmentModel>();
+    //    for (let i = 0; i < 9; i++) {
 
-            let mask = new MaskSegmentModel();
+    //        let mask = new MaskSegmentModel();
 
-            mask.Width = maskSegmentSize;
-            mask.Height = maskSegmentSize;
+    //        mask.Width = maskSegmentSize;
+    //        mask.Height = maskSegmentSize;
 
-            mask.Canvas.width = maskSegmentSize;
-            mask.Canvas.height = maskSegmentSize;
+    //        mask.Canvas.width = maskSegmentSize;
+    //        mask.Canvas.height = maskSegmentSize;
 
-            parentElement.appendChild(mask.Canvas)
+    //        parentElement.appendChild(mask.Canvas)
 
-            masks.push(mask);
-        }
+    //        masks.push(mask);
+    //    }
 
-        // X 0 0
-        // 0 0 0
-        // 0 0 0
-        masks[0].HorizontalStart = Math.floor(0 + horizontalOffset);
-        masks[0].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
+    //    // X 0 0
+    //    // 0 0 0
+    //    // 0 0 0
+    //    masks[0].HorizontalStart = Math.floor(0 + horizontalOffset);
+    //    masks[0].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
 
-        masks[0].VerticalStart = Math.floor(0 + verticalOffset);
-        masks[0].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
+    //    masks[0].VerticalStart = Math.floor(0 + verticalOffset);
+    //    masks[0].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
 
-        // 0 X 0
-        // 0 0 0
-        // 0 0 0
-        masks[1].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
-        masks[1].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
+    //    // 0 X 0
+    //    // 0 0 0
+    //    // 0 0 0
+    //    masks[1].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
+    //    masks[1].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
 
-        masks[1].VerticalStart = Math.floor(0 + verticalOffset);
-        masks[1].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
+    //    masks[1].VerticalStart = Math.floor(0 + verticalOffset);
+    //    masks[1].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
 
-        // 0 0 X
-        // 0 0 0
-        // 0 0 0
-        masks[2].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
-        masks[2].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
+    //    // 0 0 X
+    //    // 0 0 0
+    //    // 0 0 0
+    //    masks[2].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
+    //    masks[2].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
 
-        masks[2].VerticalStart = Math.floor(0 + verticalOffset);
-        masks[2].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
+    //    masks[2].VerticalStart = Math.floor(0 + verticalOffset);
+    //    masks[2].VerticalEnd = Math.floor(maskSegmentSize + verticalOffset);
 
-        // 0 0 0
-        // X 0 0
-        // 0 0 0
-        masks[3].HorizontalStart = Math.floor(0 + horizontalOffset);
-        masks[3].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
+    //    // 0 0 0
+    //    // X 0 0
+    //    // 0 0 0
+    //    masks[3].HorizontalStart = Math.floor(0 + horizontalOffset);
+    //    masks[3].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
 
-        masks[3].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
-        masks[3].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
+    //    masks[3].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
+    //    masks[3].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
 
-        // 0 0 0
-        // 0 X 0
-        // 0 0 0
-        masks[4].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
-        masks[4].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
+    //    // 0 0 0
+    //    // 0 X 0
+    //    // 0 0 0
+    //    masks[4].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
+    //    masks[4].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
 
-        masks[4].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
-        masks[4].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
+    //    masks[4].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
+    //    masks[4].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
 
-        // 0 0 0
-        // 0 0 X
-        // 0 0 0
-        masks[5].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
-        masks[5].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
+    //    // 0 0 0
+    //    // 0 0 X
+    //    // 0 0 0
+    //    masks[5].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
+    //    masks[5].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
 
-        masks[5].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
-        masks[5].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
+    //    masks[5].VerticalStart = Math.floor(maskSegmentSize * 3 + verticalOffset);
+    //    masks[5].VerticalEnd = Math.floor(maskSegmentSize * 4 + verticalOffset);
 
-        // 0 0 0
-        // 0 0 0
-        // X 0 0
-        masks[6].HorizontalStart = Math.floor(0 + horizontalOffset);
-        masks[6].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
+    //    // 0 0 0
+    //    // 0 0 0
+    //    // X 0 0
+    //    masks[6].HorizontalStart = Math.floor(0 + horizontalOffset);
+    //    masks[6].HorizontalEnd = Math.floor(maskSegmentSize + horizontalOffset);
 
-        masks[6].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
-        masks[6].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
+    //    masks[6].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
+    //    masks[6].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
 
-        // 0 0 0
-        // 0 0 0
-        // 0 X 0
-        masks[7].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
-        masks[7].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
+    //    // 0 0 0
+    //    // 0 0 0
+    //    // 0 X 0
+    //    masks[7].HorizontalStart = Math.floor(maskSegmentSize * 3 + horizontalOffset);
+    //    masks[7].HorizontalEnd = Math.floor(maskSegmentSize * 4 + horizontalOffset);
 
-        masks[7].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
-        masks[7].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
+    //    masks[7].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
+    //    masks[7].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
 
-        // 0 0 0
-        // 0 0 0
-        // 0 0 X
-        masks[8].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
-        masks[8].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
+    //    // 0 0 0
+    //    // 0 0 0
+    //    // 0 0 X
+    //    masks[8].HorizontalStart = Math.floor(maskSegmentSize * 6 + horizontalOffset);
+    //    masks[8].HorizontalEnd = Math.floor(maskSegmentSize * 7 + horizontalOffset);
 
-        masks[8].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
-        masks[8].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
+    //    masks[8].VerticalStart = Math.floor(maskSegmentSize * 6 + verticalOffset);
+    //    masks[8].VerticalEnd = Math.floor(maskSegmentSize * 7 + verticalOffset);
 
-        this.Masks = masks;
+    //    this.Masks = masks;
 
-    }
+    //}
 
     public AnalyzeCube() {
         let frameWidth = this.LiveCanvas.width;
@@ -301,9 +230,109 @@ export class CubeAnalyzer {
         let lblHeight = <HTMLSpanElement>document.getElementById('lblHeight');
         lblHeight.innerText = frameHeight.toString();
 
-        this.ApplyImageIntoMask(image, this.Masks);
+        this.DoStuff(image);
+
+        //this.ApplyImageIntoMask(image, this.Masks);
 
         this.CanvasContext.putImageData(image, 0, 0);
+    }
+
+    public DoStuff(image: ImageData) {
+
+        let channels = image.data.length / 4;
+        for (let ic = 0; ic < channels; ic++) {
+
+            let r = image.data[ic * 4];
+            let g = image.data[ic * 4 + 1];
+            let b = image.data[ic * 4 + 2];
+
+            // image.data[ic * 4 + 3] = 0;
+
+            let baseLine: number = Math.min(r, g, b);
+
+            let rb: number = r - baseLine;
+            let gb: number = g - baseLine;
+            let bb: number = b - baseLine;
+
+
+
+
+            if (rb < 70 && gb < 70 && bb < 70) {
+                image.data[ic * 4] = 0;
+                image.data[ic * 4 + 1] = 0;
+                image.data[ic * 4 + 2] = 0;
+            } else {
+                let hue = this.getHue(r, g, b);
+                if (hue > 335 || hue <= 5) {
+                    //red
+                    image.data[ic * 4] = 255;
+                    image.data[ic * 4 + 1] = 0;
+                    image.data[ic * 4 + 2] = 0;
+                }
+                else if (hue > 5 && hue <= 30) {
+                    //orange 
+                    image.data[ic * 4] = 255;
+                    image.data[ic * 4 + 1] = 125;
+                    image.data[ic * 4 + 2] = 0;
+                }
+                else if (hue > 30 && hue <= 65) {
+                    // Yellow
+                    image.data[ic * 4] = 255;
+                    image.data[ic * 4 + 1] = 255;
+                    image.data[ic * 4 + 2] = 0;
+                }
+                else if (hue > 65 && hue <= 155) {
+                    // Green
+                    image.data[ic * 4] = 0;
+                    image.data[ic * 4 + 1] = 255;
+                    image.data[ic * 4 + 2] = 0;
+                }
+                else if (hue > 155 && hue <= 280) {
+                    // Blue
+                    image.data[ic * 4] = 0;
+                    image.data[ic * 4 + 1] = 0;
+                    image.data[ic * 4 + 2] = 255;
+                }
+                else if (hue > 280 && hue <= 335) {
+                    // Purple
+                    image.data[ic * 4] = 149;
+                    image.data[ic * 4 + 1] = 33;
+                    image.data[ic * 4 + 2] = 246;
+                } else {
+
+                    // Error
+                    image.data[ic * 4] = 255;
+                    image.data[ic * 4 + 1] = 255;
+                    image.data[ic * 4 + 2] = 255;
+                }
+            }
+        }
+     }
+
+    public getHue(red: number, green: number, blue: number): number {
+
+        let min = Math.min(Math.min(red, green), blue);
+        let max = Math.max(Math.max(red, green), blue);
+
+        if (min == max) {
+            return 0;
+        }
+
+        let hue = 0;
+        if (max == red) {
+            hue = (green - blue) / (max - min);
+
+        } else if (max == green) {
+            hue = 2 + (blue - red) / (max - min);
+
+        } else {
+            hue = 4 + (red - green) / (max - min);
+        }
+
+        hue = hue * 60;
+        if (hue < 0) hue = hue + 360;
+
+        return Math.round(hue);
     }
 
     public Caluculate() {
@@ -325,50 +354,62 @@ export class CubeAnalyzer {
     }
 
 
-    public ApplyImageIntoMask(image: ImageData, masks: Array<MaskSegmentModel>) {
+    //public ApplyImageIntoMask(image: ImageData, masks: Array<MaskSegmentModel>) {
 
-        for (let iClear = 0; iClear < masks.length; iClear++) {
-            masks[iClear].Pixels = new Array<HueSaturationLightnessPixelModel>();
-        }
+    //    for (let iClear = 0; iClear < masks.length; iClear++) {
+    //        masks[iClear].Pixels = new Array<RedGreenBluePixelModel>();
+    //    }
 
-        let channels = image.data.length / 4;
-        for (let ic = 0; ic < channels; ic++) {
-            let horizontalPosition = (ic % image.width);
-            let verticalPosition = (ic / image.width);
+    //   let channels = image.data.length / 4;
+    //    for (let ic = 0; ic < channels; ic++) {
+    //        let horizontalPosition = (ic % image.width);
+    //        let verticalPosition = (ic / image.width);
 
-            for (let im = 0; im < masks.length; im++) {
-                if ((horizontalPosition > masks[im].HorizontalStart && horizontalPosition < masks[im].HorizontalEnd)
-                    && (verticalPosition > masks[im].VerticalStart && verticalPosition < masks[im].VerticalEnd)) {
+    //        for (let im = 0; im < masks.length; im++) {
+    //            if ((horizontalPosition > masks[im].HorizontalStart && horizontalPosition < masks[im].HorizontalEnd)
+    //                && (verticalPosition > masks[im].VerticalStart && verticalPosition < masks[im].VerticalEnd)) {
 
-                    let rgbPixel = new RedGreenBluePixelModel(image.data[ic * 4], image.data[ic * 4 + 1], image.data[ic * 4 + 2])
-                    let hslPixel: HueSaturationLightnessPixelModel = this.RgbToHsl(rgbPixel);
+    //                let rgbPixel = new RedGreenBluePixelModel(image.data[ic * 4], image.data[ic * 4 + 1], image.data[ic * 4 + 2], image.data[ic * 4 + 3])
 
-                    masks[im].Pixels.push(hslPixel);
+    //                masks[im].Pixels.push(rgbPixel);
 
-                    image.data[ic * 4] = 0;
-                    image.data[ic * 4 + 1] = 0;
-                    image.data[ic * 4 + 2] = 0;
-                    image.data[ic * 4 + 3] = 0;
-                }
-            }
-        }
+    //                image.data[ic * 4] = 0;
+    //                image.data[ic * 4 + 1] = 0;
+    //                image.data[ic * 4 + 2] = 0;
+    //                image.data[ic * 4 + 3] = 0;
+    //            }
+    //        }
+    //    }
 
-        for (let im = 0; im < masks.length; im++) {
+    //    for (let im = 0; im < masks.length; im++) {
+    //        let canvasContext = <CanvasRenderingContext2D>masks[im].Canvas.getContext("2d");
+    //        let imageData = canvasContext.createImageData(masks[im].Width, masks[im].Height); 
 
-            let canvasContext = <CanvasRenderingContext2D>masks[im].Canvas.getContext("2d");
-            let imageData = canvasContext.createImageData(masks[im].Width, masks[im].Height); 
+    //        for (let ip = 0; ip < masks[im].Pixels.length; ip++) {
 
-            for (let ip = 0; ip < masks[im].Pixels.length; ip++) {
+    //            imageData.data[ip * 4 + 0] = masks[im].Pixels[ip].Red;
+    //            imageData.data[ip * 4 + 1] = masks[im].Pixels[ip].Green;
+    //            imageData.data[ip * 4 + 2] = masks[im].Pixels[ip].Blue;
+    //            imageData.data[ip * 4 + 3] = masks[im].Pixels[ip].Alpha;
+    //        }
 
-                let rgb: RedGreenBluePixelModel = this.HslToRgb(masks[im].Pixels[ip]);
-                imageData.data[ip * 4 + 0] = rgb.Red;
-                imageData.data[ip * 4 + 1] = rgb.Green;
-                imageData.data[ip * 4 + 2] = rgb.Blue;
-                imageData.data[ip * 4 + 3] = 1;
-            }
+    //        canvasContext.putImageData(imageData, 0, 0);
+    //    } 
+    //}
+    public AnalyzePixels(pixel: RedGreenBluePixelModel) {
 
-            canvasContext.putImageData(imageData, 0, 0);
-        } 
+
+    }
+
+    public AnalyzePixel(pixel: RedGreenBluePixelModel) {
+
+        let baseLine: number = Math.min(pixel.Red, pixel.Blue, pixel.Green);
+
+        let r: number = pixel.Red - baseLine;
+        let g: number = pixel.Green - baseLine;
+        let b: number = pixel.Blue - baseLine;
+
+        
     }
 
     public SeperateImageIntoThirds(image: ImageData, frameWidth: number) {
