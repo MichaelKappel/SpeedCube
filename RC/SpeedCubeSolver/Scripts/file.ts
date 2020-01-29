@@ -109,15 +109,15 @@ export class CubeAnalyzer {
         const inputTopFrontCenter = document.getElementById('input-top-front-center') as HTMLInputElement;
         const inputTopFrontRight = document.getElementById('input-top-front-right') as HTMLInputElement;
 
-        const inputLeftTopBack = document.getElementById('input-left-top-back') as HTMLInputElement;
-        const inputLeftTopCenter = document.getElementById('input-left-top-center') as HTMLInputElement;
-        const inputLeftTopFront = document.getElementById('input-left-top-front') as HTMLInputElement;
-        const inputLeftCenterBack = document.getElementById('input-left-center-back') as HTMLInputElement;
-        const inputLeftCenterCenter = document.getElementById('input-left-center-center') as HTMLInputElement;
-        const inputLeftCenterFront = document.getElementById('input-left-center-front') as HTMLInputElement;
-        const inputLeftBottomBack = document.getElementById('input-left-bottom-back') as HTMLInputElement;
-        const inputLeftBottomCenter = document.getElementById('input-left-bottom-center') as HTMLInputElement;
-        const inputLeftBottomFront = document.getElementById('input-left-bottom-front') as HTMLInputElement;
+        const inputRightTopFront = document.getElementById('input-right-top-front') as HTMLInputElement;
+        const inputRightTopCenter = document.getElementById('input-right-top-center') as HTMLInputElement;
+        const inputRightTopBack = document.getElementById('input-right-top-back') as HTMLInputElement;
+        const inputRightCenterFront = document.getElementById('input-right-center-front') as HTMLInputElement;
+        const inputRightCenterCenter = document.getElementById('input-right-center-center') as HTMLInputElement;
+        const inputRightCenterBack = document.getElementById('input-right-center-back') as HTMLInputElement;
+        const inputRightBottomFront = document.getElementById('input-right-bottom-front') as HTMLInputElement;
+        const inputRightBottomCenter = document.getElementById('input-right-bottom-center') as HTMLInputElement;
+        const inputRightBottomBack = document.getElementById('input-right-bottom-back') as HTMLInputElement;
 
         const inputFrontTopLeft = document.getElementById('input-front-top-left') as HTMLInputElement;
         const inputFrontTopCenter = document.getElementById('input-front-top-center') as HTMLInputElement;
@@ -129,25 +129,15 @@ export class CubeAnalyzer {
         const inputFrontBottomCenter = document.getElementById('input-front-bottom-center') as HTMLInputElement;
         const inputFrontBottomRight = document.getElementById('input-front-bottom-right') as HTMLInputElement;
 
-        const inputRightTopFront = document.getElementById('input-right-top-front') as HTMLInputElement;
-        const inputRightTopCenter = document.getElementById('input-right-top-center') as HTMLInputElement;
-        const inputRightTopBack = document.getElementById('input-right-top-back') as HTMLInputElement;
-        const inputRightCenterFront = document.getElementById('input-right-center-front') as HTMLInputElement;
-        const inputRightCenterCenter = document.getElementById('input-right-center-center') as HTMLInputElement;
-        const inputRightCenterBack = document.getElementById('input-right-center-back') as HTMLInputElement;
-        const inputRightBottomFront = document.getElementById('input-right-bottom-front') as HTMLInputElement;
-        const inputRightBottomCenter = document.getElementById('input-right-bottom-center') as HTMLInputElement;
-        const inputRightBottomBack = document.getElementById('input-right-bottom-back') as HTMLInputElement;
-
-        const inputBackTopLeft = document.getElementById('input-back-top-left') as HTMLInputElement;
-        const inputBackTopCenter = document.getElementById('input-back-top-center') as HTMLInputElement;
-        const inputBackTopRight = document.getElementById('input-back-top-right') as HTMLInputElement;
-        const inputBackCenterLeft = document.getElementById('input-back-center-left') as HTMLInputElement;
-        const inputBackCenterCenter = document.getElementById('input-back-center-center') as HTMLInputElement;
-        const inputBackCenterRight = document.getElementById('input-back-center-right') as HTMLInputElement;
-        const inputBackBottomLeft = document.getElementById('input-back-bottom-left') as HTMLInputElement;
-        const inputBackBottomCenter = document.getElementById('input-back-bottom-center') as HTMLInputElement;
-        const inputBackBottomRight = document.getElementById('input-back-bottom-right') as HTMLInputElement;
+        const inputLeftTopBack = document.getElementById('input-left-top-back') as HTMLInputElement;
+        const inputLeftTopCenter = document.getElementById('input-left-top-center') as HTMLInputElement;
+        const inputLeftTopFront = document.getElementById('input-left-top-front') as HTMLInputElement;
+        const inputLeftCenterBack = document.getElementById('input-left-center-back') as HTMLInputElement;
+        const inputLeftCenterCenter = document.getElementById('input-left-center-center') as HTMLInputElement;
+        const inputLeftCenterFront = document.getElementById('input-left-center-front') as HTMLInputElement;
+        const inputLeftBottomBack = document.getElementById('input-left-bottom-back') as HTMLInputElement;
+        const inputLeftBottomCenter = document.getElementById('input-left-bottom-center') as HTMLInputElement;
+        const inputLeftBottomFront = document.getElementById('input-left-bottom-front') as HTMLInputElement;
 
         const inputBottomFrontLeft = document.getElementById('input-bottom-front-left') as HTMLInputElement;
         const inputBottomFrontCenter = document.getElementById('input-bottom-front-center') as HTMLInputElement;
@@ -159,6 +149,18 @@ export class CubeAnalyzer {
         const inputBottomBackCenter = document.getElementById('input-bottom-back-center') as HTMLInputElement;
         const inputBottomBackRight = document.getElementById('input-bottom-back-right') as HTMLInputElement;
 
+        const inputBackTopLeft = document.getElementById('input-back-top-left') as HTMLInputElement;
+        const inputBackTopCenter = document.getElementById('input-back-top-center') as HTMLInputElement;
+        const inputBackTopRight = document.getElementById('input-back-top-right') as HTMLInputElement;
+        const inputBackCenterLeft = document.getElementById('input-back-center-left') as HTMLInputElement;
+        const inputBackCenterCenter = document.getElementById('input-back-center-center') as HTMLInputElement;
+        const inputBackCenterRight = document.getElementById('input-back-center-right') as HTMLInputElement;
+        const inputBackBottomLeft = document.getElementById('input-back-bottom-left') as HTMLInputElement;
+        const inputBackBottomCenter = document.getElementById('input-back-bottom-center') as HTMLInputElement;
+        const inputBackBottomRight = document.getElementById('input-back-bottom-right') as HTMLInputElement;
+
+
+
         this.CubeConfigurationButton.onclick = () => {
 
             const rawConfigurationValue =
@@ -167,6 +169,7 @@ export class CubeAnalyzer {
                 inputRightTopCenter.value +
                 inputRightTopBack.value +
                 inputRightCenterFront.value +
+
                 inputRightCenterBack.value +
                 inputRightBottomFront.value +
                 inputRightBottomCenter.value +
@@ -176,6 +179,7 @@ export class CubeAnalyzer {
                 inputTopBackCenter.value +
                 inputTopBackRight.value +
                 inputTopCenterLeft.value +
+
                 inputTopCenterRight.value +
                 inputTopFrontLeft.value +
                 inputTopFrontCenter.value +
@@ -185,6 +189,7 @@ export class CubeAnalyzer {
                 inputFrontTopCenter.value +
                 inputFrontTopRight.value +
                 inputFrontCenterLeft.value +
+
                 inputFrontCenterRight.value +
                 inputFrontBottomLeft.value +
                 inputFrontBottomCenter.value +
@@ -194,6 +199,7 @@ export class CubeAnalyzer {
                 inputLeftTopCenter.value +
                 inputLeftTopFront.value +
                 inputLeftCenterBack.value +
+
                 inputLeftCenterFront.value +
                 inputLeftBottomBack.value +
                 inputLeftBottomCenter.value +
@@ -203,6 +209,7 @@ export class CubeAnalyzer {
                 inputBottomFrontCenter.value +
                 inputBottomFrontRight.value +
                 inputBottomCenterLeft.value +
+
                 inputBottomCenterRight .value +
                 inputBottomBackLeft.value +
                 inputBottomBackCenter.value +
@@ -212,6 +219,7 @@ export class CubeAnalyzer {
                 inputBackTopCenter.value +
                 inputBackTopRight.value +
                 inputBackCenterLeft.value +
+
                 inputBackCenterRight.value +
                 inputBackBottomLeft.value +
                 inputBackBottomCenter.value +
@@ -219,16 +227,21 @@ export class CubeAnalyzer {
 
             let configurationValue = rawConfigurationValue.trim().toUpperCase();
 
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputRightCenterCenter.value, "g"), 'A');
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputTopCenterCenter.value, "g"), 'B');
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputFrontCenterCenter.value, "g"), 'C');
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputLeftCenterCenter.value, "g"), 'X');
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputBottomCenterCenter.value, "g"), 'Y');
-            configurationValue = configurationValue.trim().toUpperCase().replace(new RegExp(inputBackCenterCenter.value, "g"), 'Z');
+            configurationValue = configurationValue.replace(new RegExp(inputRightCenterCenter.value,   'g'), '~1~');
+            configurationValue = configurationValue.replace(new RegExp(inputTopCenterCenter.value,     'g'), '~2~');
+            configurationValue = configurationValue.replace(new RegExp(inputFrontCenterCenter.value,   'g'), '~3~');
+            configurationValue = configurationValue.replace(new RegExp(inputLeftCenterCenter.value,    'g'), '~4~');
+            configurationValue = configurationValue.replace(new RegExp(inputBottomCenterCenter.value,  'g'), '~5~');
+            configurationValue = configurationValue.replace(new RegExp(inputBackCenterCenter.value,    'g'), '~6~');
+            
+            configurationValue = configurationValue.replace(new RegExp('~1~', 'g'),'A');
+            configurationValue = configurationValue.replace(new RegExp('~2~', 'g'),'B');
+            configurationValue = configurationValue.replace(new RegExp('~3~', 'g'),'C');
+            configurationValue = configurationValue.replace(new RegExp('~4~', 'g'),'X');
+            configurationValue = configurationValue.replace(new RegExp('~5~', 'g'),'Y');
+            configurationValue = configurationValue.replace(new RegExp('~6~', 'g'),'Z');
 
-            this.ConfigurationInput.value = configurationValue;
-
-            this.UpdateCubeView(configurationValue.replace(/,/g, ''));
+            this.ConfigurationInput.value = this.UpdateCubeView(configurationValue.replace(/,/g, ''));
         }
 
         this.ConfigurationButton.onclick = () => {
