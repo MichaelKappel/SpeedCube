@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "eZVEqjhLvE3+F3z+Mc4Kr5z8tD6ftGq7ZCWoNWJlkw12MB5t3qNTPhzzAT4qlKagbpkP/XrOC/FL1Yed5PkC3g==",
+  "success": true,
+  "projectFilePath": "D:\\git\\SpeedCube\\RC\\SpeedCubeSolver\\SpeedCubeSolver.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Micha\\.nuget\\packages\\bootstrap.typescript.definitelytyped\\0.9.8\\bootstrap.typescript.definitelytyped.0.9.8.nupkg.sha512",
+    "C:\\Users\\Micha\\.nuget\\packages\\jquery.typescript.definitelytyped\\3.1.2\\jquery.typescript.definitelytyped.3.1.2.nupkg.sha512",
+    "C:\\Users\\Micha\\.nuget\\packages\\microsoft.typescript.compiler\\3.1.5\\microsoft.typescript.compiler.3.1.5.nupkg.sha512",
+    "C:\\Users\\Micha\\.nuget\\packages\\microsoft.typescript.msbuild\\3.8.0-beta\\microsoft.typescript.msbuild.3.8.0-beta.nupkg.sha512"
+  ],
+  "logs": []
+}

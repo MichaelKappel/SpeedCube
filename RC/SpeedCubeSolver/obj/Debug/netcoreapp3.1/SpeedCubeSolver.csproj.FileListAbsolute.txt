@@ -35,3 +35,5 @@ D:\git\SpeedCube\RC\SpeedCubeSolver\bin\Debug\netcoreapp3.1\tsconfig.json
 D:\git\SpeedCube\RC\SpeedCubeSolver\obj\Debug\netcoreapp3.1\SpeedCubeSolver.csprojAssemblyReference.cache
 D:\git\SpeedCube\RC\SpeedCubeSolver\bin\Debug\netcoreapp3.1\libman.json
 D:\git\SpeedCube\RC\SpeedCubeSolver\obj\Debug\netcoreapp3.1\SpeedCubeSolver.MvcApplicationPartsAssemblyInfo.cache
+D:\git\SpeedCube\RC\SpeedCubeSolver\obj\Debug\netcoreapp3.1\SpeedCubeSolver.csproj.CoreCompileInputs.cache
+D:\git\SpeedCube\RC\SpeedCubeSolver\obj\Debug\netcoreapp3.1\SpeedCubeSolver.genruntimeconfig.cache
